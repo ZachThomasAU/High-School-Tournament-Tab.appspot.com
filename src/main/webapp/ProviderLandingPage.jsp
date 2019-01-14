@@ -25,4 +25,9 @@
 	</form>
 </div>
 </body>
+<footer>
+	<!-- <small>
+	Copyright (C) Standard Esports Company - All Rights Reserved
+	</small> -->
+</footer>
 </html>
