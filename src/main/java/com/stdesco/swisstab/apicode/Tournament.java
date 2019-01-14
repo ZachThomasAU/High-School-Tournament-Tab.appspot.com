@@ -24,7 +24,7 @@ public class Tournament {
 	private int TOURNAMENT_ID;
 		 
 	/**
-	 * Public method to initialize the provider ID through the API interface 
+	 * Public method to initialise the provider ID through the API interface 
 	 * with RIOT games: Returns 1 if successful and 0 if unsuccessful
 	 * 
 	 * @param xToken
@@ -42,7 +42,7 @@ public class Tournament {
 				+ "tournament-stub/v4/tournaments";
 		
 		// Currently this is hardcoded and does not draw from the function need 
-		// to process concatonate later
+		// to process concatenate later
 		String InitialisationPostBody = "{\"name\": \"" + tournamentName 
 				+ "\", \"providerId\": " + providerID + "}";
 		tcode = 

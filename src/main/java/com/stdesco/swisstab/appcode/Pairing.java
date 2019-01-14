@@ -14,7 +14,7 @@ import java.util.List;
  * 
  * Pairing Class
  * 
- * @author zthomas
+ * @author ZThomas
  * January 2019
  */
 public class Pairing {

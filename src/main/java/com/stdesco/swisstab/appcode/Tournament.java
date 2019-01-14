@@ -229,7 +229,7 @@ public class Tournament {
 	 * @exception IllegalArgumentException 
 	 * if the tournament has already ended.
 	 * @exception IllegalArgumentException 
-	 * if it's the first round, and a desired ruleset has not been 
+	 * if it's the first round, and a desired rule set has not been 
 	 * implemented.
 	 * @exception IllegalStateException 
 	 * if the previous round has not finished yet.

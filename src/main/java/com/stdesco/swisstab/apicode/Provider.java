@@ -25,12 +25,12 @@ public class Provider {
 	
 	/**
 	 * [v1]
-	 * Public method to initialize the provider ID through the API interface 
+	 * Public method to initialise the provider ID through the API interface 
 	 * with RIOT games: Returns 1 if successful and 0 if unsuccessful
 	 * @author JLwin
 	 * 
 	 * [v2]
-	 * Now stores the PROVIDER_ID in google cloud Datastore
+	 * Now stores the PROVIDER_ID in google cloud datastore
 	 * @author ZThomas
 	 * 
 	 * @param returnWeb
@@ -49,7 +49,7 @@ public class Provider {
 		  "https://americas.api.riotgames.com/lol/tournament-stub/v4/providers";
 		
 		// Currently this is hardcoded and does not draw from the function need 
-		// to process concatonate later
+		// to process concatenate later
 		String InitialisationPostBody = "{ \"region\": \"OCE\", \"url\": "
 				+ "\"https://high-school-tournament-tab.appspot.com/hello\"}";
 		pcode = 

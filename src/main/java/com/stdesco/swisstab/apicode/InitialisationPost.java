@@ -56,7 +56,7 @@ public class InitialisationPost extends HttpServlet {
 		
 		System.out.println("We in boyz");
 		
-		// creates variables for API urls
+		// creates variables for API URLs
 		String xriottoken = "RGAPI-372193cf-17e2-4d61-81ba-d75f5053ebc0";
 		String retweb = 
 				"https://high-school-tournament-tab.appspot.com/Hello.jsp";
@@ -107,7 +107,7 @@ public class InitialisationPost extends HttpServlet {
 	/** public void sendGet() throws Exception {
 		// HTTP GET request
 
-		String url = "http://www.google.com/search?q=mkyong";
+		String URL = "http://www.google.com/search?q=mkyong";
 		
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -166,10 +166,10 @@ public class InitialisationPost extends HttpServlet {
 		/* HEADER INFORMATION IS INPUT HERE
 		 * con.setRequestProperty sets the Header values for the POST Request
 		 * 
-		 * Accept Charset is just a standard value
+		 * Accept-Charset is just a standard value
 		 * 
 		 * XRiot Token is the unique account identifier that is generated for 
-		 * the Lol Account 
+		 * the LoL Account 
 		 * 
 		 * Accept Language = Standard language that was copied from the example 
 		 * in the STUB
@@ -178,7 +178,7 @@ public class InitialisationPost extends HttpServlet {
 		 * tried with it blank and it still worked
 		 * 
 		 * Content type = JSON because that is the format the STUB example uses 
-		 * and is passed into the body through the below string urlparameters
+		 * and is passed into the body through the below string urlParameters
 		 * */
 		con.setRequestProperty("Accept-Charset", 
 				"application/x-www-form-urlencoded; charset=UTF-8");

@@ -10,7 +10,7 @@ package com.stdesco.swisstab.appcode;
  * 
  * Team Class
  * 
- * @author zthomas
+ * @author ZThomas
  * January 2019
  */
 

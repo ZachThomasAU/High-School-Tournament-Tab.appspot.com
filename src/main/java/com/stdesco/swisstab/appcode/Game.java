@@ -10,7 +10,7 @@ package com.stdesco.swisstab.appcode;
  * 
  * Game Class
  * 
- * @author zthomas
+ * @author ZThomas
  * January 2019
  */
 
