@@ -2,6 +2,7 @@ package com.stdesco.swisstab.webapp;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
@@ -12,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
@@ -34,13 +38,16 @@ import com.google.appengine.api.datastore.Entity;
 @SuppressWarnings("serial")
 public class TournamentSetupPost extends HttpServlet {
 
+	private final static Logger LOGGER = 
+			Logger.getLogger(InitialisationPost.class.getName());
+	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		      throws ServletException, IOException {
 	
 		// Sets variables
 		// TODO Deal with exceptions
-		String tournamentID = req.getParameter("tid");
+		int tournamentID = Integer.parseInt(req.getParameter("tid"));
 		int rounds = Integer.parseInt(req.getParameter("rounds"));
 		int teams = Integer.parseInt(req.getParameter("teams"));
 		int frprStorageInt = 0; // this is because we cannot store a rule.
@@ -52,15 +59,21 @@ public class TournamentSetupPost extends HttpServlet {
 		}
 		
 		// Saves the entries to storage
-		Entity tournament = new Entity("Tournament", tournamentID);
-		tournament.setProperty("tournamentID", tournamentID);
-		tournament.setProperty("numberOfRounds", rounds);
-		tournament.setProperty("numberOfTeams", teams);
-		tournament.setProperty("firstRoundPairingRule", frprStorageInt);
 		DatastoreService datastore 
-							= DatastoreServiceFactory.getDatastoreService();
-		datastore.put(tournament);
-		
+		= DatastoreServiceFactory.getDatastoreService();
+		Key tournamentKey = 
+				KeyFactory.stringToKey(Integer.toString(tournamentID));
+		try {
+			Entity tournament = datastore.get(tournamentKey);
+			tournament.setProperty("rounds", rounds);
+			tournament.setProperty("numberOfTeams", teams);
+			tournament.setProperty("pairingRule", frprStorageInt);
+			datastore.put(tournament);
+		} catch (EntityNotFoundException e) {
+			// TODO Handle this exception
+			e.printStackTrace();
+			LOGGER.severe("Couldn't find entity with key: " + tournamentID);
+		}
 		
 		// Print the previous submissions
 		PrintWriter out = resp.getWriter();

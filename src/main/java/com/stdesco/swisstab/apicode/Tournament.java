@@ -1,5 +1,8 @@
 package com.stdesco.swisstab.apicode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -53,11 +56,24 @@ public class Tournament {
 		// System.out.println(tcode.toString());	
 		TOURNAMENT_ID = Integer.parseInt(tcode.toString());
 		
-		// Saves the tournamentID to storage.
-		Entity tournament = new Entity("Tournament", TOURNAMENT_ID);
+		// Initialises the tournament entity for Google Datastore
+		Entity tournament = 
+				new Entity("Tournament", TOURNAMENT_ID);
 		tournament.setProperty("tournamentID", TOURNAMENT_ID);
 		tournament.setProperty("providerID", providerID);
 		tournament.setProperty("tounamentName", tournamentName);
+		tournament.setProperty("rounds", 0);
+		tournament.setProperty("numberOfTeams", 0);
+		tournament.setProperty("pairingRule", 0);
+		List<String> l = new ArrayList<String>();
+		tournament.setProperty("teams", l);
+		tournament.setProperty("currentRound", 0);
+		List<String> j = new ArrayList<String>();
+		tournament.setProperty("allGames", j);
+		List<String> k = new ArrayList<String>();
+		tournament.setProperty("allPairings", k);
+		
+		// Saves the tournamentID to storage.
 		DatastoreService datastore = 
 				DatastoreServiceFactory.getDatastoreService();
 		datastore.put(tournament);

@@ -39,6 +39,10 @@ import com.stdesco.swisstab.apicode.Tournament;
 		value = "/InitialisationPost"
 )
 public class InitialisationPost extends HttpServlet {
+	
+	private final static Logger LOGGER = 
+			Logger.getLogger(InitialisationPost.class.getName());
+	
 	/**
 	 * Code generates the Provider ID, and then creates a new Tournament.
 	 * 
@@ -46,10 +50,6 @@ public class InitialisationPost extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	
-	private final static Logger LOGGER = 
-			Logger.getLogger(InitialisationPost.class.getName());
-	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws ServletException, IOException {
 
