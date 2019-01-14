@@ -14,20 +14,46 @@ public class Game {
 	private String META_DATA;
 	private String PICKTYPE;
 	private String SPECTATOR_TYPE;
-	private String GAMEREQ_URL;
+	
+	private String[] TEAMLISTA;
+	private String[] TEAMLISTB;
+	
 	private int GAME_CODE;
 	
-	/*Function that initialises the game with all of the required information*/
+	/* create the game with all of its required unique information
+	 * 
+	 * @args
+	 *     
+     * teamA = name of the team A
+     * teamB = name of the team B
+     * mapType = Type of map that will be played 
+     * metaData = Important metadata that will 
+     * private String SPECTATOR_TYPE;
+     * private String GAMEREQ_URL;
+     * 
+     * Returns 1 if all information correct and in the correct format
+	 */
 	
-	public void init_Game()  {
-		//Do nothing
+	public void create_Game(String teamA, String teamB, String mapType, 
+	    String pickType, String spectatorType)  {
+	  
+	  TEAMA = teamA;
+	  TEAMB = teamB;
+	  
+	  MAP_TYPE = mapType;   
+	  PICKTYPE = pickType;
+	  SPECTATOR_TYPE = spectatorType;
+	  
+	  System.out.println("Game Information Recieved: TEAMA = " + TEAMA + ""); 
+	  			  
 	}
 	
 	/* Public method to initialize the game through the API interface 
 	 * with RIOT games: Returns 1 if successful and 0 if unsuccessful
 	 * */ 
 	
-	public int create_Game(String xToken, String metaData, int tournamentID) throws Exception {
+	public int generate_GameCode(String xToken, String metaData, int tournamentID) throws Exception {
+	  
 		StringBuffer gcode;
 		
 		InitialisationPost http = new InitialisationPost();

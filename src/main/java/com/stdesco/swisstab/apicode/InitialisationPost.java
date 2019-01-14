@@ -99,8 +99,9 @@ public class InitialisationPost extends HttpServlet {
 		return;
 	}
 
-	/**
-	 * 
+	/** This is left in here from the original example code 
+	 *  that was used for the HTTP connection it may need to
+	 *  used when we need to use some sort of get request over API
 	 * @throws Exception
 	 */
 	// I need notes for this. WTF does this mean? @author ZThomas

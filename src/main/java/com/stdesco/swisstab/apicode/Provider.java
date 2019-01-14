@@ -41,24 +41,27 @@ public class Provider {
 	 */
 	public int init_Provider(String returnWeb, String xToken, String region) 
 			throws Exception {
+	 
+	    //initialize a stringbuffer for return and initalise the Initializationpost Obj	  
 		StringBuffer pcode;
 		InitialisationPost http = new InitialisationPost();
 		
-		//incomplete, needs ?api_key= at the end.
 		String providerRequestUrl = 
 		  "https://americas.api.riotgames.com/lol/tournament-stub/v4/providers";
 		
-		// Currently this is hardcoded and does not draw from the function need 
-		// to process concatonate later
-		String InitialisationPostBody = "{ \"region\": \"OCE\", \"url\": "
-				+ "\"https://high-school-tournament-tab.appspot.com/hello\"}";
+		// Create string for body of the POST request
+		String InitialisationPostBody = "{ \"region\": \"" + region + "\", \"url\": "
+				+ "\"" + returnWeb + "\"}";
+		
+		// Executes the post request across the API return value stored in pcode
 		pcode = 
 		   http.sendPostApi(xToken, InitialisationPostBody, providerRequestUrl);
 		
 		// System.out.println(pcode.toString());	
 		PROVIDER_ID = Integer.parseInt(pcode.toString());
 		
-		// Saves the providerID to storage
+		
+		/* Saves the providerID to storage
 		Entity provider = new Entity("Provider", PROVIDER_ID);
 		provider.setProperty("providerID", PROVIDER_ID);
 		provider.setProperty("region", "OCE"); // TODO remove hardcoding
@@ -67,7 +70,7 @@ public class Provider {
 		DatastoreService datastore = 
 				DatastoreServiceFactory.getDatastoreService();
 		datastore.put(provider);
-		
+		*/
 		return 1;
 	} 
 	

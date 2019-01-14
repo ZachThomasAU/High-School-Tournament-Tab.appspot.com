@@ -45,22 +45,21 @@ public class Tournament {
 		// to process concatonate later
 		String InitialisationPostBody = "{\"name\": \"" + tournamentName 
 				+ "\", \"providerId\": " + providerID + "}";
+		
+		//generate a response tcode using sendPostAPI
 		tcode = 
 			http.sendPostApi(xToken, InitialisationPostBody, 
 					tournamentRequestUrl);
-		
-		// System.out.println(tcode.toString());	
+	
+		// Update the object Torunament ID	
 		TOURNAMENT_ID = Integer.parseInt(tcode.toString());
 		
+		System.out.println(tcode.toString());
+		System.out.println(tcode.toString());
 		// Saves the tournamentID to storage.
-		Entity tournament = new Entity("Tournament", TOURNAMENT_ID);
-		tournament.setProperty("tournamentID", TOURNAMENT_ID);
-		tournament.setProperty("providerID", providerID);
-		tournament.setProperty("tounamentName", tournamentName);
-		DatastoreService datastore = 
-				DatastoreServiceFactory.getDatastoreService();
-		datastore.put(tournament);
 		
+		System.out.println("Updating data in the datastore");
+	
 		return 1;
 	}
 	
@@ -74,10 +73,8 @@ public class Tournament {
 	/*
 	 * Sets the provider Id Manually to the input Int
 	 */
-	public int get_TournamentId () {
-		
+	public int get_TournamentId () {		
 		return TOURNAMENT_ID;
 		
 	}
-	
 }
