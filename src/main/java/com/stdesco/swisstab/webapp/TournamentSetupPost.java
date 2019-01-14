@@ -61,6 +61,18 @@ public class TournamentSetupPost extends HttpServlet {
 		// Saves the entries to storage
 		DatastoreService datastore 
 		= DatastoreServiceFactory.getDatastoreService();
+		
+		/*
+		 * TODO So I think my issue here is that stringToKey is not for
+		 * converting type String into type Key, but rather convert back 
+		 * the String representation of a Key. 
+		 * 
+		 * I think. It's 11:57pm so I'll have to leave this here. 
+		 * 
+		 * TODO LIST:
+		 * * * * * Debug by outputting the results of known keyToString in 
+		 * * * * * test code to confirm suspicion.
+		 */
 		Key tournamentKey = 
 				KeyFactory.stringToKey(Integer.toString(tournamentID));
 		try {
