@@ -12,7 +12,7 @@
 <div class="container">
 	<h2>Input the setup data for a tournament prior to round 1</h2>
 	
-	<form method="POST" action="/initSwiss">
+	<form method="POST" action="/setup">
 	
 		<div>
 			<label for="tid">Tournament ID</label> <input type="text" 

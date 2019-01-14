@@ -1,5 +1,7 @@
 package com.stdesco.swisstab.apicode;
 
+import com.stdesco.swisstab.webapp.InitialisationPost;
+
 /**
  * Copyright (C) Standard Esports Company - All Rights Reserved
  * Unauthorised copying of this file, via any medium, is strictly

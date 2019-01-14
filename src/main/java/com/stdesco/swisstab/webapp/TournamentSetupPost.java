@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.stdesco.swisstab.appcode.Tournament.FirstRoundPairingRule;
 
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
@@ -29,13 +28,11 @@ import com.stdesco.swisstab.appcode.Tournament.FirstRoundPairingRule;
  */
 
 @WebServlet(
-		name = "InitSwiss", 
-		value = "/initSwiss"
+		name = "Tournament Setup", 
+		value = "/setup"
 )
-
-
 @SuppressWarnings("serial")
-public class InitSwiss extends HttpServlet {
+public class TournamentSetupPost extends HttpServlet {
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -43,29 +40,23 @@ public class InitSwiss extends HttpServlet {
 	
 		// Sets variables
 		// TODO Deal with exceptions
-		String name = req.getParameter("name");
+		String tournamentID = req.getParameter("tid");
 		int rounds = Integer.parseInt(req.getParameter("rounds"));
 		int teams = Integer.parseInt(req.getParameter("teams"));
-		FirstRoundPairingRule firstRoundPairingRule;
 		int frprStorageInt = 0; // this is because we cannot store a rule.
 								// 0 = null, 1 = Ordered, 2 = Random
 		if (req.getParameter("firstRoundPairingRule") == null) {
-			firstRoundPairingRule = 
-					FirstRoundPairingRule.FIRST_ROUND_GAME_ORDERED;
 			frprStorageInt = 1;
 		} else {
-			firstRoundPairingRule = 
-					FirstRoundPairingRule.FIRST_ROUND_GAME_RANDOM;
 			frprStorageInt = 2;
 		}
 		
 		// Saves the entries to storage
-		Entity tournament = new Entity("Tournament", name);
-		tournament.setProperty("tournamentName", name);
+		Entity tournament = new Entity("Tournament", tournamentID);
+		tournament.setProperty("tournamentID", tournamentID);
 		tournament.setProperty("numberOfRounds", rounds);
 		tournament.setProperty("numberOfTeams", teams);
 		tournament.setProperty("firstRoundPairingRule", frprStorageInt);
-	
 		DatastoreService datastore 
 							= DatastoreServiceFactory.getDatastoreService();
 		datastore.put(tournament);
@@ -74,13 +65,12 @@ public class InitSwiss extends HttpServlet {
 		// Print the previous submissions
 		PrintWriter out = resp.getWriter();
 		
-		out.println("<b>TOURNAMENT NAME: </b>" + name + "<br />");
+		out.println("<b>TOURNAMENT ID: </b>" + tournamentID + "<br />");
 		out.println("<b>NUMBER OF ROUNDS: </b>" + rounds + "<br />");
 		out.println("<b>NUMBER OF TEAMS: </b>" + teams + "<br />");
-		if (firstRoundPairingRule == 
-				FirstRoundPairingRule.FIRST_ROUND_GAME_ORDERED) {
+		if (frprStorageInt == 1) {
 			out.println("<b>PAIRING RULE:</b> Ordered <br />");
-		} else {
+		} if (frprStorageInt == 2) {
 			out.println("<b>PAIRING RULE:</b> Random <br />");
 		}
 	}

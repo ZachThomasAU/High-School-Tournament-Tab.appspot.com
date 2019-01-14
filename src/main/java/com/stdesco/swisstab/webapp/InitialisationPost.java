@@ -1,4 +1,4 @@
-package com.stdesco.swisstab.apicode;
+package com.stdesco.swisstab.webapp;
 
 /**
  * Copyright (C) Standard Esports Company - All Rights Reserved
@@ -29,6 +29,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.stdesco.swisstab.apicode.Provider;
+import com.stdesco.swisstab.apicode.Tournament;
 
 @SuppressWarnings("serial")
 @WebServlet(
