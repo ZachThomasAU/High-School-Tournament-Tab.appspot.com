@@ -24,27 +24,26 @@
     <h1">HESL Webapp Query Test!</h1>
     
     <form id="updateUsername">
+    
     	<label for = "username">what is your username</label>
     	<input type="text" id="username" name="username"/>
     	<input type="submit" />
     	
-    </form>   
+    </form>  
     
-    <p id="displayName" />
+    <a id= "providerButton" class="btn btn-primary" href="#" role="button">
+    	Get Provider</a>
     
-    <button type="button"
-			onclick= "demoScript()" >
-			Click me to run a script in the console</button>
-			
-	<test2 type="button" class="btn btn-outline-primary">Primary</test2>
-	
-	<p id="demo"></p>
+    <p id="displayName"> Text response will come up here <p/> 
+    
+    <p id="displayProvider"> Provider will come up here <p/> 
+    
+
 
 	<script>
 	
 	function demoScript() {
-		 
-		
+		 	
 		document.getElementById("demo").innerHTML = "Hello JavaScript!";
 		
 		console.log("Hello world!");
@@ -52,10 +51,11 @@
 	}
 	
 	
+	// AJAX Pass POST and return from servlet
 	
 	$('#updateUsername').submit(function(){			
 			$.ajax({
-		url: 'update',
+		url: 'provider',
 		
 			type: 'POST',
 			dataType: 'json',
@@ -71,6 +71,26 @@
 			}	
 		});
 		return false;
+	});
+	
+	$('#providerButton').submit(function(){			
+		$.ajax({
+	url: 'provider',
+	
+		type: 'POST',
+		dataType: 'json',
+		data: $('#updateUsername').serialize(),
+		success: function(data){
+			
+			if(data.isValid){
+				$('#displayName').html('your name is: ' + data.username);
+				$('#displayName').slideDown(500);
+			}else{
+					alert('Please enter a valid username!!');	
+			}
+		}	
+	});
+	return false;
 	});	
 	
 	
