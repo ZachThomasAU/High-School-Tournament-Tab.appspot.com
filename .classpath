@@ -23,5 +23,27 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="C:/Users/zthomas/.m2/repository/com/google/appengine/appengine-api-1.0-sdk/1.9.71/appengine-api-1.0-sdk-1.9.71.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="https://cloud.google.com/appengine/docs/java/javadoc/"/>
+			<attribute name="com.google.cloud.tools.eclipse.appengine.libraries.repository" value="central"/>
+			<attribute name="com.google.cloud.tools.eclipse.appengine.libraries.groupid" value="com.google.appengine"/>
+			<attribute name="com.google.cloud.tools.eclipse.appengine.libraries.artifactId" value="appengine-api-1.0-sdk"/>
+			<attribute name="com.google.cloud.tools.eclipse.appengine.libraries.type" value="jar"/>
+			<attribute name="com.google.cloud.tools.eclipse.appengine.libraries.version" value="1.9.71"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="nonaccessible" pattern="com/google/appengine/repackaged/**"/>
+			<accessrule kind="nonaccessible" pattern="com/google/appengine/labs/repackaged/**"/>
+			<accessrule kind="accessible" pattern="com/google/apphosting/api/**"/>
+			<accessrule kind="nonaccessible" pattern="com/google/apphosting/**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/zthomas/Downloads/gson-2.2.2.jar/gson-2.2.2.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

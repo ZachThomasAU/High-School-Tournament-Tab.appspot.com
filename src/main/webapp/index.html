@@ -1,26 +1,92 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<head>
-<meta http-equiv="content-type"
-	content="application/xhtml+xml; charset=UTF-8" />
-<title>Hello App Engine</title>
-</head>
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<body>
-	<h1>STANDARD ESPORTS COMPANY WEBAPPS</h1>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-	<table>
-		<tr>
-			<td colspan="2" style="font-weight: bold;">Public Features</td>
-		</tr>
-		<tr>
-			<td><a href="ProviderLandingPage.jsp">Start a New Tournament</a>
-			</td>
-		</tr>
-		<tr>
-			<td><a href="TournamentLandingPage.jsp">Start a New Tournament</a>
-			</td>
-		</tr>
-	</table>
-</body>
+	<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS, Then AJAX -->   
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    <!-- Title Information and Web-page Settings -->
+    <title>HESL Webapp</title>
+    
+  </head>
+  <body>
+  
+    <h1">HESL Webapp Query Test!</h1>
+    
+    <form id="updateUsername">
+    	<label for = "username">what is your username</label>
+    	<input type="text" id="username" name="username"/>
+    	<input type="submit" />
+    	
+    </form>   
+    
+    <p id="displayName" />
+    
+    <button type="button"
+			onclick= "demoScript()" >
+			Click me to run a script in the console</button>
+			
+	<test2 type="button" class="btn btn-outline-primary">Primary</test2>
+	
+	<p id="demo"></p>
+
+	<script>
+	
+	function demoScript() {
+		 
+		
+		document.getElementById("demo").innerHTML = "Hello JavaScript!";
+		
+		console.log("Hello world!");
+		 
+	}
+	
+	
+	
+	$('#updateUsername').submit(function(){			
+			$.ajax({
+		url: 'update',
+		
+			type: 'POST',
+			dataType: 'json',
+			data: $('#updateUsername').serialize(),
+			success: function(data){
+				
+				if(data.isValid){
+					$('#displayName').html('your name is: ' + data.username);
+					$('#displayName').slideDown(500);
+				}else{
+						alert('Please enter a valid username!!');	
+				}
+			}	
+		});
+		return false;
+	});	
+	
+	
+	
+	$("button").click(function(){
+		  $.post("ProviderLandingPage.jsp",
+		  {
+		    name: "Donald Duck",
+		    city: "Duckburg"
+		  },
+		  function(data, status){
+		    alert("Data: " + data + "\nStatus: " + status);
+		  });
+	});
+		
+	</script>
+
+  </body>
 </html>

@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.logging.Logger;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -47,7 +46,7 @@ public class InitialisationPost extends HttpServlet {
 	private final static Logger LOGGER = 
 			Logger.getLogger(InitialisationPost.class.getName());
 	
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
+	/* public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws ServletException, IOException {
 
 		// InitialisationPost http = new InitialisationPost();
@@ -63,7 +62,7 @@ public class InitialisationPost extends HttpServlet {
 		
 		// System.out.println("\nTesting 2 - Send Http POST request");
 		
-		/* Creating and initialising a new provider code for the application*/ 
+		// Creating and initialising a new provider code for the application 
 		Provider prov = new Provider();		
 		try {
 			prov.init_Provider(retweb, xriottoken, "OCE");
@@ -97,8 +96,24 @@ public class InitialisationPost extends HttpServlet {
 		out.println("<a href= \"index.html\">Return Home</a>");
 		
 		return;
-	}
+	} */
+	
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
+        throws ServletException, IOException {
 
+    // InitialisationPost http = new InitialisationPost();
+    // System.out.println("Testing 1 - Send Http GET request");
+    // http.sendGet();
+    
+    System.out.println("We in boyz");
+    
+    
+    
+	}
+	
+	
+	
+    
 	/** This is left in here from the original example code 
 	 *  that was used for the HTTP connection it may need to
 	 *  used when we need to use some sort of get request over API
@@ -197,11 +212,14 @@ public class InitialisationPost extends HttpServlet {
 		con.setDoOutput(true);
 		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 		wr.writeBytes(urlParameters);
-		System.out.println(wr.toString());
+		
+		//System.out.println(wr.toString());
+		
 		wr.flush();
 		wr.close();
 
 		int responseCode = con.getResponseCode();
+		
 		System.out.println("\nSending 'POST' request to URL : " + url);
 		System.out.println("Post parameters : " + urlParameters);
 		System.out.println("Response Code : " + responseCode);

@@ -60,8 +60,9 @@ public class Provider {
 		// System.out.println(pcode.toString());	
 		PROVIDER_ID = Integer.parseInt(pcode.toString());
 		
-		
-		/* Saves the providerID to storage
+		System.out.println("Updating Provider data in the datastore");
+		/* Comment this out if your running on eclipse
+		 * 
 		Entity provider = new Entity("Provider", PROVIDER_ID);
 		provider.setProperty("providerID", PROVIDER_ID);
 		provider.setProperty("region", "OCE"); // TODO remove hardcoding
@@ -71,6 +72,7 @@ public class Provider {
 				DatastoreServiceFactory.getDatastoreService();
 		datastore.put(provider);
 		*/
+		
 		return 1;
 	} 
 	

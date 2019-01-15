@@ -55,10 +55,10 @@ public class Tournament {
 		TOURNAMENT_ID = Integer.parseInt(tcode.toString());
 		
 		System.out.println(tcode.toString());
-		System.out.println(tcode.toString());
+
 		// Saves the tournamentID to storage.
 		
-		System.out.println("Updating data in the datastore");
+		System.out.println("Updating Tournament data in the datastore");
 	
 		return 1;
 	}
