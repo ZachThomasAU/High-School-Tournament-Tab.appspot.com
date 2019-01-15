@@ -77,7 +77,7 @@ public class TournamentSetupPost extends HttpServlet {
 			tournament.setProperty("numberOfTeams", teams);
 			tournament.setProperty("pairingRule", frprStorageInt);
 			datastore.put(tournament);
-		} catch (EntityNotFoundException e) {
+			} catch (EntityNotFoundException e) {
 			// TODO Handle this exception
 			e.printStackTrace();
 			LOGGER.severe("Couldn't find entity with key: " + tournamentID);
@@ -94,5 +94,6 @@ public class TournamentSetupPost extends HttpServlet {
 		} if (frprStorageInt == 2) {
 			out.println("<b>PAIRING RULE:</b> Random <br />");
 		}
+		out.println("<a href= \"index.html\">Return Home</a>");
 	}
 }
