@@ -58,23 +58,19 @@ public class TournamentSetupPost extends HttpServlet {
 			frprStorageInt = 2;
 		}
 		
-		// Saves the entries to storage
+		// Pulls existing entities
 		DatastoreService datastore = 
 				DatastoreServiceFactory.getDatastoreService();
-		/*
-		 * TODO So I think my issue here is that stringToKey is not for
-		 * converting type String into type Key, but rather convert back 
-		 * the String representation of a Key. 
-		 * 
-		 * I think. It's 11:57pm so I'll have to leave this here. 
-		 * 
-		 * TODO LIST:
-		 * * * * * Debug by outputting the results of known keyToString in 
-		 * * * * * test code to confirm suspicion.
+	
+		/* TODO The ProviderID is hardcoded in. This is not the worst, but
+		 * not great either. If we could instead find a way to get this from 
+		 * a method or something, I'd feel a LOT happier.
 		 */
-		Key tournamentKey = 
-				KeyFactory.createKey("tournament", tournamentID);
-		System.out.println(tournamentKey);
+		Key tournamentKey = new KeyFactory.Builder("Provider", 789)
+				.addChild("Tournament", tournamentID)
+				.getKey();
+		
+		// Saves the entries to storage
 		try {
 			Entity tournament = datastore.get(tournamentKey);
 			tournament.setProperty("rounds", rounds);
