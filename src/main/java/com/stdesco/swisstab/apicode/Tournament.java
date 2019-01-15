@@ -6,6 +6,8 @@ import java.util.List;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.stdesco.swisstab.webapp.InitialisationPost;
 
 /**
@@ -56,9 +58,16 @@ public class Tournament {
 		// System.out.println(tcode.toString());	
 		TOURNAMENT_ID = Integer.parseInt(tcode.toString());
 		
+		// Pulls the provider entity for parenting purposes
+		DatastoreService datastore = 
+				DatastoreServiceFactory.getDatastoreService();
+		Key providerKey = KeyFactory.createKey("Provider", providerID);
+		Entity providerEntity = datastore.get(providerKey);
+		
 		// Initialises the tournament entity for Google Datastore
 		Entity tournament = 
-				new Entity("Tournament", TOURNAMENT_ID);
+				new Entity("Tournament", TOURNAMENT_ID, 
+						providerEntity.getKey());
 		tournament.setProperty("tournamentID", TOURNAMENT_ID);
 		tournament.setProperty("providerID", providerID);
 		tournament.setProperty("tounamentName", tournamentName);
@@ -73,9 +82,7 @@ public class Tournament {
 		List<String> k = new ArrayList<String>();
 		tournament.setProperty("allPairings", k);
 		
-		// Saves the tournamentID to storage.
-		DatastoreService datastore = 
-				DatastoreServiceFactory.getDatastoreService();
+		// Saves the tournament entity to storage.
 		datastore.put(tournament);
 		
 		return 1;

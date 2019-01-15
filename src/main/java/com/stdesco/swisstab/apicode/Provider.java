@@ -1,5 +1,7 @@
 package com.stdesco.swisstab.apicode;
 
+import java.util.logging.Logger;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
@@ -22,6 +24,9 @@ import com.google.appengine.api.datastore.Entity;
 import com.stdesco.swisstab.webapp.InitialisationPost;
 
 public class Provider {
+	private final static Logger LOGGER = 
+			Logger.getLogger(InitialisationPost.class.getName());
+	
 	private int PROVIDER_ID;
 	
 	/**
@@ -68,6 +73,9 @@ public class Provider {
 		DatastoreService datastore = 
 				DatastoreServiceFactory.getDatastoreService();
 		datastore.put(provider);
+		
+		LOGGER.fine("Saved new Provider - " + PROVIDER_ID);
+		System.out.println(provider);
 		
 		return 1;
 	} 

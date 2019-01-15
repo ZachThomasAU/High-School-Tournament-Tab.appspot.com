@@ -59,9 +59,8 @@ public class TournamentSetupPost extends HttpServlet {
 		}
 		
 		// Saves the entries to storage
-		DatastoreService datastore 
-		= DatastoreServiceFactory.getDatastoreService();
-		
+		DatastoreService datastore = 
+				DatastoreServiceFactory.getDatastoreService();
 		/*
 		 * TODO So I think my issue here is that stringToKey is not for
 		 * converting type String into type Key, but rather convert back 
@@ -74,7 +73,8 @@ public class TournamentSetupPost extends HttpServlet {
 		 * * * * * test code to confirm suspicion.
 		 */
 		Key tournamentKey = 
-				KeyFactory.stringToKey(Integer.toString(tournamentID));
+				KeyFactory.createKey("tournament", tournamentID);
+		System.out.println(tournamentKey);
 		try {
 			Entity tournament = datastore.get(tournamentKey);
 			tournament.setProperty("rounds", rounds);

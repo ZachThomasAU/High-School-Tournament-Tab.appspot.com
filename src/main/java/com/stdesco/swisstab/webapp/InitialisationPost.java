@@ -60,7 +60,7 @@ public class InitialisationPost extends HttpServlet {
 		System.out.println("We in boyz");
 		
 		// creates variables for API URLs
-		String xriottoken = "RGAPI-372193cf-17e2-4d61-81ba-d75f5053ebc0";
+		String xriottoken = "RGAPI-7f88a50e-99cc-4431-9e0a-cfce0ae7fa0a";
 		String retweb = 
 				"https://high-school-tournament-tab.appspot.com/Hello.jsp";
 		
