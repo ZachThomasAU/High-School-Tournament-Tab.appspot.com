@@ -28,7 +28,7 @@ import com.sun.javafx.fxml.PropertyNotFoundException;
  * This file cannot be copied and/or distributed without the express
  * permission of the author.
  * 
- * Tournament Class
+ * Add Team Class
  * 
  * @author zthomas
  * January 2019
@@ -69,7 +69,6 @@ public class AddTeamPost extends HttpServlet {
 			// tournamentID. If it's the Provider ID then we got issues.
 		}
 		
-		//TODO Test this code after successful test
 		if (tournament.getProperty("teams") != null) {
 			// there is at least one team already added to the tournament
 			teams = (List<String>) tournament.getProperty("teams");
@@ -77,7 +76,6 @@ public class AddTeamPost extends HttpServlet {
 			
 		// Store new list
 		teams.add(teamName);
-		System.out.println("Added Team Name: " + teams);
 		tournament.setProperty("teams", teams);
 		datastore.put(tournament);
 		
