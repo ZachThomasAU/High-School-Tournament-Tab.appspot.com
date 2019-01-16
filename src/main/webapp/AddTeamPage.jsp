@@ -12,7 +12,7 @@
 <div class="container">
 	<h2>Add a New Team</h2>
 
-	<form method="POST" action="/InitTeams">
+	<form method="POST" action="/addTeam">
 	
 		<div>
 			<label for="tid">Tournament ID</label> <input type="text"
@@ -27,6 +27,7 @@
 		</div>	
 		
 		<button type="submit">K GO!!!</button>
+		<button type="button">Exit</button> <!-- TODO: Back button -->
 	</form>
 </div>
 </body>

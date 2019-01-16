@@ -16,7 +16,6 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.apphosting.api.DatastorePb.GetResponse.Entity;
 
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
@@ -33,16 +32,12 @@ import com.google.apphosting.api.DatastorePb.GetResponse.Entity;
  *
  */
 
-@WebServlet(
-		name = "Initial Team List",
-		value = "/InitTeams"
-)
-public class TeamListSetupPost {
-	@SuppressWarnings("unused")
+@WebServlet("/addTeam")
+public class AddTeamPost {
 	private final static Logger LOGGER = 
 			Logger.getLogger(InitialisationPost.class.getName());
 	List<String> teams = new ArrayList<String>();
-
+	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws ServletException, IOException, EntityNotFoundException {
 		
@@ -62,7 +57,11 @@ public class TeamListSetupPost {
 		System.out.println(tournament.getProperty("teams"));
 		System.out.println(tournament.getProperty("teams").getClass().getName());
 		try {
-			teams = (List<String>) tournament.getProperty("teams");
+			@SuppressWarnings("unchecked") // This is fine because the datastore
+										   // is hard coded to set teams to 
+										   // List<String>. If not List<String>
+			                               // then it doesn't exist -> Exception
+			List<String> teams = (List<String>) tournament.getProperty("teams");
 			// Store new list
 			teams.add(teamName);
 			tournament.setProperty("teams", teams);
@@ -75,7 +74,8 @@ public class TeamListSetupPost {
 			out.println(teams);
 			out.println("<a href= \"index.html\">Return Home</a>");
 		} catch(Exception e) {
-			LOGGER.severe("Ehrm...teams property mighta goofed?");
+			LOGGER.severe("Ehrm...propertyName \"teams\" might not exist?");
+			// TODO Handle this exception
 		}
 	}
 
