@@ -9,6 +9,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.stdesco.swisstab.apicode.Provider;
@@ -32,7 +38,7 @@ public class providerServet extends HttpServlet {
   
       throws ServletException, IOException {
     
-        System.out.print("got here");
+        System.out.print("We in boyz");
         
         
        // Create a map to handle the data 
@@ -42,45 +48,60 @@ public class providerServet extends HttpServlet {
         
         String username = req.getParameter("username");
         
-        if(username != null && username.trim().length() != 0 ) {
+     
           
-          isValid = true;
+        isValid = true;
           
-          String xriottoken = "RGAPI-7f88a50e-99cc-4431-9e0a-cfce0ae7fa0a";          
+         
+        // Generate the datastore, key and entity
+        DatastoreService datastore = 
+        DatastoreServiceFactory.getDatastoreService();
+        Key key = KeyFactory.createKey("Globals", "highschool");
+        try {
+          Entity entity = datastore.get(key);
+           
+          // Pull the properties from the new entity
+          String xriottoken = (String) entity.getProperty("apiKey");
+          System.out.println("API Key:" + xriottoken);
+          String httpreturn = (String) entity.getProperty("appUrl");
+          System.out.println("appURL:" + httpreturn);
+          String region = (String) entity.getProperty("region");
+          System.out.println("region:" + region);
+          
+          // Create an object of class provider
           Provider prov = new Provider();
-          
-          try {
             
-                 prov.init_Provider("https://www.google.com", xriottoken, 
-                                    "OCE");
-                 
-                 //Adds the boolean result of POST validity to the map
-
-                 
-                 //Adds the string result for username 
-                 map.put("username", Integer.toString(prov.get_ProviderId()));                   
-                 
-          } catch(IOException e) {
-            e.printStackTrace();
-            LOGGER.severe("Invalid Return Post URL, API Key or Region in "
-                + "servletBuilder.java");
-            // TODO Handle Exception by messaging the USER to contact an Admin.
-            
-          } catch(Exception e)   {            
-            e.printStackTrace();          
-            // TODO When does this Exception throw?
-            LOGGER.warning("Haha this will never happen XD");            
-          }
+            try {
+              
+              prov.init_Provider(httpreturn, xriottoken, 
+                                  region);
+                   
+              //Adds the boolean result of POST validity to the map
+  
+                   
+              //Adds the string result for username 
+              map.put("username", Integer.toString(prov.get_ProviderId()));                   
+                   
+            } catch(IOException e) {
+                e.printStackTrace();
+                LOGGER.severe("Invalid Return Post URL, API Key or Region in "
+                      + "servletBuilder.java");
+                // TODO Handle Exception by messaging the USER to contact an Admin.
+              
+            } catch(Exception e)   {            
+                e.printStackTrace();          
+                // TODO When does this Exception throw?
+                LOGGER.warning("Haha this will never happen XD");            
+            }
           
-        } else {
-          
-            isValid = false;   
-            
+          map.put("isValid", isValid);
+          write(resp, map);
+         
+        
+        } catch(EntityNotFoundException e1) {
+          // TODO Auto-generated catch blo
+          e1.printStackTrace();
         }
-        
-        map.put("isValid", isValid);
-        write(resp, map);
-        
   }
 
   private void write(HttpServletResponse resp ,Map <String, Object> map) throws 
