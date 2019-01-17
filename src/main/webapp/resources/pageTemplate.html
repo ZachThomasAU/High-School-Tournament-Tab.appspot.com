@@ -17,6 +17,8 @@
     
     <script>
         $(document).ready(function() {
+            $('#terms').load('test.html', function(){
+            });
             $('#navigationbar').load('/resources/navbar.html', function(){
             });
         });
@@ -29,32 +31,7 @@
 
 	<div id= "navigationbar"></div>
 	
-<div class="container" height=800 >
-  <div class="row align-items-start">
-     <div class="col">
-      Provider ID:
-      <div id="providerVal"></div>
-    </div>		
-    <div class="col">
-      Tournament ID:
-      <div id="tournamentVal"></div>
-    </div>  
-    <div class="col">
-      <div id="tournamentVal"></div>
-    </div>
-  </div>
-  <div class="row align-items-centre">
-    <div class="col">
-      <button type="getProviderID" class="btn btn-outline-primary">Get Provider</button>
-    </div>
-    <div class="col">
-      <button type="getTournamentID" class="btn btn-outline-primary">Get Tournament</button>
-    </div>
-    <div class="col">
-      <button type="getMatchID" class="btn btn-outline-primary">Get Match</button>
-    </div>
-  </div>
-</div>
+	<div id="terms"></div>
 
 </body>
 </html>
