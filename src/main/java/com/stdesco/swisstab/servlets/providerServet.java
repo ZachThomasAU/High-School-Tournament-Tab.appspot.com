@@ -45,7 +45,7 @@ public class providerServet extends HttpServlet {
   
       throws ServletException, IOException {
  
-        System.out.print("We in boyz");
+        System.out.print("We in boyz\n");
         
        // Create a map to handle the data 
         Map <String, Object> map = new HashMap<String, Object>();
@@ -66,32 +66,34 @@ public class providerServet extends HttpServlet {
         
         // Create an object of class provider
         Provider prov = new Provider();
-           /* 
-            try {
-              
-              prov.init_Provider(httpreturn, xriottoken, 
-                                  region);
-                   
-              //Adds the boolean result of POST validity to the map
-  
-                   
-              //Adds the string result for username 
-              map.put("username", Integer.toString(prov.get_ProviderId()));                   
-                   
-            } catch(IOException e) {
-                e.printStackTrace();
-                LOGGER.severe("Invalid Return Post URL, API Key or Region in "
-                      + "servletBuilder.java");
-                // TODO Handle Exception by messaging the USER to contact an Admin.
-              
-            } catch(Exception e)   {            
-                e.printStackTrace();          
-                // TODO When does this Exception throw?
-                LOGGER.warning("Haha this will never happen XD");            
-            } */
+            
+        try {
           
-          map.put("isValid", isValid);
-          write(resp, map);
+          prov.init_Provider(httpreturn, xriottoken, 
+                              region);
+               
+          //Adds the boolean result of POST validity to the map
+               
+          //Adds the string result for username 
+          map.put("username", Integer.toString(prov.get_ProviderId()));                  
+          
+          entity.setProperty("providerCode", prov.get_ProviderId());
+          datastore.put(entity);
+               
+        } catch(IOException e) {
+            e.printStackTrace();
+            LOGGER.severe("Invalid Return Post URL, API Key or Region in "
+                  + "servletBuilder.java");
+            // TODO Handle Exception by messaging the USER to contact an Admin.
+          
+        } catch(Exception e)   {            
+            e.printStackTrace();          
+            // TODO When does this Exception throw?
+            LOGGER.warning("Haha this will never happen XD");            
+        } 
+        
+        map.put("isValid", isValid);
+        write(resp, map);
   }
 
   private void write(HttpServletResponse resp ,Map <String, Object> map) throws 
@@ -129,7 +131,7 @@ public class providerServet extends HttpServlet {
     xriottoken = (String) entity.getProperty("apiKey");
     //String xriottoken = "RGAPI-3eac4c18-6036-48da-8362-ff90d580e34d";
     System.out.println("API Key:" + xriottoken);
-    httpreturn = (String) entity.getProperty("appUrl");
+    httpreturn = (String) entity.getProperty("appURL");
     //String httpreturn = "http://www.google.com";
     System.out.println("appURL:" + httpreturn);
     region = (String) entity.getProperty("region");

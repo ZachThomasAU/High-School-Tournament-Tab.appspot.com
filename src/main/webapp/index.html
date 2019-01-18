@@ -31,12 +31,17 @@
     	
     </form>  
     
+    <a id= "initDatastore" class="btn btn-primary" href="#" role="button">
+    	init dataStore</a>
+    
     <a id= "providerButton" class="btn btn-primary" href="#" role="button">
     	Get Provider</a>
     
     <p id="displayName"> Text response will come up here <p/> 
     
     <p id="displayProvider"> Provider will come up here <p/> 
+    
+    <p id="displayInit"> Datastore Init will come up here<p/> 
     
 
 
@@ -75,22 +80,43 @@
 	
 	$('#providerButton').click(function(){			
 		$.ajax({
-	url: 'provider',
-	
-		type: 'POST',
-		dataType: 'json',
-		data: 'FirstName=Mickey&LastName=Mouse',
-		success: function(data){
-			
-			if(data.isValid){
-				$('#displayProvider').html('your name is: ' + data.username);
-				$('#displayProvider').slideDown(500);
+		url: 'provider',
+		
+			type: 'POST',
+			dataType: 'json',
+			data: 'FirstName=Mickey&LastName=Mouse',
+			success: function(data){
 				
-			}else{
-					alert('Please enter a valid username!!');	
-			}
-		}	
-	});		
+				if(data.isValid){
+					$('#displayProvider').html('your name is: ' + data.username);
+					$('#displayProvider').slideDown(500);
+					
+				}else{
+						alert('Please enter a valid username!!');	
+				}
+			}	
+		});		
+	return false;
+	});	
+	
+	$('#initDatastore').click(function(){			
+		$.ajax({
+		url: 'initDatastore',	
+			type: 'POST',
+			dataType: 'json',
+			data: 'FirstName=Mickey&LastName=Mouse',
+			success: function(data){				
+				if(data.isValid){				
+					
+					$('#displayInit').html(data.response);
+					$('#displayInit').slideDown(500);
+					
+				}else{
+					
+						alert('Please enter a valid username!!');	
+				}
+			}	
+		});		
 	return false;
 	});	
 	
