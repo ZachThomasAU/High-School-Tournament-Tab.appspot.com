@@ -1,26 +1,19 @@
 package com.stdesco.swisstab.apicode;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import javax.net.ssl.HttpsURLConnection;
 
 public class Game {
     private int GAMECREATED;
 	private String TEAMA;
 	private String TEAMB;
 	private String MAPTYPE;
-	private String META_DATA;
+	//private String META_DATA;
 	private String PICKTYPE;
 	private String TEAMSIZE;
 	private String SPECTYPE;
 	private String GAMEREQ_URL;
-	private String[] TEAMLISTA;
-	private String[] TEAMLISTB;
-	
-	private int GAME_CODE;
+	//private String[] TEAMLISTA;
+	//private String[] TEAMLISTB;	
+	//private int GAME_CODE;
 	
 	/*TODO: Create get and update functions for all of these private variables */
 	

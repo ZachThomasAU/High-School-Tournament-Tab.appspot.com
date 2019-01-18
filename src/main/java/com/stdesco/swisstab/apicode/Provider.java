@@ -1,7 +1,7 @@
 package com.stdesco.swisstab.apicode;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
+//import com.google.appengine.api.datastore.DatastoreService;
+//import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 /**
  * Copyright (C) Standard Esports Company - All Rights Reserved
@@ -18,7 +18,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
  * January 2019
  */
 
-import com.google.appengine.api.datastore.Entity;
+//import com.google.appengine.api.datastore.Entity;
 
 public class Provider {
 	private int PROVIDER_ID;

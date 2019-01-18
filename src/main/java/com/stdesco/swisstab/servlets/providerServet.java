@@ -16,7 +16,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
-import com.stdesco.swisstab.apicode.InitialisationPost;
+//import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.stdesco.swisstab.apicode.Provider;
 
 
@@ -25,7 +25,6 @@ import com.stdesco.swisstab.apicode.Provider;
  * 
  */
 
-@SuppressWarnings("serial")
 @WebServlet("/provider")
 
 public class providerServet extends HttpServlet {
@@ -47,10 +46,10 @@ public class providerServet extends HttpServlet {
  
         System.out.print("We in boyz\n");
         
-       // Create a map to handle the data 
+        // Create a map to handle the data 
         Map <String, Object> map = new HashMap<String, Object>();
         boolean isValid = false;
-        String username = req.getParameter("username");     
+        // String username = req.getParameter("username");     
         isValid = true;
         
         // Pull the global entity from Google Cloud Datastore

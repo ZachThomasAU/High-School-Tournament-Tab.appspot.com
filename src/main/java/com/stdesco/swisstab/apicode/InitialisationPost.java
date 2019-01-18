@@ -19,9 +19,8 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.URL;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,8 +42,8 @@ public class InitialisationPost extends HttpServlet {
 	 * @throws IOException
 	 */
 	
-	private final static Logger LOGGER = 
-			Logger.getLogger(InitialisationPost.class.getName());
+//	private final static Logger LOGGER = 
+	//		Logger.getLogger(InitialisationPost.class.getName());
 	
 	/* public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws ServletException, IOException {

@@ -3,7 +3,7 @@ package com.stdesco.swisstab.servlets;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
+//import com.google.appengine.api.datastore.Key;
+//import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
-import com.stdesco.swisstab.apicode.InitialisationPost;
-import com.stdesco.swisstab.apicode.Provider;
+//import com.stdesco.swisstab.apicode.InitialisationPost;
+//import com.stdesco.swisstab.apicode.Provider;
 
 
 /**
@@ -24,13 +24,12 @@ import com.stdesco.swisstab.apicode.Provider;
  * 
  */
 
-@SuppressWarnings("serial")
 @WebServlet("/initDatastore")
 
 public class initDatastore extends HttpServlet {
   private static final long serialVersionUID = 1l;
-  private static Logger LOGGER = 
-      Logger.getLogger(initDatastore.class.getName());
+ // private static Logger LOGGER = 
+ //     Logger.getLogger(initDatastore.class.getName());
   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
  

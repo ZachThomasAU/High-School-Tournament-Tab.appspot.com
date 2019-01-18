@@ -42,8 +42,58 @@
     <p id="displayProvider"> Provider will come up here <p/> 
     
     <p id="displayInit"> Datastore Init will come up here<p/> 
-    
+        
+	<!-- Button trigger modal -->
+	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+	  Add Team
+	</button>
+	
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLongTitle">Add Team</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+			
+		
+			  <div class="input-group mb-1">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text" id="basic-addon1">Team Name</span>
+				  </div>
+				  <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+			  </div>
+			  
+			  <div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text" id="basic-addon1">Address</span>
+				  </div>
+				  <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+			  </div>	
+			  
+			  <div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text" id="basic-addon1">Email</span>
+				  </div>
+				  <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+			  </div>	
 
+			  </div>
+			  
+			<div id="submitResponse"></div>
+
+	      </div>
+	      <div class="modal-footer">
+	        <button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button id="submitButton" type="button" class="btn btn-primary" >Submit</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
 	<script>
 	
@@ -120,19 +170,7 @@
 	return false;
 	});	
 	
-	
-	
-	$("button").click(function(){
-		  $.post("ProviderLandingPage.jsp",
-		  {
-		    name: "Donald Duck",
-		    city: "Duckburg"
-		  },
-		  function(data, status){
-		    alert("Data: " + data + "\nStatus: " + status);
-		  });
-	});
-		
+
 	</script>
 
   </body>

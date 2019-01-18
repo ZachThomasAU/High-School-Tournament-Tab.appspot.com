@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
-import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.stdesco.swisstab.apicode.Provider;
 
 
@@ -19,7 +18,6 @@ import com.stdesco.swisstab.apicode.Provider;
  * 
  */
 
-@SuppressWarnings("serial")
 @WebServlet("/example")
 
 public class servletBuilder extends HttpServlet {
