@@ -40,7 +40,7 @@
 			<accessrule kind="nonaccessible" pattern="com/google/apphosting/**"/>
 		</accessrules>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/zthomas/Downloads/gson-2.2.2.jar/gson-2.2.2.jar">
+	<classpathentry exported="true" kind="lib" path="C:/Users/zthomas/Downloads/gson-2.2.2.jar/gson-2.2.2.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>

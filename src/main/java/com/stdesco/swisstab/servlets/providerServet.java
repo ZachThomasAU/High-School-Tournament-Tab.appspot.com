@@ -32,45 +32,41 @@ public class providerServet extends HttpServlet {
   private static final long serialVersionUID = 1l;
   private static Logger LOGGER = 
       Logger.getLogger(providerServet.class.getName());
+  DatastoreService datastore = 
+      DatastoreServiceFactory.getDatastoreService();
+  
+  Entity entity;
+  String xriottoken;
+  String httpreturn;
+  String region;
 
  
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
   
       throws ServletException, IOException {
-    
+ 
         System.out.print("We in boyz");
-        
         
        // Create a map to handle the data 
         Map <String, Object> map = new HashMap<String, Object>();
-        
         boolean isValid = false;
-        
-        String username = req.getParameter("username");
-        
-     
-          
+        String username = req.getParameter("username");     
         isValid = true;
-          
-         
-        // Generate the datastore, key and entity
-        DatastoreService datastore = 
-        DatastoreServiceFactory.getDatastoreService();
-        Key key = KeyFactory.createKey("Globals", "highschool");
+        
+        // Pull the global entity from Google Cloud Datastore
         try {
-          Entity entity = datastore.get(key);
-           
-          // Pull the properties from the new entity
-          String xriottoken = (String) entity.getProperty("apiKey");
-          System.out.println("API Key:" + xriottoken);
-          String httpreturn = (String) entity.getProperty("appUrl");
-          System.out.println("appURL:" + httpreturn);
-          String region = (String) entity.getProperty("region");
-          System.out.println("region:" + region);
-          
-          // Create an object of class provider
-          Provider prov = new Provider();
-            
+          entity = getEntity();
+        } catch(EntityNotFoundException e) {
+          // TODO Handle this
+          e.printStackTrace();
+        }
+        
+        // Pull the global properties and set them as variables
+        setVars(entity);
+        
+        // Create an object of class provider
+        Provider prov = new Provider();
+           /* 
             try {
               
               prov.init_Provider(httpreturn, xriottoken, 
@@ -92,16 +88,10 @@ public class providerServet extends HttpServlet {
                 e.printStackTrace();          
                 // TODO When does this Exception throw?
                 LOGGER.warning("Haha this will never happen XD");            
-            }
+            } */
           
           map.put("isValid", isValid);
           write(resp, map);
-         
-        
-        } catch(EntityNotFoundException e1) {
-          // TODO Auto-generated catch blo
-          e1.printStackTrace();
-        }
   }
 
   private void write(HttpServletResponse resp ,Map <String, Object> map) throws 
@@ -117,6 +107,34 @@ public class providerServet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) 
       throws ServletException, IOException {
     
+  }
+  
+  /**
+   * 
+   * @return
+   * @throws EntityNotFoundException 
+   */
+  private Entity getEntity() throws EntityNotFoundException {
+      // Generate the datastore, key and entity
+      Key key = KeyFactory.createKey("Globals", "highschool");
+      entity = datastore.get(key);
+      return entity;
+  }
+  
+  /**
+   * Pull the properties from the new entity
+   */
+  private void setVars(Entity entity) {
+    
+    xriottoken = (String) entity.getProperty("apiKey");
+    //String xriottoken = "RGAPI-3eac4c18-6036-48da-8362-ff90d580e34d";
+    System.out.println("API Key:" + xriottoken);
+    httpreturn = (String) entity.getProperty("appUrl");
+    //String httpreturn = "http://www.google.com";
+    System.out.println("appURL:" + httpreturn);
+    region = (String) entity.getProperty("region");
+    //String region = "OCE";
+    System.out.println("region:" + region);
   }
 
   
