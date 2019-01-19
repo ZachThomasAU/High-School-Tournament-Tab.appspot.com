@@ -78,7 +78,7 @@
 
 $('#testData').click(function(){				
 	$.ajax({
-	url: 'getProvider',	
+	url: 'tournamentCode',	
 		type: 'POST',
 		dataType: 'json',
 		data: 'FirstName=Mickey&LastName=Mouse',
@@ -96,31 +96,6 @@ $('#testData').click(function(){
 	
 return false;
 });
-
-$('#tournamentSubmit1').click(function(){				
-	alert("Submit Name");
-	
-	$.ajax({
-	url: 'getProvider',	
-		type: 'POST',
-		dataType: 'json',
-		data: 'FirstName=Mickey&LastName=Mouse',
-		success: function(data){				
-			if(data.isValid){								
-
-				$('#providerVal').html("Provider Id:" + data.provider);
-				$('#providerVal').slideDown(500);			
-				
-			}else{				
-			   alert('Please enter a valid username!!');	
-			}
-		}	
-	});		
-	
-return false;
-});
-
-
 
 </script>
 

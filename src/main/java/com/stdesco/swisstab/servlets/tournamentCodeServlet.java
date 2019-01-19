@@ -51,7 +51,8 @@ public class tournamentCodeServlet extends HttpServlet {
         // Create a map to handle the data 
         Map <String, Object> map = new HashMap<String, Object>();
         boolean isValid = false;
-
+        
+        //TODO: Check for validity
         isValid = true;
         
         // Pull the global entity from Google Cloud Datastore
@@ -68,12 +69,16 @@ public class tournamentCodeServlet extends HttpServlet {
         // Create an object of class provider
         Tournament tour = new Tournament();
         
-        String tournamentName = req.getParameter("tname"); 
+        String tournamentName = "New Tournament"; 
         System.out.print("Registered Tournament Name" + tournamentName + "\n");
+        
         datastoreConnecter data = new datastoreConnecter();
         
-        int providerID = (int) data.getProperty("Globals", "highschool", "providerID");
-       
+        long providerIDlong = (long) data.getProperty("Globals", "highschool", "providerCode");
+        int providerID = Math.toIntExact(providerIDlong);
+        
+        System.out.print("ProviderID:" + Integer.toString(providerID)+ "\n");
+        
         try {
           tour.init_Tournament(xriottoken, tournamentName, providerID);
         } catch (Exception e) {
@@ -81,11 +86,7 @@ public class tournamentCodeServlet extends HttpServlet {
           e.printStackTrace();
         }
                               
-        //Create a new Entity of the provider in line with zac's DB structure
-        //This doesn't do anything at the moment but is important when creating
-        //A tournament. 
-        
-        
+        //Add a new tournament to the datastore
         System.out.print("Added new entity provider in the Datastore");
         
         map.put("isValid", isValid);
