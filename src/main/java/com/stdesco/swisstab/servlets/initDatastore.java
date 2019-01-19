@@ -47,10 +47,9 @@ public class initDatastore extends HttpServlet {
       global.setProperty("region", "OCE");
       global.setProperty("providerCode", 10);
       datastore.put(global);
+      
       // datastore.get(keys); --> This retrieves an entity by using its Key.
       // global.getProperty("apiKey"); --> This pulls data out of an entity.
-      
-      // This 
            
       Map <String, Object> map = new HashMap<String, Object>();
       boolean isValid = true;   

@@ -1,5 +1,7 @@
 package com.stdesco.swisstab.apicode;
 
+import com.google.appengine.api.datastore.Entity;
+
 //import com.google.appengine.api.datastore.DatastoreService;
 //import com.google.appengine.api.datastore.DatastoreServiceFactory;
 //import com.google.appengine.api.datastore.Entity;
@@ -40,9 +42,8 @@ public class Tournament {
 				
 		String tournamentRequestUrl = "https://americas.api.riotgames.com/lol/"
 				+ "tournament-stub/v4/tournaments";
-		
-		// Currently this is hardcoded and does not draw from the function need 
-		// to process concatonate later
+	
+		// Create API String
 		String InitialisationPostBody = "{\"name\": \"" + tournamentName 
 				+ "\", \"providerId\": " + providerID + "}";
 		
@@ -56,8 +57,9 @@ public class Tournament {
 		
 		System.out.println(tcode.toString());
 
-		// Saves the tournamentID to storage.
-		
+		// TODO: Save the tournament id to storage
+		// Saves the tournamentID to storage
+	
 		System.out.println("Updating Tournament data in the datastore");
 	
 		return 1;

@@ -19,12 +19,12 @@ import com.stdesco.swisstab.webapp.datastoreConnecter;
  * 
  */
 
-@WebServlet("/example")
+@WebServlet("/getProvider")
 
-public class servletBuilder extends HttpServlet {
+public class getProviderData extends HttpServlet {
   private static final long serialVersionUID = 1l;
   private static Logger LOGGER = 
-      Logger.getLogger(servletBuilder.class.getName());
+      Logger.getLogger(getProviderData.class.getName());
 
  
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -48,9 +48,9 @@ public class servletBuilder extends HttpServlet {
         region = (String) data.getProperty("Provider", 349 , "region");
         
         //Print the result
-        System.out.print("Result from DB:" + Long.toString(provcode)+ "\n");
-        System.out.print("Result from DB:" + url + "\n");
-        System.out.print("Result from DB:" + region + "\n");
+        System.out.print("Result - from DB:" + Long.toString(provcode)+ "\n");
+        System.out.print("Result - from DB:" + url + "\n");
+        System.out.print("Result - from DB:" + region + "\n");
         
         map.put("isValid", isValid);
         map.put("url", url);

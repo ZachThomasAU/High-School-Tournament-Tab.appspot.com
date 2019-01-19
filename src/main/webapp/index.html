@@ -1,177 +1,129 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<head>
+
+	<!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-	<!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS, Then AJAX -->   
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     
-    <!-- Title Information and Web-page Settings -->
-    <title>HESL Webapp</title>
+    <script>
+        $(document).ready(function() {       	
+            $('#javascript').load('/js/scripts.jsp', 
+            		function(){});            
+            $('#navigationbar').load('/resources/navbar.html', 
+            		function(){});
+            $('#tournamentPopup').load('/resources/tournamentPopup.html', 
+            		function(){});
+        });
+    </script>
     
-  </head>
-  <body>
-  
-    <h1">HESL Webapp Query Test!</h1>
-    
-    <form id="updateUsername">
-    
-    	<label for = "username">what is your username</label>
-    	<input type="text" id="username" name="username"/>
-    	<input type="submit" />
-    	
-    </form>  
-    
-    <a id= "initDatastore" class="btn btn-primary" href="#" role="button">
-    	init dataStore</a>
-    
-    <a id= "providerButton" class="btn btn-primary" href="#" role="button">
-    	Get Provider</a>
-    
-    <p id="displayName"> Text response will come up here <p/> 
-    
-    <p id="displayProvider"> Provider will come up here <p/> 
-    
-    <p id="displayInit"> Datastore Init will come up here<p/> 
-        
-	<!-- Button trigger modal -->
-	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-	  Add Team
-	</button>
+    <title>HSEL Tournament App</title>
+
+	</head>
+	<body>
 	
-	<!-- Modal -->
-	<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h5 class="modal-title" id="exampleModalLongTitle">Add Team</h5>
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-	          <span aria-hidden="true">&times;</span>
-	        </button>
-	      </div>
-	      <div class="modal-body">
-			
+		<div id= "navigationbar"></div>
 		
-			  <div class="input-group mb-1">
-				  <div class="input-group-prepend">
-				    <span class="input-group-text" id="basic-addon1">Team Name</span>
-				  </div>
-				  <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-			  </div>
-			  
-			  <div class="input-group mb-3">
-				  <div class="input-group-prepend">
-				    <span class="input-group-text" id="basic-addon1">Address</span>
-				  </div>
-				  <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-			  </div>	
-			  
-			  <div class="input-group mb-3">
-				  <div class="input-group-prepend">
-				    <span class="input-group-text" id="basic-addon1">Email</span>
-				  </div>
-				  <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-			  </div>	
-
-			  </div>
-			  
-			<div id="submitResponse"></div>
-
-	      </div>
-	      <div class="modal-footer">
-	        <button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-	        <button id="submitButton" type="button" class="btn btn-primary" >Submit</button>
-	      </div>
+	<div class="container">
+	  <div class="row align-items-start">
+	     <div class="col">
+	      <div id="providerVal">Provider ID:</div>
+	    </div>		
+	    <div class="col">
+	      Tournament ID:
+	      <div id="tournamentVal"></div>
+	    </div>  
+	    <div class="col">
+	      Datastore Empty
+	      <div id="tournamentVal"></div>
+	    </div>
+	  </div>
+	  <div class="row align-items-centre">
+	    <div class="col">
+	      <button id="testButton" class="btn btn-outline-primary">
+	      Get Provider
+	      </button>
+	    </div>
+	    <div class="col">
+	      <button id="initDatastore" class="btn btn-outline-primary">
+	      Init Datastore
+	      </button>
+	    </div>
+	    <div class="col">
+	    
+	      <div id= "tournamentPopup"></div>
+	      
 	    </div>
 	  </div>
 	</div>
 
-	<script>
-	
-	function demoScript() {
-		 	
-		document.getElementById("demo").innerHTML = "Hello JavaScript!";
-		
-		console.log("Hello world!");
-		 
-	}
-	
-	
-	// AJAX Pass POST and return from servlet
-	
-	$('#updateUsername').submit(function(){			
-			$.ajax({
-		url: 'provider',
-		
-			type: 'POST',
-			dataType: 'json',
-			data: $('#updateUsername').serialize(),
-			success: function(data){
-				
-				if(data.isValid){
-					$('#displayName').html('your name is: ' + data.username);
-					$('#displayName').slideDown(500);
-				}else{
-						alert('Please enter a valid username!!');	
-				}
-			}	
-		});
-		return false;
-	});
-	
-	$('#providerButton').click(function(){			
-		$.ajax({
-		url: 'provider',
-		
-			type: 'POST',
-			dataType: 'json',
-			data: 'FirstName=Mickey&LastName=Mouse',
-			success: function(data){
-				
-				if(data.isValid){
-					$('#displayProvider').html('your name is: ' + data.username);
-					$('#displayProvider').slideDown(500);
-					
-				}else{
-						alert('Please enter a valid username!!');	
-				}
-			}	
-		});		
-	return false;
-	});	
-	
-	$('#initDatastore').click(function(){			
-		$.ajax({
-		url: 'initDatastore',	
-			type: 'POST',
-			dataType: 'json',
-			data: 'FirstName=Mickey&LastName=Mouse',
-			success: function(data){				
-				if(data.isValid){				
-					
-					$('#displayInit').html(data.response);
-					$('#displayInit').slideDown(500);
-					
-				}else{
-					
-						alert('Please enter a valid username!!');	
-				}
-			}	
-		});		
-	return false;
-	});	
-	
+	 <button id="testData" class="btn btn-outline-primary">
+	 Test Data
+	 </button>
+	      
 
-	</script>
+<div id="javascript"></div>
 
-  </body>
+
+<script>
+
+$('#testData').click(function(){				
+	$.ajax({
+	url: 'getProvider',	
+		type: 'POST',
+		dataType: 'json',
+		data: 'FirstName=Mickey&LastName=Mouse',
+		success: function(data){				
+			if(data.isValid){								
+
+				$('#providerVal').html("Provider Id:" + data.provider);
+				$('#providerVal').slideDown(500);			
+				
+			}else{				
+			   alert('Please enter a valid username!!');	
+			}
+		}	
+	});		
+	
+return false;
+});
+
+$('#tournamentSubmit1').click(function(){				
+	alert("Submit Name");
+	
+	$.ajax({
+	url: 'getProvider',	
+		type: 'POST',
+		dataType: 'json',
+		data: 'FirstName=Mickey&LastName=Mouse',
+		success: function(data){				
+			if(data.isValid){								
+
+				$('#providerVal').html("Provider Id:" + data.provider);
+				$('#providerVal').slideDown(500);			
+				
+			}else{				
+			   alert('Please enter a valid username!!');	
+			}
+		}	
+	});		
+	
+return false;
+});
+
+
+
+</script>
+
+
+</body>
 </html>
