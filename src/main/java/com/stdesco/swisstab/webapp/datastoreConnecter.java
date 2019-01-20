@@ -13,18 +13,17 @@ public class datastoreConnecter {
 	Entity entity;
 
 	/**
-	 * Gets the value of a property within a datastore location. 
+	 * Gets the value of a property within a datastore location.
 	 * 
-	 * Property is returned of class Object, so ensure the returned object
-	 * is cast to its appropriate type.
+	 * Property is returned of class Object, so ensure the returned object is
+	 * cast to its appropriate type.
 	 * 
-	 * @param kind		Entity kind of Entity the Property is located in. 
-	 * @param key		Key for Entity the Property is located in.
-	 * @param property	Property identifier string
-	 * @returns 		The requested property from the datastore 
+	 * @param kind     	Entity kind of Entity the Property is located in.
+	 * @param key      	Key for Entity the Property is located in.
+	 * @param property 	Property identifier string
+	 * @returns 		The requested property from the datastore
 	 */
 	public Object getProperty(String kind, Object keyName, String property) {
-
 		Object retval;
 		// System.out.print("We getting data boyzzz\n");
 
@@ -41,9 +40,7 @@ public class datastoreConnecter {
 			throw new IllegalArgumentException(
 					"keyName is not of type String or " + "int\n");
 		}
-
 		retval = entity.getProperty(property);
-
 		return retval;
 	}
 
@@ -54,7 +51,6 @@ public class datastoreConnecter {
 	private Entity getEntity(String kind, Object keyName)
 			throws EntityNotFoundException {
 		Key key;
-
 		if (keyName instanceof String) {
 			System.out.print("your keyName is a String\n");
 			key = KeyFactory.createKey(kind, (String) keyName);

@@ -15,31 +15,25 @@ import com.google.appengine.api.datastore.Entity;
 import com.stdesco.swisstab.appcode.Tournament.FirstRoundPairingRule;
 
 /**
- * Copyright (C) Zachary Thomas - All Rights Reserved
- * Unauthorised copying of this file, via any medium, is strictly
- * prohibited. Proprietary & Non-Free.
+ * Copyright (C) Zachary Thomas - All Rights Reserved Unauthorised copying of
+ * this file, via any medium, is strictly prohibited. Proprietary & Non-Free.
  * 
- * This file cannot be copied and/or distributed without the express
- * permission of the author.
+ * This file cannot be copied and/or distributed without the express permission
+ * of the author.
  * 
  * Initiate Swiss Class
  * 
- * @author ZThomas
- * January 2019
+ * @author ZThomas January 2019
  */
 
-@WebServlet(
-		name = "InitSwiss", 
-		value = "/initSwiss"
-)
-
+@WebServlet(name = "InitSwiss", value = "/initSwiss")
 @SuppressWarnings("serial")
 public class InitSwiss extends HttpServlet {
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-		      throws ServletException, IOException {
-	
+			throws ServletException, IOException {
+
 		// Sets variables
 		// TODO Deal with exceptions
 		String name = req.getParameter("name");
@@ -57,22 +51,21 @@ public class InitSwiss extends HttpServlet {
 					FirstRoundPairingRule.FIRST_ROUND_GAME_RANDOM;
 			frprStorageInt = 2;
 		}
-		
+
 		// Saves the entries to storage
 		Entity tournament = new Entity("Tournament", name);
 		tournament.setProperty("tournamentName", name);
 		tournament.setProperty("numberOfRounds", rounds);
 		tournament.setProperty("numberOfTeams", teams);
 		tournament.setProperty("firstRoundPairingRule", frprStorageInt);
-	
-		DatastoreService datastore 
-							= DatastoreServiceFactory.getDatastoreService();
+
+		DatastoreService datastore = 
+				DatastoreServiceFactory.getDatastoreService();
 		datastore.put(tournament);
-		
-		
+
 		// Print the previous submissions
 		PrintWriter out = resp.getWriter();
-		
+
 		out.println("<b>TOURNAMENT NAME: </b>" + name + "<br />");
 		out.println("<b>NUMBER OF ROUNDS: </b>" + rounds + "<br />");
 		out.println("<b>NUMBER OF TEAMS: </b>" + teams + "<br />");
