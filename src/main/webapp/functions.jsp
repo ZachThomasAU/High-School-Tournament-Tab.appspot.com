@@ -43,7 +43,8 @@
 			success: function(data){
 				
 				if(data.isValid){
-					$('#displayProvider').html('your name is: ' + data.username);
+					$('#displayProvider').html('your name is: ' 
+							+ data.username);
 					$('#displayProvider').slideDown(500);
 					
 				}else{
