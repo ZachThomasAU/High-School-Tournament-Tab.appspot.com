@@ -15,6 +15,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
 import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.stdesco.swisstab.apicode.Tournament;
@@ -44,7 +46,7 @@ public class tournamentCodeServlet extends HttpServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		  throws ServletException, IOException {
 	  
-	  System.out.print("We in boyz\n");
+	  System.out.print("tournamentCodeServlet:47: Running \n");
         
       // Create a map to handle the data message back to the webapp
       Map <String, Object> map = new HashMap<String, Object>();
@@ -67,19 +69,27 @@ public class tournamentCodeServlet extends HttpServlet {
       // TODO: Check input for validity
         
       // Grab the input tournament name
-      tournamentName = "tournamentName"; 
+      
+      tournamentName = req.getParameter("tname"); 
+      System.out.print("tournamentCodeServlet:72: Tournament Name : " 
+                                                    + tournamentName + "\n"); 
         
-      // Query Db for existing tournament with that tournament name
-      // Query<Entity> query = Query.newEntityQueryBuilder()
-      // .setKind("Tournament").build();
-        
+      //Check name validity
+      //TODO add some name constraints
+      
+      //Check if the name is already in the datastore
+      Filter propertyFilter =
+          new FilterPredicate("height", FilterOperator.EQUAL);
+      
+      Query q = new Query("Person").setFilter(propertyFilter);
+      
       // Create an object of class provider
-      Tournament tour = new Tournament();        
-      System.out.print("Registered Tournament Name" + tournamentName + "\n");       
+      Tournament tour = new Tournament();          
       datastoreConnecter data = new datastoreConnecter();        
       long providerIDlong = (long) data.getProperty("Globals", "highschool", 
     		  										"providerCode");
       int providerID = Math.toIntExact(providerIDlong);        
+      
       System.out.print("ProviderID:" + Integer.toString(providerID)+ "\n");
         
       try {

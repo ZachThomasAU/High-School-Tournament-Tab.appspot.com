@@ -13,29 +13,23 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <h5 class="modal-title" id="exampleModalLongTitle">
-	        	New Tournament</h5>
+	        	New Tournament -v5</h5>
 	        <button type="button" class="close" data-dismiss="modal" 
 	        		aria-label="Close">
 	          <span aria-hidden="true">&times;</span>
 	        </button>
 	      </div>
-	      <div class="modal-body">
-		
-			  <div class="input-group mb-1">
-				  <div class="input-group-prepend">
-				    <span class="input-group-text" id="basic-addon1">
-				    	  Tournament Name</span>
-				  </div>
-				  <input id="tname" type="text" class="form-control" 
-				  		 placeholder="UQ Union Esports" aria-label="Username" 
-				  		 aria-describedby="basic-addon1">
-			  </div>
-			  		
-			  <div id="respcode"></div>		
-			  
-			  <button id="bracketSubmit1" type="button" class="btn btn-primary">
-			  		  Check Name</button>
-			  
+	      <div id="modalBody" class="modal-body">              
+	      
+			<div id="tname">
+			    <input type="text" value="text text" name="tname"> <br> 
+			
+			<input type="button" id="checkName" class="btn btn-primary" 
+														value="Check Name" />
+			<p id="hold" style="border: 1px solid red">
+					I will hold the serialized div</p>
+			</div>
+			
 	      </div>
 	      
 	      <div class="modal-footer">
@@ -50,23 +44,25 @@
 	
 	<script>
 	
-	$('#bracketSubmit1').click(function(){				
+	$('#checkName').click(function(){				
 		
-		alert( $('#tname').serialize());
+		$("#hold").html($("#tname").find("select,textarea, input").serialize());
 		
 		$.ajax({
 		url: 'tournamentCode',	
 			type: 'POST',
 			dataType: 'json',
-			data: $('#tname').serialize(),
+			data: $("#tname").find("select,textarea, input").serialize(),
 			success: function(data){				
 				if(data.isValid){								
-
 					$('#respcode').html("New Tournament Id:" + data.tournament);
-					$('#respcode').slideDown(500);			
-					
+					$('#respcode').slideDown(500);		
+				    $('#modalBody').load('/resources/tournamentExtend.html', 
+		            		 function(){});		
 				}else{									
-				   alert('Please enter a valid username!!');	
+				   alert('Please enter a tournament name!!');	
+				   $("#hold").html("Name already taken");
+				  
 				}
 			}	
 		});		
