@@ -9,18 +9,26 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
 import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.stdesco.swisstab.apicode.Tournament;
 import com.stdesco.swisstab.webapp.datastoreConnecter;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.SortDirection;
 
 /**
  * Servlet implementation class UpdateUsername
@@ -76,35 +84,27 @@ public class tournamentCodeServlet extends HttpServlet {
         
       //Check name validity
       //TODO add some name constraints
-      
-      //Check if the name is already in the datastore
       Filter propertyFilter =
-          new FilterPredicate("height", FilterOperator.EQUAL);
-      
-      Query q = new Query("Person").setFilter(propertyFilter);
-      
-      // Create an object of class provider
-      Tournament tour = new Tournament();          
-      datastoreConnecter data = new datastoreConnecter();        
-      long providerIDlong = (long) data.getProperty("Globals", "highschool", 
-    		  										"providerCode");
-      int providerID = Math.toIntExact(providerIDlong);        
-      
-      System.out.print("ProviderID:" + Integer.toString(providerID)+ "\n");
+          new FilterPredicate("tournamentName", FilterOperator.EQUAL, tournamentName);
+      Query q = new Query("Tournament").setFilter(propertyFilter);
+      // [END property_filter_example]
+
+      try {        
+        PreparedQuery pq = datastore.prepare(q);
+        Entity result = pq.asSingleEntity();
+        System.out.print("Query result" + result.toString() + "\n");
+        isValid = true;
         
-      try {
-        tour.init_Tournament(xriottoken, tournamentName, providerID);
-      } catch (Exception e) {
+      } catch (Exception e) {        
         // TODO Auto-generated catch block
         e.printStackTrace();
+        System.out.print("Query result :" + "NULL" + ": \n");
+        isValid = false;
       }
-                              
-      // TODO Add a new tournament to the datastore
-      System.out.print("Added new entity provider in the Datastore");
       
-      map.put("isValid", isValid);
-      map.put("tournament", tour.get_TournamentId());
-        
+      //Check if the name is already in the datastore
+           
+      map.put("isValid", isValid);       
       write(resp, map);
   }
 
