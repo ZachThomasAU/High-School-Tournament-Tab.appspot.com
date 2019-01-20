@@ -45,7 +45,6 @@ public class Game {
 			  + PICKTYPE); 
 	  
 	  //Save state probable goes here
-	  
 	   System.out.println("Game Created"); 
 	   GAMECREATED = 1;	  			  
 	}
@@ -72,7 +71,7 @@ public class Game {
 	       	*/
 	        
 	       /* Currently this is hardcoded and does not draw from the function 
-	        * need to process concatonate later 
+	        * need to process concatenate later 
 	        */
 	        String gamerequestPostBody = "{\"mapType\": \"" + MAPTYPE+ "\",\""
 	        		+ "metadata\": \"" + meta + "\",\"pickType\": \"" + PICKTYPE 
@@ -91,10 +90,8 @@ public class Game {
 	    } else {
 	      System.out.println("Cannot generate game code yet as create_Game has "
 	      		+ "not input required information"); 
-	      return 0; 
-	      
+	      return 0; 	      
 	    }
-
 	}
 
 }

@@ -24,7 +24,7 @@ public class Tournament {
 	private int TOURNAMENT_ID;
 		 
 	/**
-	 * Public method to initialize the provider ID through the API interface 
+	 * Public method to initialise the provider ID through the API interface 
 	 * with RIOT games: Returns 1 if successful and 0 if unsuccessful
 	 * 
 	 * @param xToken
@@ -46,17 +46,15 @@ public class Tournament {
 				+ "\", \"providerId\": " + providerID + "}";
 		
 		//generate a response tcode using sendPostAPI
-		tcode = 
-			http.sendPostApi(xToken, InitialisationPostBody, 
-					tournamentRequestUrl);
+		tcode = http.sendPostApi(xToken, InitialisationPostBody, 
+							 	 tournamentRequestUrl);
 	
-		// Update the object Torunament ID	
+		// Update the object Tournament ID	
 		TOURNAMENT_ID = Integer.parseInt(tcode.toString());
 		
 		System.out.println(tcode.toString());
 
 		// TODO: Save the tournament id to storage
-		// Saves the tournamentID to storage
 	
 		System.out.println("Updating Tournament data in the datastore");
 	

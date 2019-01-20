@@ -47,8 +47,8 @@ public class Provider {
 		  "https://americas.api.riotgames.com/lol/tournament-stub/v4/providers";
 		
 		// Create string for body of the POST request
-		String InitialisationPostBody = "{ \"region\": \"" + region + "\", \"url\": "
-				+ "\"" + returnWeb + "\"}";
+		String InitialisationPostBody = "{ \"region\": \"" + region 
+				+ "\", \"url\": \"" + returnWeb + "\"}";
 		
 		// Executes the post request across the API return value stored in pcode
 		pcode = 
@@ -57,8 +57,8 @@ public class Provider {
 		// System.out.println(pcode.toString());	
 		PROVIDER_ID = Integer.parseInt(pcode.toString());
 		
+		// TODO Store in datastore
 		System.out.println("Updating Provider data in the datastore");
-		
 		return 1;
 	} 
 	
