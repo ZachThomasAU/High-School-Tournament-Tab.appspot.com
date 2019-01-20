@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.stdesco.swisstab.apicode.Provider;
@@ -40,6 +41,7 @@ public class tournamentCodeServlet extends HttpServlet {
   String xriottoken;
   String httpreturn;
   String region;
+  int providerid;
 
  
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -48,14 +50,14 @@ public class tournamentCodeServlet extends HttpServlet {
  
         System.out.print("We in boyz\n");
         
-        // Create a map to handle the data 
+        // Create a map to handle the data message back to the webapp
         Map <String, Object> map = new HashMap<String, Object>();
         boolean isValid = false;
         
-        //TODO: Check for validity
-        isValid = true;
+        //Declare local variables
+        String tournamentName;
         
-        // Pull the global entity from Google Cloud Datastore
+        // Pull the global entity from Google Cloud data-store
         try {
           entity = getEntity();
         } catch(EntityNotFoundException e) {
@@ -63,13 +65,22 @@ public class tournamentCodeServlet extends HttpServlet {
           e.printStackTrace();
         }
         
-        // Pull the global properties and set them as variables
-        setVars(entity);
+        // Pull the global properties from the data-store
+        setGlobalVars(entity);
+        
+        //TODO: Check input for validity
+        
+        //Grab the input tournament name
+        tournamentName = "tournamentName"; 
+        
+        //Query Db for existing tournament with that tournament name
+//        Query<Entity> query = Query.newEntityQueryBuilder()
+//            .setKind("Tournament").build();
         
         // Create an object of class provider
         Tournament tour = new Tournament();
         
-        String tournamentName = "New Tournament"; 
+   
         System.out.print("Registered Tournament Name" + tournamentName + "\n");
         
         datastoreConnecter data = new datastoreConnecter();
@@ -123,10 +134,12 @@ public class tournamentCodeServlet extends HttpServlet {
   /**
    * Pull the properties from the new entity
    */
-  private void setVars(Entity entity) {   
-    
+  private void setGlobalVars(Entity entity) {   
+      
     xriottoken = (String) entity.getProperty("apiKey");
-    System.out.println("API Key:" + xriottoken);
+    long tempID = (long) entity.getProperty("providerCode");
+    providerid = Math.toIntExact(tempID);    
+    System.out.println("API Key:" + xriottoken + "providerCode:" + providerid + "\n");
     
   }
   

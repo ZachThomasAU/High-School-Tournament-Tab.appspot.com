@@ -33,6 +33,7 @@ public Object getProperty(String kind, Object keyName, String property) {
        } catch(EntityNotFoundException e) {
          // TODO Handle this
          e.printStackTrace();
+         return 0;
        }         
      } else {      
        throw new IllegalArgumentException("keyName is not of type String or int\n");      

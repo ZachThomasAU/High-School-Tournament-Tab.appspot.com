@@ -35,18 +35,38 @@ public class initDatastore extends HttpServlet {
  
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    
-      System.out.print("We in boyz -  init Datastore");
       
-      // This 
+      //Declare local variables
+      String apiKey = "RGAPI-5e19552a-5839-453f-8c5e-8639874b8c4e";
+      String region = "OCE";
+      String appUrl = "http://high-school-tournament-tab.appspot.com/Hello";
+    
+      //Information Messages
+      System.out.print("We initializing the datastore globals boyz\n");
+      System.out.print("Init DS API Key:" + apiKey + "\n");
+      System.out.print("Init DS region:" + region + "\n");
+      System.out.print("Init DS appUrl:" + appUrl + "\n");
+      
+      // Create the entity of kind Global
       Entity global = new Entity("Globals", "highschool");
-      global.setProperty("apiKey", 
-                         "RGAPI-3eac4c18-6036-48da-8362-ff90d580e34d");
-      global.setProperty("appURL", 
-                         "http://high-school-tournament-tab.appspot.com/Hello");
-      global.setProperty("region", "OCE");
+      
+      // Set the property values
+      global.setProperty("apiKey", apiKey);
+      global.setProperty("appUrl", appUrl);
+      global.setProperty("region", region);
       global.setProperty("providerCode", 10);
+      
+      // Put the entity onto the data-store shelf
       datastore.put(global);
+      
+      // Create the entity of type tournament
+      Entity tournamenttest = new Entity("Tournament", 999);
+      
+      // Set the property values
+      tournamenttest.setProperty("tournamentName", "lemonjuice");
+      
+      // Put the entity onto the data-store shelf
+      datastore.put(tournamenttest);
       
       // datastore.get(keys); --> This retrieves an entity by using its Key.
       // global.getProperty("apiKey"); --> This pulls data out of an entity.
@@ -54,6 +74,7 @@ public class initDatastore extends HttpServlet {
       Map <String, Object> map = new HashMap<String, Object>();
       boolean isValid = true;   
       
+      System.out.print("Datastore is now Initialized\n");
       map.put("response", "DataStore Initialized"); 
       map.put("isValid", isValid);
       
@@ -67,7 +88,8 @@ IOException {
       resp.setContentType("application/json");
       resp.setCharacterEncoding("UTF-8");
       
-      System.out.print("got here - GSON");
+      //Print a status and return message using GSON
+      System.out.print("Returning message to index using Gson\n");
       resp.getWriter().write(new Gson().toJson(map));
   
 }       

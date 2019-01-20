@@ -18,6 +18,8 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.stdesco.swisstab.apicode.Provider;
+import com.stdesco.swisstab.apicode.Tournament;
+import com.stdesco.swisstab.webapp.datastoreConnecter;
 
 
 /**
@@ -25,12 +27,12 @@ import com.stdesco.swisstab.apicode.Provider;
  * 
  */
 
-@WebServlet("/provider")
+@WebServlet("/tournamentCodeTest")
 
-public class providerServet extends HttpServlet {
+public class tournamentCodeServletTest extends HttpServlet {
   private static final long serialVersionUID = 1l;
   private static Logger LOGGER = 
-      Logger.getLogger(providerServet.class.getName());
+      Logger.getLogger(tournamentCodeServletTest.class.getName());
   DatastoreService datastore = 
       DatastoreServiceFactory.getDatastoreService();
   
@@ -49,7 +51,8 @@ public class providerServet extends HttpServlet {
         // Create a map to handle the data 
         Map <String, Object> map = new HashMap<String, Object>();
         boolean isValid = false;
-        // String username = req.getParameter("username");     
+        
+        //TODO: Check for validity
         isValid = true;
         
         // Pull the global entity from Google Cloud Datastore
@@ -58,53 +61,36 @@ public class providerServet extends HttpServlet {
         } catch(EntityNotFoundException e) {
           // TODO Handle this
           e.printStackTrace();
-        } 
+        }
         
         // Pull the global properties and set them as variables
         setVars(entity);
         
         // Create an object of class provider
-        Provider prov = new Provider();
-            
+        Tournament tour = new Tournament();
+        
+        String tournamentName = "New Tournament"; 
+        System.out.print("Registered Tournament Name" + tournamentName + "\n");
+        
+        datastoreConnecter data = new datastoreConnecter();
+        
+        long providerIDlong = (long) data.getProperty("Globals", "highschool", "providerCode");
+        int providerID = Math.toIntExact(providerIDlong);
+        
+        System.out.print("ProviderID:" + Integer.toString(providerID)+ "\n");
+        
         try {
-          
-          prov.init_Provider(httpreturn, xriottoken, 
-                              region);
-               
-          //Adds the boolean result of POST validity to the map
-               
-          //Adds the string result for username 
-          map.put("username", Integer.toString(prov.get_ProviderId()));                  
-          
-          entity.setProperty("providerCode", prov.get_ProviderId());
-          datastore.put(entity);
-               
-        } catch(IOException e) {
-            e.printStackTrace();
-            LOGGER.severe("Invalid Return Post URL, API Key or Region in "
-                  + "servletBuilder.java");
-            // TODO Handle Exception by messaging the USER to contact an Admin.
-          
-        } catch(Exception e)   {            
-            e.printStackTrace();          
-            // TODO When does this Exception throw?
-            LOGGER.warning("Haha this will never happen XD");            
-        } 
+          tour.init_Tournament(xriottoken, tournamentName, providerID);
+        } catch (Exception e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }      
         
-        //Create a new Entity of the provider in line with zac's DB structure
-        //This doesn't do anything at the moment but is important when creating
-        //A tournament. 
-        
-        Entity global = new Entity("Provider", 
-                                       prov.get_ProviderId());      
-        global.setProperty("providerID", prov.get_ProviderId());
-        global.setProperty("region", region);
-        global.setProperty("url", httpreturn);
-        datastore.put(global);
-        
-        System.out.print("Added new entity provider in the Datastore\n");
+        //Add a new tournament to the datastore
+        System.out.print("Added new entity provider in the Datastore");
         
         map.put("isValid", isValid);
+        map.put("tournament", tour.get_TournamentId());
         
         write(resp, map);
   }
@@ -137,16 +123,12 @@ public class providerServet extends HttpServlet {
   /**
    * Pull the properties from the new entity
    */
-  private void setVars(Entity entity) {
+  private void setVars(Entity entity) {   
     
     xriottoken = (String) entity.getProperty("apiKey");
     System.out.println("API Key:" + xriottoken);
-    httpreturn = (String) entity.getProperty("appUrl");
-    System.out.println("appUrl:" + httpreturn);
-    region = (String) entity.getProperty("region");
-    System.out.println("region:" + region);
+    
   }
-
   
 }  
 

@@ -23,6 +23,8 @@
             		function(){});
             $('#tournamentPopup').load('/resources/tournamentPopup.html', 
             		function(){});
+            $('#bracketPopup').load('/resources/bracketPopup.html', 
+            		function(){});
         });
     </script>
     
@@ -33,20 +35,20 @@
 	
 		<div id= "navigationbar"></div>
 		
-	<div class="container">
-	  <div class="row align-items-start">
+	<div class="container-fluid">
+	
+	   <div class="row align-items-start">
 	     <div class="col">
 	      <div id="providerVal">Provider ID:</div>
 	    </div>		
 	    <div class="col">
-	      Tournament ID:
-	      <div id="tournamentVal"></div>
+	      <div id="tournamentVal">Tournament ID:</div>
 	    </div>  
 	    <div class="col">
-	      Datastore Empty
-	      <div id="tournamentVal"></div>
+	      <div id="tournamentVal">Datastore Empty</div>
 	    </div>
 	  </div>
+	  
 	  <div class="row align-items-centre">
 	    <div class="col">
 	      <button id="testButton" class="btn btn-outline-primary">
@@ -54,22 +56,28 @@
 	      </button>
 	    </div>
 	    <div class="col">
-	      <button id="initDatastore" class="btn btn-outline-primary">
-	      Init Datastore
-	      </button>
+	      <div id= "bracketPopup"></div>	  
 	    </div>
-	    <div class="col">
+	    <div class="col">    
+	      <div id= "tournamentPopup"></div>	      
+	    </div>
+	  </div>  
+	  
+	    <div class="row align-items-centre">    
+		    <div class="col">    
+		       All of Zachs return information will print here	      
+		    </div>    
+	    </div>
 	    
-	      <div id= "tournamentPopup"></div>
-	      
-	    </div>
-	  </div>
 	</div>
 
 	 <button id="testData" class="btn btn-outline-primary">
 	 Test Data
 	 </button>
-	      
+	 
+	 <button id="initDatastore" class="btn btn-outline-primary">
+	  Init Datastore
+	 </button>     
 
 <div id="javascript"></div>
 
@@ -78,15 +86,15 @@
 
 $('#testData').click(function(){				
 	$.ajax({
-	url: 'tournamentCode',	
+	url: 'tournamentCodeTest',	
 		type: 'POST',
 		dataType: 'json',
 		data: 'FirstName=Mickey&LastName=Mouse',
 		success: function(data){				
 			if(data.isValid){								
 
-				$('#providerVal').html("Provider Id:" + data.provider);
-				$('#providerVal').slideDown(500);			
+				$('#tournamentVal').html("Tournament ID:" + data.tournament);
+				$('#tournamentVal').slideDown(500);			
 				
 			}else{				
 			   alert('Please enter a valid username!!');	
