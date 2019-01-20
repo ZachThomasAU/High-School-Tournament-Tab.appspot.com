@@ -13,7 +13,7 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <h5 class="modal-title" id="exampleModalLongTitle">
-	        	New Tournament -v5</h5>
+	        	New Tournament -v6</h5>
 	        <button type="button" class="close" data-dismiss="modal" 
 	        		aria-label="Close">
 	          <span aria-hidden="true">&times;</span>
@@ -54,15 +54,15 @@
 			dataType: 'json',
 			data: $("#tname").find("select,textarea, input").serialize(),
 			success: function(data){				
-				if(data.isValid){								
+				if(data.isValid){												
+					alert("That name is already taken")	
+				}else{									
+					
 					$('#respcode').html("New Tournament Id:" + data.tournament);
 					$('#respcode').slideDown(500);		
 				    $('#modalBody').load('/resources/tournamentExtend.html', 
-		            		 function(){});		
-				}else{									
-				   alert('Please enter a tournament name!!');	
-				   $("#hold").html("Name already taken");
-				  
+		            		 function(){});	  
+				    
 				}
 			}	
 		});		
