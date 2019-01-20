@@ -44,7 +44,7 @@ public class Provider {
 	 
 	    //initialize a stringbuffer for return and initalise the Initializationpost Obj	  
 		StringBuffer pcode;
-		InitialisationPost http = new InitialisationPost();
+		SendPostAPI http = new SendPostAPI();
 		
 		String providerRequestUrl = 
 		  "https://americas.api.riotgames.com/lol/tournament-stub/v4/providers";

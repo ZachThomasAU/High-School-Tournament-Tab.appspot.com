@@ -62,7 +62,7 @@ public class Game {
 	    if(GAMECREATED == 1) {
 	       StringBuffer gcode;
 	       meta = TEAMA + "vs" + TEAMB ; 
-	       InitialisationPost http = new InitialisationPost();         
+	       SendPostAPI http = new SendPostAPI();         
 	       GAMEREQ_URL = "https://americas.api.riotgames.com/lol/"
 	       			   	 + "tournament-stub/v4/codes?count=1&tournamentId=" 
 	       			   	 + Integer.toString(tournamentID);

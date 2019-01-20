@@ -36,7 +36,7 @@ public class Tournament {
 	public int init_Tournament(String xToken, String tournamentName, 
 			int providerID) throws Exception {
 		StringBuffer tcode;
-		InitialisationPost http = new InitialisationPost();
+		SendPostAPI http = new SendPostAPI();
 				
 		String tournamentRequestUrl = "https://americas.api.riotgames.com/lol/"
 				+ "tournament-stub/v4/tournaments";
