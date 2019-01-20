@@ -1,7 +1,5 @@
 package com.stdesco.swisstab.apicode;
 
-import com.google.appengine.api.datastore.Entity;
-
 //import com.google.appengine.api.datastore.DatastoreService;
 //import com.google.appengine.api.datastore.DatastoreServiceFactory;
 //import com.google.appengine.api.datastore.Entity;

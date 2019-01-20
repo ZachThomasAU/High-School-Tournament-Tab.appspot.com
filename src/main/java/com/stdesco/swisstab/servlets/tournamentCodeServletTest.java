@@ -17,7 +17,6 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
-import com.stdesco.swisstab.apicode.Provider;
 import com.stdesco.swisstab.apicode.Tournament;
 import com.stdesco.swisstab.webapp.datastoreConnecter;
 
@@ -31,7 +30,8 @@ import com.stdesco.swisstab.webapp.datastoreConnecter;
 
 public class tournamentCodeServletTest extends HttpServlet {
   private static final long serialVersionUID = 1l;
-  private static Logger LOGGER = 
+  @SuppressWarnings("unused")
+private static Logger LOGGER = 
       Logger.getLogger(tournamentCodeServletTest.class.getName());
   DatastoreService datastore = 
       DatastoreServiceFactory.getDatastoreService();
