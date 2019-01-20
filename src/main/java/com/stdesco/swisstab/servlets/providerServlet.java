@@ -27,10 +27,10 @@ import com.stdesco.swisstab.apicode.Provider;
 
 @WebServlet("/provider")
 
-public class providerServet extends HttpServlet {
+public class providerServlet extends HttpServlet {
   private static final long serialVersionUID = 1l;
   private static Logger LOGGER = 
-      Logger.getLogger(providerServet.class.getName());
+      Logger.getLogger(providerServlet.class.getName());
   DatastoreService datastore = 
       DatastoreServiceFactory.getDatastoreService();
   
@@ -46,13 +46,23 @@ public class providerServet extends HttpServlet {
  
         System.out.print("We in boyz\n");
         
-        // Create a map to handle the data 
+        /*
+         * Create a Hash-map to hand the data that will be passed back 
+         * in the HttpServletResponse response to the Web-app. 
+         * any sort of object can be appending to this Hash
+         * isValid is a boolean that is checked at the other end of the 
+         * response back to the web-app and can be used to check the validity 
+         * the request -> HttpServletRequest req for the given process 
+         */
+      
         Map <String, Object> map = new HashMap<String, Object>();
         boolean isValid = false;
-        // String username = req.getParameter("username");     
+        
+        //not currently used here because this function doesn't need an input
+        // String username = req.getParameter("username");  
         isValid = true;
         
-        // Pull the global entity from Google Cloud Datastore
+        // Pull the global entity from Google Cloud data-store
         try {
           entity = getEntity();
         } catch(EntityNotFoundException e) {
@@ -60,7 +70,7 @@ public class providerServet extends HttpServlet {
           e.printStackTrace();
         } 
         
-        // Pull the global properties and set them as variables
+        // Pull the global variables from the data-store and set them here. 
         setVars(entity);
         
         // Create an object of class provider
@@ -69,13 +79,9 @@ public class providerServet extends HttpServlet {
         try {
           
           prov.init_Provider(httpreturn, xriottoken, 
-                              region);
-               
-          //Adds the boolean result of POST validity to the map
-               
-          //Adds the string result for username 
-          map.put("username", Integer.toString(prov.get_ProviderId()));                  
+                              region);                
           
+          //Set the provider code in the entity (Kind=Globals,keyName=key)
           entity.setProperty("providerCode", prov.get_ProviderId());
           datastore.put(entity);
                
@@ -102,8 +108,20 @@ public class providerServet extends HttpServlet {
         global.setProperty("url", httpreturn);
         datastore.put(global);
         
-        System.out.print("Added new entity provider in the Datastore\n");
+        System.out.print("v2 - New entity provider in the Datastore\n");
         
+        
+        /* Place the integer of provider ID into the map with reference 
+         * provider. From my understanding it will convert later on to 
+         * JSON -> username=providerCode and be put in the post response 
+         * back to the web-app. username is just used because it came from the 
+         * example. I could have changed it here but didn't want to mess up 
+         * other parts of the code.
+         * IsValid is also placed into the hashmap as Boolean. I have no idea
+         * how the JSON manages these types as a string but it seems to work. 
+         */
+        
+        map.put("provider", Integer.toString(prov.get_ProviderId())); 
         map.put("isValid", isValid);
         
         write(resp, map);
@@ -113,7 +131,8 @@ public class providerServet extends HttpServlet {
     IOException {
       resp.setContentType("application/json");
       resp.setCharacterEncoding("UTF-8");
-      System.out.print("got here - GSON");
+      
+      System.out.print("Sending back response to the webapp -> GSON\n");
       resp.getWriter().write(new Gson().toJson(map));      
   }
   

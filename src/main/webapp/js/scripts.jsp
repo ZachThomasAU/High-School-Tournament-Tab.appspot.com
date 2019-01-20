@@ -10,10 +10,17 @@
 			type: 'POST',
 			dataType: 'json',
 			data: 'FirstName=Mickey&LastName=Mouse',
+			
+			//on success the AJAX runs this callback function and you can 
+			//manipulate the data on the screen in a variety of ways 
+			
 			success: function(data){
 				
+				//If data is not valid because the response had isValid=False
+				//then it will throw an alert which can be handled here
+				
 				if(data.isValid){
-					$('#providerVal').html('Provider: ' + data.username);
+					$('#providerVal').html('Provider: ' + data.provider);
 					$('#providerVal').slideDown(500);
 					
 				}else{

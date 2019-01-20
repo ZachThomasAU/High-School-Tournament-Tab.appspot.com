@@ -33,7 +33,7 @@ public class initDatastore extends HttpServlet {
   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
  
-  public void doPost(HttpServletRequest req, HttpServletResponse resp)
+public void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
       
       //Declare local variables
