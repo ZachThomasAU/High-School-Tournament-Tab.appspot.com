@@ -1,3 +1,20 @@
 [
-  "appengine-api"
+  "appengine-api",
+  "objectify",
+  "appengine-endpoints",
+  "googlecloudstorage",
+  "googlebiqquerydatatransferapi",
+  "clouddns",
+  "cloudoslogin",
+  "googlebiqqueryapi",
+  "googlecloudpubsub",
+  "cloudfirestore",
+  "cloudsecurityscanner",
+  "googlecloudresourcemanager",
+  "googlecloudnaturallanguage",
+  "clouddatastore",
+  "googlecloudspanner",
+  "googlecloudspeech",
+  "datalossprevention",
+  "googlecloudredis"
 ]
