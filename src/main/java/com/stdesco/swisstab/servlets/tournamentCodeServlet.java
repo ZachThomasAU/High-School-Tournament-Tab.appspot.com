@@ -84,7 +84,8 @@ private static Logger LOGGER =
         
         datastoreConnecter data = new datastoreConnecter();
         
-        long providerIDlong = (long) data.getProperty("Globals", "highschool", "providerCode");
+        long providerIDlong = (long) data.getProperty("Globals", "highschool", 
+        					  "providerCode");
         int providerID = Math.toIntExact(providerIDlong);
         
         System.out.print("ProviderID:" + Integer.toString(providerID)+ "\n");
@@ -138,7 +139,8 @@ private static Logger LOGGER =
     xriottoken = (String) entity.getProperty("apiKey");
     long tempID = (long) entity.getProperty("providerCode");
     providerid = Math.toIntExact(tempID);    
-    System.out.println("API Key:" + xriottoken + "providerCode:" + providerid + "\n");
+    System.out.println("API Key:" + xriottoken + "providerCode:" + providerid 
+    				   + "\n");
     
   }
   

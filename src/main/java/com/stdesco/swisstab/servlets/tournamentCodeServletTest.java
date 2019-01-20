@@ -74,7 +74,8 @@ private static Logger LOGGER =
         
         datastoreConnecter data = new datastoreConnecter();
         
-        long providerIDlong = (long) data.getProperty("Globals", "highschool", "providerCode");
+        long providerIDlong = (long) data.getProperty("Globals", "highschool", 
+        					  "providerCode");
         int providerID = Math.toIntExact(providerIDlong);
         
         System.out.print("ProviderID:" + Integer.toString(providerID)+ "\n");

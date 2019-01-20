@@ -33,7 +33,6 @@ import com.stdesco.swisstab.appcode.Tournament.FirstRoundPairingRule;
 		value = "/initSwiss"
 )
 
-
 @SuppressWarnings("serial")
 public class InitSwiss extends HttpServlet {
 

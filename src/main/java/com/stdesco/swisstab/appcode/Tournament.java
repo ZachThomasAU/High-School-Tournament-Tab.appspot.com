@@ -429,8 +429,8 @@ public class Tournament {
 						continue;
 					}
 				
-					LOGGER.fine("round " + currentRound + " candidate switch team" 
-								+ switchTeam);
+					LOGGER.fine("round " + currentRound + 
+							" candidate switch team" + switchTeam);
 				
 					// last check is if a pairing can switch
 				
