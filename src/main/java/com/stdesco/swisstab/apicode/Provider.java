@@ -24,14 +24,9 @@ public class Provider {
 	private int PROVIDER_ID;
 	
 	/**
-	 * [v1]
-	 * Public method to initialize the provider ID through the API interface 
+	 * Public method to initialise the provider ID through the API interface 
 	 * with RIOT games: Returns 1 if successful and 0 if unsuccessful
 	 * @author JLwin
-	 * 
-	 * [v2]
-	 * Now stores the PROVIDER_ID in google cloud Datastore
-	 * @author ZThomas
 	 * 
 	 * @param returnWeb
 	 * @param xToken
@@ -42,7 +37,9 @@ public class Provider {
 	public int init_Provider(String returnWeb, String xToken, String region) 
 			throws Exception {
 	 
-	    //initialize a stringbuffer for return and initalise the Initializationpost Obj	  
+	    // initialise a stringbuffer for return and initalise the 
+		// Initializationpost Obj
+		// TODO Update this comment
 		StringBuffer pcode;
 		SendPostAPI http = new SendPostAPI();
 		
@@ -61,17 +58,6 @@ public class Provider {
 		PROVIDER_ID = Integer.parseInt(pcode.toString());
 		
 		System.out.println("Updating Provider data in the datastore");
-		/* Comment this out if your running on eclipse
-		 * 
-		Entity provider = new Entity("Provider", PROVIDER_ID);
-		provider.setProperty("providerID", PROVIDER_ID);
-		provider.setProperty("region", "OCE"); // TODO remove hardcoding
-		provider.setProperty("url", 
-				"https://high-school-tournament-tab.appspot.com/hello");
-		DatastoreService datastore = 
-				DatastoreServiceFactory.getDatastoreService();
-		datastore.put(provider);
-		*/
 		
 		return 1;
 	} 
