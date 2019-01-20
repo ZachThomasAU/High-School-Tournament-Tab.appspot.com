@@ -19,153 +19,137 @@ import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.stdesco.swisstab.apicode.Provider;
 
-
 /**
  * Servlet implementation class UpdateUsername
  * 
  */
 
 @WebServlet("/provider")
-
 public class providerServlet extends HttpServlet {
-  private static final long serialVersionUID = 1l;
-  private static Logger LOGGER = 
-      Logger.getLogger(providerServlet.class.getName());
-  DatastoreService datastore = 
-      DatastoreServiceFactory.getDatastoreService();
-  
-  Entity entity;
-  String xriottoken;
-  String httpreturn;
-  String region;
 
- 
-  public void doPost(HttpServletRequest req, HttpServletResponse resp)
-  
-      throws ServletException, IOException {
- 
-        System.out.print("We in boyz\n");
-        
-        /*
-         * Create a Hash-map to hand the data that will be passed back 
-         * in the HttpServletResponse response to the Web-app. 
-         * any sort of object can be appending to this Hash
-         * isValid is a boolean that is checked at the other end of the 
-         * response back to the web-app and can be used to check the validity 
-         * the request -> HttpServletRequest req for the given process 
-         */
-      
-        Map <String, Object> map = new HashMap<String, Object>();
-        boolean isValid = false;
-        
-        //not currently used here because this function doesn't need an input
-        // String username = req.getParameter("username");  
-        isValid = true;
-        
-        // Pull the global entity from Google Cloud data-store
-        try {
-          entity = getEntity();
-        } catch(EntityNotFoundException e) {
-          // TODO Handle this
-          e.printStackTrace();
-        } 
-        
-        // Pull the global variables from the data-store and set them here. 
-        setVars(entity);
-        
-        // Create an object of class provider
-        Provider prov = new Provider();
-            
-        try {
-          
-          prov.init_Provider(httpreturn, xriottoken, 
-                              region);                
-          
-          //Set the provider code in the entity (Kind=Globals,keyName=key)
-          entity.setProperty("providerCode", prov.get_ProviderId());
-          datastore.put(entity);
-               
-        } catch(IOException e) {
-            e.printStackTrace();
-            LOGGER.severe("Invalid Return Post URL, API Key or Region in "
-                  + "servletBuilder.java");
-            // TODO Handle Exception by messaging the USER to contact an Admin.
-          
-        } catch(Exception e)   {            
-            e.printStackTrace();          
-            // TODO When does this Exception throw?
-            LOGGER.warning("Haha this will never happen XD");            
-        } 
-        
-        //Create a new Entity of the provider in line with zac's DB structure
-        //This doesn't do anything at the moment but is important when creating
-        //A tournament. 
-        
-        Entity global = new Entity("Provider", 
-                                       prov.get_ProviderId());      
-        global.setProperty("providerID", prov.get_ProviderId());
-        global.setProperty("region", region);
-        global.setProperty("url", httpreturn);
-        datastore.put(global);
-        
-        System.out.print("v2 - New entity provider in the Datastore\n");
-        
-        
-        /* Place the integer of provider ID into the map with reference 
-         * provider. From my understanding it will convert later on to 
-         * JSON -> username=providerCode and be put in the post response 
-         * back to the web-app. username is just used because it came from the 
-         * example. I could have changed it here but didn't want to mess up 
-         * other parts of the code.
-         * IsValid is also placed into the hashmap as Boolean. I have no idea
-         * how the JSON manages these types as a string but it seems to work. 
-         */
-        
-        map.put("provider", Integer.toString(prov.get_ProviderId())); 
-        map.put("isValid", isValid);
-        
-        write(resp, map);
-  }
+	private static final long serialVersionUID = 1l;
+	private static Logger LOGGER = Logger
+			.getLogger(providerServlet.class.getName());
+	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-  private void write(HttpServletResponse resp ,Map <String, Object> map) throws 
-    IOException {
-      resp.setContentType("application/json");
-      resp.setCharacterEncoding("UTF-8");
-      
-      System.out.print("Sending back response to the webapp -> GSON\n");
-      resp.getWriter().write(new Gson().toJson(map));      
-  }
-  
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) 
-      throws ServletException, IOException {
-    
-  }
-  
-  /**
-   * 
-   * @return
-   * @throws EntityNotFoundException 
-   */
-  private Entity getEntity() throws EntityNotFoundException {
-      // Generate the datastore, key and entity
-      Key key = KeyFactory.createKey("Globals", "highschool");
-      entity = datastore.get(key);
-      return entity;
-  }
-  
-  /**
-   * Pull the properties from the new entity
-   */
-  private void setVars(Entity entity) {
-    
-    xriottoken = (String) entity.getProperty("apiKey");
-    System.out.println("API Key:" + xriottoken);
-    httpreturn = (String) entity.getProperty("appUrl");
-    System.out.println("appUrl:" + httpreturn);
-    region = (String) entity.getProperty("region");
-    System.out.println("region:" + region);
-  }
+	Entity entity;
+	String xriottoken;
+	String httpreturn;
+	String region;
 
-  
-}  
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 
+		System.out.print("We in boyz\n");
+
+		/*
+		 * Create a Hash-map to hand the data that will be passed back in the
+		 * HttpServletResponse response to the Web-app. any sort of object can
+		 * be appending to this Hash isValid is a boolean that is checked at the
+		 * other end of the response back to the web-app and can be used to
+		 * check the validity the request -> HttpServletRequest req for the
+		 * given process
+		 */
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean isValid = false;
+
+		// not currently used here because this function doesn't need an input
+		// String username = req.getParameter("username");
+		isValid = true;
+
+		// Pull the global entity from Google Cloud data-store
+		try {
+			entity = getEntity();
+		} catch (EntityNotFoundException e) {
+			// TODO Handle this
+			e.printStackTrace();
+		}
+
+		// Pull the global variables from the data-store and set them here.
+		setVars(entity);
+
+		// Create an object of class provider
+		Provider prov = new Provider();
+
+		try {
+			prov.init_Provider(httpreturn, xriottoken, region);
+			
+			// Set the provider code in the entity (Kind=Globals,keyName=key)
+			entity.setProperty("providerCode", prov.get_ProviderId());
+			datastore.put(entity);
+		} catch (IOException e) {
+			e.printStackTrace();
+			LOGGER.severe("Invalid Return Post URL, API Key or Region in "
+					+ "servletBuilder.java");
+			// TODO Handle Exception by messaging the USER to contact an Admin.
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO When does this Exception throw?
+			LOGGER.warning("Haha this will never happen XD");
+		}
+
+		// Create a new Entity of the provider in line with zac's DB structure
+		// This doesn't do anything at the moment but is important when creating
+		// A tournament.
+		Entity global = new Entity("Provider", prov.get_ProviderId());
+		global.setProperty("providerID", prov.get_ProviderId());
+		global.setProperty("region", region);
+		global.setProperty("url", httpreturn);
+		datastore.put(global);
+
+		System.out.print("v2 - New entity provider in the Datastore\n");
+
+		/*
+		 * Place the integer of provider ID into the map with reference
+		 * provider. From my understanding it will convert later on to JSON ->
+		 * username=providerCode and be put in the post response back to the
+		 * web-app. username is just used because it came from the example. I
+		 * could have changed it here but didn't want to mess up other parts of
+		 * the code. IsValid is also placed into the hashmap as Boolean. I have
+		 * no idea how the JSON manages these types as a string but it seems to
+		 * work.
+		 */
+		map.put("provider", Integer.toString(prov.get_ProviderId()));
+		map.put("isValid", isValid);
+
+		write(resp, map);
+	}
+
+	private void write(HttpServletResponse resp, Map<String, Object> map)
+			throws IOException {
+		resp.setContentType("application/json");
+		resp.setCharacterEncoding("UTF-8");
+		System.out.print("Sending back response to the webapp -> GSON\n");
+		resp.getWriter().write(new Gson().toJson(map));
+	}
+
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	private Entity getEntity() throws EntityNotFoundException {
+		// Generate the datastore, key and entity
+		Key key = KeyFactory.createKey("Globals", "highschool");
+		entity = datastore.get(key);
+		return entity;
+	}
+
+	/**
+	 * Pull the properties from the new entity
+	 */
+	private void setVars(Entity entity) {
+
+		xriottoken = (String) entity.getProperty("apiKey");
+		System.out.println("API Key:" + xriottoken);
+		httpreturn = (String) entity.getProperty("appUrl");
+		System.out.println("appUrl:" + httpreturn);
+		region = (String) entity.getProperty("region");
+		System.out.println("region:" + region);
+	}
+
+}

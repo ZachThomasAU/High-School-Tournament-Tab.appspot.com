@@ -19,61 +19,55 @@ import com.stdesco.swisstab.webapp.datastoreConnecter;
  */
 
 @WebServlet("/example")
-
 public class servletBuilder extends HttpServlet {
   private static final long serialVersionUID = 1l;
   @SuppressWarnings("unused")
-private static Logger LOGGER = 
-      Logger.getLogger(servletBuilder.class.getName());
+  private static Logger LOGGER = 
+  					Logger.getLogger(servletBuilder.class.getName());
 
- 
-  public void doPost(HttpServletRequest req, HttpServletResponse resp)
+  public void doPost(HttpServletRequest req, HttpServletResponse resp)  
+		  throws ServletException, IOException {
+	  
+	  long provcode;
+      String region;
+      String url;        
+      System.out.print("We using the example boyzzzz");
+        
+        
+      // Create a map to handle the data 
+      Map <String, Object> map = new HashMap<String, Object>();
+      boolean isValid = true;
+        
+      //Create a new datastore connector to get access to the ds data.
+      datastoreConnecter data = new datastoreConnecter();
+      provcode = (long) data.getProperty("Provider", 349, "providerID");
+      url = (String) data.getProperty("Provider", 349, "url");
+      region = (String) data.getProperty("Provider", 349 , "region");
+        
+      //Print the result
+      System.out.print("Result from DB:" + Long.toString(provcode)+ "\n");
+      System.out.print("Result from DB:" + url + "\n");
+      System.out.print("Result from DB:" + region + "\n");
+        
+      map.put("isValid", isValid);
+      map.put("url", url);
+      map.put("provider", provcode);
+      map.put("region", provcode);
   
-      throws ServletException, IOException {
-        long provcode;
-        String region;
-        String url;
-        
-        System.out.print("We using the example boyzzzz");
-        
-        
-       // Create a map to handle the data 
-        Map <String, Object> map = new HashMap<String, Object>();
-        boolean isValid = true;
-        
-        //Create a new datastore connector to get access to the ds data.
-        datastoreConnecter data = new datastoreConnecter();
-        provcode = (long) data.getProperty("Provider", 349, "providerID");
-        url = (String) data.getProperty("Provider", 349, "url");
-        region = (String) data.getProperty("Provider", 349 , "region");
-        
-        //Print the result
-        System.out.print("Result from DB:" + Long.toString(provcode)+ "\n");
-        System.out.print("Result from DB:" + url + "\n");
-        System.out.print("Result from DB:" + region + "\n");
-        
-        map.put("isValid", isValid);
-        map.put("url", url);
-        map.put("provider", provcode);
-        map.put("region", provcode);
-        
-        write(resp, map);
-        
+      write(resp, map);  
   }
 
-  private void write(HttpServletResponse resp ,Map <String, Object> map) throws 
-    IOException {
+  private void write(HttpServletResponse resp ,Map <String, Object> map) 
+		  throws IOException {
       resp.setContentType("application/json");
-      resp.setCharacterEncoding("UTF-8");
-      
+      resp.setCharacterEncoding("UTF-8");      
       System.out.print("got here - GSON");
-      resp.getWriter().write(new Gson().toJson(map));
-      
+      resp.getWriter().write(new Gson().toJson(map));  
   }
   
   public void doGet(HttpServletRequest req, HttpServletResponse resp) 
-      throws ServletException, IOException {
-    
+      throws ServletException, IOException {    
   }  
+  
 }  
 
