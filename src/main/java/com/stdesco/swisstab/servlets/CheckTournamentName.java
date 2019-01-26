@@ -47,7 +47,7 @@ public class CheckTournamentName extends HttpServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		  throws ServletException, IOException {
 	  
-	  System.out.print("tournamentCodeServlet:47: Running \n");
+	  System.out.print("tournamentCodeServlet:50: Running \n");
         
       // Create a map to handle the data message back to the webapp
       Map <String, Object> map = new HashMap<String, Object>();
@@ -128,9 +128,9 @@ public class CheckTournamentName extends HttpServlet {
   /**
    * Pull the properties from the new entity
    */
-  private void setGlobalVars(Entity entity) {        
+  private void setGlobalVars(Entity entity) {        	  
     xriottoken = (String) entity.getProperty("apiKey");
-    long tempID = (long) entity.getProperty("providerCode");
+    long tempID = (long) entity.getProperty("providerID");
     providerid = Math.toIntExact(tempID);    
     System.out.println("API Key:" + xriottoken + "providerCode:" + providerid 
     				   + "\n");   
