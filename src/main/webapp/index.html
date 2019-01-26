@@ -61,12 +61,14 @@
 	  
 	  <div class="row align-items-centre">
 	    <div class="col">
-	      <button id="testButton" class="btn btn-outline-primary">
+	    <!-- id="testbutton" links to js/scripts.jsp #testButton -->
+	      <button id="testProvider" class="btn btn-outline-primary">
 	      Get Provider
 	      </button>
 	    </div>
 	    <div class="col">
-	      <div id= "bracketPopup"></div>	  
+	    <!--  id="bracketPopup" links to resources/bracketPopup.html-->
+	      <div id="bracketPopup"></div>	  
 	    </div>
 	    <div class="col">          
 	    </div>
@@ -80,42 +82,25 @@
 	    
 	</div>
 
-	 <button id="testData" class="btn btn-outline-primary">
-	 Test Data
+	 <button id="tournamentTest" class="btn btn-outline-primary">
+	 Tournament Test
 	 </button>
 	 
+	 <!-- id="initDatastore" links to js/scripts.jsp #initDatastore -->
 	 <button id="initDatastore" class="btn btn-outline-primary">
 	  Init Globals
+	 </button>
+	 
+	 <!-- id="initDummyData" links to js/scripts.jsp #initDummyData -->
+	 <button id="initDummyData" class="btn btn-outline-primary">
+	  Insert Test Data
 	 </button>     
 
 <div id="javascript"></div>
 
-
 <script>
 
-$('#testData').click(function(){				
-	$.ajax({
-	url: 'tournamentCodeTest',	
-		type: 'POST',
-		dataType: 'json',
-		data: 'FirstName=Mickey&LastName=Mouse',
-		success: function(data){				
-			if(data.isValid){								
-
-				$('#tournamentVal').html("Tournament ID:" + data.tournament);
-				$('#tournamentVal').slideDown(500);			
-				
-			}else{				
-			   alert('Please enter a valid username!!');	
-			}
-		}	
-	});		
-	
-return false;
-});
-
 </script>
-
 
 </body>
 </html>
