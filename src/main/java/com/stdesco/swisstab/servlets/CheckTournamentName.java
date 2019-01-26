@@ -51,7 +51,7 @@ public class CheckTournamentName extends HttpServlet {
         
       // Create a map to handle the data message back to the webapp
       Map <String, Object> map = new HashMap<String, Object>();
-      boolean isValid = false;
+      int respcode = 0;
         
       // Declare local variables
       String tournamentName;
@@ -86,18 +86,18 @@ public class CheckTournamentName extends HttpServlet {
         PreparedQuery pq = datastore.prepare(q);
         Entity result = pq.asSingleEntity();
         System.out.print("Query result" + result.toString() + "\n");
-        isValid = true;
+        respcode = 1;
         
       } catch (Exception e) {        
         // TODO Auto-generated catch block
         e.printStackTrace();
         System.out.print("Query result :" + "NULL" + ": \n");
-        isValid = false;
+        respcode = 0;
       }
       
       //Check if the name is already in the datastore
            
-      map.put("isValid", isValid);       
+      map.put("respcode", respcode);       
       write(resp, map);
   }
 
