@@ -13,7 +13,7 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <h5 class="modal-title" id="exampleModalLongTitle">
-	        	New Tournament -v6</h5>
+	        	New Tournament</h5>
 	        <button type="button" class="close" data-dismiss="modal" 
 	        		aria-label="Close">
 	          <span aria-hidden="true">&times;</span>
@@ -24,7 +24,7 @@
 			<div id="tname">
 			    <input type="text" value="text text" name="tname"> <br> 
 			
-			<input type="button" id="checkName" class="btn btn-primary" 
+			<input type="button" id="checkTname" class="btn btn-primary" 
 														value="Check Name" />
 			<p id="hold" style="border: 1px solid red">
 					I will hold the serialized div</p>
@@ -44,12 +44,12 @@
 	
 	<script>
 	
-	$('#checkName').click(function(){				
+	$('#checkTname').click(function(){				
 		
 		$("#hold").html($("#tname").find("select,textarea, input").serialize());
 		
 		$.ajax({
-		url: 'tournamentCode',	
+		url: 'CheckTournamentName',	
 			type: 'POST',
 			dataType: 'json',
 			data: $("#tname").find("select,textarea, input").serialize(),

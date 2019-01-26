@@ -13,34 +13,27 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
-import com.stdesco.swisstab.apicode.Tournament;
-import com.stdesco.swisstab.webapp.datastoreConnecter;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.SortDirection;
 
 /**
  * Servlet implementation class UpdateUsername
  * 
  */
 
-@WebServlet("/tournamentCode")
-public class tournamentCodeServlet extends HttpServlet {
+@WebServlet("/CheckTournamentName")
+public class CheckTournamentName extends HttpServlet {
   private static final long serialVersionUID = 1l;
   @SuppressWarnings("unused")
   private static Logger LOGGER = 
-  					Logger.getLogger(tournamentCodeServlet.class.getName());
+  					Logger.getLogger(CheckTournamentName.class.getName());
   DatastoreService datastore = 
 		  			DatastoreServiceFactory.getDatastoreService();
   

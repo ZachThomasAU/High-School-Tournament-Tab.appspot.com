@@ -53,7 +53,7 @@
 	
 	$('#initDatastore').click(function() {			
 		$.ajax( {
-			url: 'initDatastore',	
+			url: 'CheckTournamentName',	
 			type: 'POST',
 			dataType: 'json',
 			data: 'FirstName=Mickey&LastName=Mouse',

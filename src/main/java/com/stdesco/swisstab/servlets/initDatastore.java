@@ -30,16 +30,17 @@ public class initDatastore extends HttpServlet {
 	// Logger.getLogger(initDatastore.class.getName());
 	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
 		// Declare local variables
-		String apiKey = "RGAPI-5e19552a-5839-453f-8c5e-8639874b8c4e";
+		String apiKey = "RGAPI-26dcea20-0cba-4566-86de-274f4825d238";
 		String region = "OCE";
 		String appUrl = "http://high-school-tournament-tab.appspot.com/Hello";
 
 		// Information Messages
-		System.out.print("We initializing the datastore globals boyz\n");
+		System.out.print("We initializing the datastore globals boys\n");
 		System.out.print("Init DS API Key:" + apiKey + "\n");
 		System.out.print("Init DS region:" + region + "\n");
 		System.out.print("Init DS appUrl:" + appUrl + "\n");
@@ -86,6 +87,7 @@ public class initDatastore extends HttpServlet {
 		resp.getWriter().write(new Gson().toJson(map));
 	}
 
+	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 	}
