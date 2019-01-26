@@ -29,15 +29,18 @@ public class initDatastore extends HttpServlet {
 	// private static Logger LOGGER =
 	// Logger.getLogger(initDatastore.class.getName());
 	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+	
+	static String apiKey;
+	static String region;
+	static String appUrl;
+	static Entity globals;
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
 		// Declare local variables
-		String apiKey = "RGAPI-26dcea20-0cba-4566-86de-274f4825d238";
-		String region = "OCE";
-		String appUrl = "http://high-school-tournament-tab.appspot.com/Hello";
+		setVars();
 
 		// Information Messages
 		System.out.print("We initializing the datastore globals boys\n");
@@ -46,25 +49,10 @@ public class initDatastore extends HttpServlet {
 		System.out.print("Init DS appUrl:" + appUrl + "\n");
 
 		// Create the entity of kind Global
-		Entity global = new Entity("Globals", "highschool");
-
-		// Set the property values
-		global.setProperty("apiKey", apiKey);
-		global.setProperty("appUrl", appUrl);
-		global.setProperty("region", region);
-		global.setProperty("providerCode", 10);
+		createGlobals();
 
 		// Put the entity onto the data-store shelf
-		datastore.put(global);
-
-		// Create the entity of type tournament
-		Entity tournamenttest = new Entity("Tournament", 999);
-
-		// Set the property values
-		tournamenttest.setProperty("tournamentName", "lemonjuice");
-
-		// Put the entity onto the data-store shelf
-		datastore.put(tournamenttest);
+		datastore.put(globals);
 
 		// datastore.get(keys); --> This retrieves an entity by using its Key.
 		// global.getProperty("apiKey"); --> This pulls data out of an entity.
@@ -90,6 +78,24 @@ public class initDatastore extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+	}
+	
+	private void setVars() {
+		apiKey = "RGAPI-26dcea20-0cba-4566-86de-274f4825d238";
+		region = "OCE";
+		appUrl = "http://high-school-tournament-tab.appspot.com/Hello";
+		return;
+	}
+	
+	public static void createGlobals() {
+		globals = new Entity("Globals", "highschool");
+
+		// Set the property values
+		globals.setProperty("apiKey", apiKey);
+		globals.setProperty("appUrl", appUrl);
+		globals.setProperty("region", region);
+		globals.setProperty("providerID", 0);
+		return;
 	}
 
 }
