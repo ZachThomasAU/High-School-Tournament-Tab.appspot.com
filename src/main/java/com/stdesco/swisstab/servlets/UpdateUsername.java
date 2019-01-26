@@ -3,6 +3,8 @@ package com.stdesco.swisstab.servlets;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+
 //import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,6 +25,8 @@ import com.stdesco.swisstab.apicode.Provider;
 
 public class UpdateUsername extends HttpServlet {
   private static final long serialVersionUID = 1l;
+  private static Logger LOGGER = Logger
+			.getLogger(providerServlet.class.getName());
 
  
   public void doPost(HttpServletRequest req, HttpServletResponse resp)  
@@ -35,14 +39,19 @@ public class UpdateUsername extends HttpServlet {
         if(username != null && username.trim().length() != 0 ) {
           isValid = true;                    
           String xriottoken = "RGAPI-7f88a50e-99cc-4431-9e0a-cfce0ae7fa0a";
-          Provider prov = new Provider();          
-          try {          
-                 prov.init_Provider("http://www.google.com", xriottoken, "OCE"); 
-                 map.put("isValid", isValid);
-                 map.put("username", Integer.toString(prov.get_ProviderId()));                   
-                 write(resp, map);                 
-          } catch(Exception e) {           
-            System.out.println("An exception threw at Init Provider");           
+                    
+          try {  
+        	  Provider prov = new Provider("http://www.google.com", xriottoken, 
+        			  					   "OCE");
+              map.put("isValid", isValid);
+              map.put("username", Integer.toString(prov.getProviderID()));                   
+              write(resp, map);                 
+          } catch(Exception e) {
+        	  LOGGER.severe("An exception threw at UpdateUsername when "
+        	  		+ "generating a new Provider. The return URL, API Key or "
+        	  		+ "Region is likely incorrect.");
+        	  // TODO Handle this. Print alert to contact admin?
+        	  e.printStackTrace();
           }       
         }              
   }		
