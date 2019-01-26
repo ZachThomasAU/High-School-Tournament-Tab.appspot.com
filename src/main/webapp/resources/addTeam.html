@@ -3,7 +3,7 @@
 	<!-- Add Team Button Trigger Modal -->
 	<button type="button" class="btn btn-primary" data-toggle="modal" 
 			data-target="#addTeamModalLong">
-	  Add Teamv1
+	  Add Team
 	</button>
 	
 	<!-- Modal -->
@@ -23,11 +23,13 @@
 			
 			<div id="teamname">		
 			
-				<input type="text" value="new team" name="teamname"> <br> 
+				<input type="text" class="form-control" 
+								value="new team" name="teamname"> <br> 
 				
-				<input type="text" value="add to tournament" name="tournamentname">
+				<input type="text" class="form-control" 
+							value="join tournament?" name="tournamentname">
 			
-				<p id="hold" style="border: 1px solid red">
+				<p id="holdteam" style="border: 1px solid red">
 						Response will come here</p>
 			</div>			 	
 	
@@ -47,14 +49,14 @@
 	<script>
 	
 	$('#AddteamSubmitButton').click(function(){	
-		
-		alert("Adding a team")
+	
+		$("#holdteam").html($("#teamname").find("select,textarea, input").serialize());
 		
 		$.ajax({
-		url: 'CheckTournamentName',	
+		url: 'CreateTeam',	
 			type: 'POST',
 			dataType: 'json',
-			data: $("#AddTeamInput").serialize(),
+			data: $("#teamname").find("select,textarea, input").serialize(),
 			success: function(data){				
 				//check if the name is okay
 				//0 -> name already taken 
