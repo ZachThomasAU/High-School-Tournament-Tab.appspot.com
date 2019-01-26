@@ -17,7 +17,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
-import com.stdesco.swisstab.apicode.Provider;
+import com.stdesco.swisstab.apicode.ProviderAPI;
 
 /**
  * Servlet implementation class UpdateUsername
@@ -25,11 +25,11 @@ import com.stdesco.swisstab.apicode.Provider;
  */
 
 @WebServlet("/provider")
-public class providerServlet extends HttpServlet {
+public class ProviderServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1l;
 	private static Logger LOGGER = Logger
-			.getLogger(providerServlet.class.getName());
+			.getLogger(ProviderServlet.class.getName());
 	static DatastoreService datastore = 
 								DatastoreServiceFactory.getDatastoreService();
 
@@ -37,7 +37,7 @@ public class providerServlet extends HttpServlet {
 	static String xriottoken;
 	static String httpreturn;
 	static String region;
-	static Provider prov;
+	static ProviderAPI prov;
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -150,7 +150,7 @@ public class providerServlet extends HttpServlet {
 		
 		//setVars(getGlobalsEntity()); depreciated I think
 		
-		prov = new Provider(httpreturn, xriottoken, region);
+		prov = new ProviderAPI(httpreturn, xriottoken, region);
 		
 		// Set the provider code in the entity (Kind=Globals,keyName=key)
 		entity.setProperty("providerID", prov.getProviderID());

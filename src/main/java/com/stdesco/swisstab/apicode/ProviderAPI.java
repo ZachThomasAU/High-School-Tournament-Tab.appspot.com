@@ -20,7 +20,7 @@ package com.stdesco.swisstab.apicode;
 
 //import com.google.appengine.api.datastore.Entity;
 
-public class Provider {
+public class ProviderAPI {
 	private int PROVIDER_ID;
 	
 	/**
@@ -31,7 +31,7 @@ public class Provider {
 	 * @param region
 	 * @throws Exception
 	 */
-	public Provider(String returnWeb, String xToken, String region) 
+	public ProviderAPI(String returnWeb, String xToken, String region) 
 			throws Exception {
 	 
 	    // initialise a stringbuffer for return and initalise the 

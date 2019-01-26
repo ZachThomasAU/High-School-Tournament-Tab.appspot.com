@@ -26,13 +26,13 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
-import com.stdesco.swisstab.apicode.Tournament;
+import com.stdesco.swisstab.apicode.TournamentAPI;
 
 @WebServlet("/initDummyData")
 public class InitDummyData {
 	@SuppressWarnings("unused")
 	private static Logger LOGGER = 
-			Logger.getLogger(initDatastore.class.getName());
+			Logger.getLogger(InitDatastore.class.getName());
 	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	
 	Key key;
@@ -62,7 +62,7 @@ public class InitDummyData {
 				}
 				LOGGER.warning("Global entity not found. Need to init Globals "
 						+ "first");
-				initDatastore.createGlobals();
+				InitDatastore.createGlobals();
 				count++;
 			}
 		}
@@ -125,7 +125,7 @@ public class InitDummyData {
 			int count = 0;
 			while (true) {
 				try {
-					providerServlet.createProvider();
+					ProviderServlet.createProvider();
 					globals = datastore.get(globalsKey);
 					providerID = (int) globals.getProperty("providerID");
 					break;
@@ -138,7 +138,7 @@ public class InitDummyData {
 					}
 					LOGGER.warning("Globals Entity was not found at InitDummy "
 							+ "ln:74. Reinitialising the Globals Entity");
-					initDatastore.createGlobals();
+					InitDatastore.createGlobals();
 					count++;
 				} catch (Exception e) {
 					// TODO Handle this. Probably with alert to contact admin.
@@ -163,7 +163,7 @@ public class InitDummyData {
 	 * 						a late onset Y2K or some shit. 
 	 */
 	private int generateTournamentID() throws Exception {
-		Tournament tournament = new Tournament(apiKey, "Test", providerID);
+		TournamentAPI tournament = new TournamentAPI(apiKey, "Test", providerID);
 		return tournament.getTournamentID();
 	}
 	

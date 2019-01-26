@@ -17,7 +17,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
-import com.stdesco.swisstab.apicode.Tournament;
+import com.stdesco.swisstab.apicode.TournamentAPI;
 
 
 /**
@@ -37,7 +37,7 @@ public class TournamentCodeServletTest extends HttpServlet {
   String xriottoken;
   String region;
   int providerID;
-  Tournament tour;
+  TournamentAPI tour;
  
   public void doPost(HttpServletRequest req, HttpServletResponse resp) 
       throws ServletException, IOException { 
@@ -68,7 +68,7 @@ public class TournamentCodeServletTest extends HttpServlet {
       System.out.print("ProviderID:" + Integer.toString(providerID)+ "\n");
         
       try {
-    	  tour = new Tournament(xriottoken, tournamentName, providerID);
+    	  tour = new TournamentAPI(xriottoken, tournamentName, providerID);
       } catch (Exception e) {
     	  LOGGER.severe("Exception thrown constructing new tournament in "
     	  		+ "TournamentCodeServletTest. API Key, or providerID is likely "

@@ -24,7 +24,7 @@ import com.google.gson.Gson;
  */
 
 @WebServlet("/initDatastore")
-public class initDatastore extends HttpServlet {
+public class InitDatastore extends HttpServlet {
 	private static final long serialVersionUID = 1l;
 	// private static Logger LOGGER =
 	// Logger.getLogger(initDatastore.class.getName());

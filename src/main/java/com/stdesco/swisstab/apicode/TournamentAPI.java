@@ -19,7 +19,7 @@ package com.stdesco.swisstab.apicode;
  * January 2019
  */
 
-public class Tournament {
+public class TournamentAPI {
 
 	private int TOURNAMENT_ID;
 		 
@@ -32,7 +32,7 @@ public class Tournament {
 	 * @return
 	 * @throws Exception
 	 */
-	public Tournament(String xToken, String tournamentName, int providerID) 
+	public TournamentAPI(String xToken, String tournamentName, int providerID) 
 			throws Exception {
 		StringBuffer tcode;
 		SendPostAPI http = new SendPostAPI();

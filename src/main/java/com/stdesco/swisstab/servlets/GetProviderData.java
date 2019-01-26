@@ -17,11 +17,11 @@ import com.stdesco.swisstab.webapp.datastoreConnecter;
  * 
  */
 @WebServlet("/getProvider")
-public class getProviderData extends HttpServlet {
+public class GetProviderData extends HttpServlet {
 	private static final long serialVersionUID = 1l;
 	@SuppressWarnings("unused")
 	private static Logger LOGGER = Logger
-			.getLogger(getProviderData.class.getName());
+			.getLogger(GetProviderData.class.getName());
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {

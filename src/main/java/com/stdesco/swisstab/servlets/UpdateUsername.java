@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
-import com.stdesco.swisstab.apicode.Provider;
+import com.stdesco.swisstab.apicode.ProviderAPI;
 
 
 /**
@@ -26,7 +26,7 @@ import com.stdesco.swisstab.apicode.Provider;
 public class UpdateUsername extends HttpServlet {
   private static final long serialVersionUID = 1l;
   private static Logger LOGGER = Logger
-			.getLogger(providerServlet.class.getName());
+			.getLogger(ProviderServlet.class.getName());
 
  
   public void doPost(HttpServletRequest req, HttpServletResponse resp)  
@@ -41,7 +41,7 @@ public class UpdateUsername extends HttpServlet {
           String xriottoken = "RGAPI-7f88a50e-99cc-4431-9e0a-cfce0ae7fa0a";
                     
           try {  
-        	  Provider prov = new Provider("http://www.google.com", xriottoken, 
+        	  ProviderAPI prov = new ProviderAPI("http://www.google.com", xriottoken, 
         			  					   "OCE");
               map.put("isValid", isValid);
               map.put("username", Integer.toString(prov.getProviderID()));                   
