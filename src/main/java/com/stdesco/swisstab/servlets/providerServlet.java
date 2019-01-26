@@ -30,17 +30,19 @@ public class providerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1l;
 	private static Logger LOGGER = Logger
 			.getLogger(providerServlet.class.getName());
-	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+	static DatastoreService datastore = 
+								DatastoreServiceFactory.getDatastoreService();
 
-	Entity entity;
-	String xriottoken;
-	String httpreturn;
-	String region;
+	static Entity entity;
+	static String xriottoken;
+	static String httpreturn;
+	static String region;
+	static Provider prov;
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		System.out.print("We in boyz\n");
+		System.out.print("providerServlet:45: Running \n");
 
 		/*
 		 * Create a Hash-map to hand the data that will be passed back in the
@@ -59,7 +61,7 @@ public class providerServlet extends HttpServlet {
 
 		// Pull the global entity from Google Cloud data-store
 		try {
-			entity = getEntity();
+			entity = getGlobalsEntity();
 		} catch (EntityNotFoundException e) {
 			// TODO Handle this
 			e.printStackTrace();
@@ -69,14 +71,9 @@ public class providerServlet extends HttpServlet {
 		setVars(entity);
 
 		// Create an object of class provider
-		Provider prov = new Provider();
-
+		// Set the new providerID into the Globals entity.
 		try {
-			prov.init_Provider(httpreturn, xriottoken, region);
-			
-			// Set the provider code in the entity (Kind=Globals,keyName=key)
-			entity.setProperty("providerCode", prov.get_ProviderId());
-			datastore.put(entity);
+			createProvider();
 		} catch (IOException e) {
 			e.printStackTrace();
 			LOGGER.severe("Invalid Return Post URL, API Key or Region in "
@@ -87,18 +84,7 @@ public class providerServlet extends HttpServlet {
 			// TODO When does this Exception throw?
 			LOGGER.warning("Haha this will never happen XD");
 		}
-
-		// Create a new Entity of the provider in line with zac's DB structure
-		// This doesn't do anything at the moment but is important when creating
-		// A tournament.
-		Entity global = new Entity("Provider", prov.get_ProviderId());
-		global.setProperty("providerID", prov.get_ProviderId());
-		global.setProperty("region", region);
-		global.setProperty("url", httpreturn);
-		datastore.put(global);
-
-		System.out.print("v2 - New entity provider in the Datastore\n");
-
+		
 		/*
 		 * Place the integer of provider ID into the map with reference
 		 * provider. From my understanding it will convert later on to JSON ->
@@ -109,7 +95,7 @@ public class providerServlet extends HttpServlet {
 		 * no idea how the JSON manages these types as a string but it seems to
 		 * work.
 		 */
-		map.put("provider", Integer.toString(prov.get_ProviderId()));
+		map.put("provider", Integer.toString(prov.getProviderID()));
 		map.put("isValid", isValid);
 
 		write(resp, map);
@@ -119,7 +105,7 @@ public class providerServlet extends HttpServlet {
 			throws IOException {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
-		System.out.print("Sending back response to the webapp -> GSON\n");
+		System.out.print("providerServlet:108: Responding to web-app using JSON \n");
 		resp.getWriter().write(new Gson().toJson(map));
 	}
 
@@ -128,12 +114,13 @@ public class providerServlet extends HttpServlet {
 	}
 
 	/**
+	 * Generates the Globals Entity
 	 * 
-	 * @return
-	 * @throws EntityNotFoundException
+	 * @return the Globals Entity
+	 * @throws EntityNotFoundException when Globals has not been initialized.
 	 */
-	private Entity getEntity() throws EntityNotFoundException {
-		// Generate the datastore, key and entity
+	private static Entity getGlobalsEntity() throws EntityNotFoundException {
+		// Generate the data-store, key and entity
 		Key key = KeyFactory.createKey("Globals", "highschool");
 		entity = datastore.get(key);
 		return entity;
@@ -142,7 +129,7 @@ public class providerServlet extends HttpServlet {
 	/**
 	 * Pull the properties from the new entity
 	 */
-	private void setVars(Entity entity) {
+	private static void setVars(Entity entity) {
 
 		xriottoken = (String) entity.getProperty("apiKey");
 		System.out.println("API Key:" + xriottoken);
@@ -150,6 +137,35 @@ public class providerServlet extends HttpServlet {
 		System.out.println("appUrl:" + httpreturn);
 		region = (String) entity.getProperty("region");
 		System.out.println("region:" + region);
+	}
+	
+	/**
+	 * Creates a new provider and then stores the properties in a new Entity.
+	 * 
+	 * @throws Exception	when returnURL, API Key or Region are invalid /
+	 * 						illegal, or when the world ends. Both are pretty 
+	 * 						bad.
+	 */
+	public static void createProvider() throws Exception {
+		
+		//setVars(getGlobalsEntity()); depreciated I think
+		
+		prov = new Provider(httpreturn, xriottoken, region);
+		
+		// Set the provider code in the entity (Kind=Globals,keyName=key)
+		entity.setProperty("providerID", prov.getProviderID());
+		datastore.put(entity);
+		
+		// Create the new provider Entity
+		Entity provider = new Entity("Provider", prov.getProviderID());
+		provider.setProperty("providerID", prov.getProviderID());
+		provider.setProperty("region", region);
+		provider.setProperty("url", httpreturn);
+		datastore.put(provider);
+		
+		System.out.print("providerServlet:166: New Entity Provider in the Datastore \n");
+		
+		return;
 	}
 
 }
