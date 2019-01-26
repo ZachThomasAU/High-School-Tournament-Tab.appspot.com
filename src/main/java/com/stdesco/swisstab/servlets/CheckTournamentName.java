@@ -132,7 +132,7 @@ public class CheckTournamentName extends HttpServlet {
     xriottoken = (String) entity.getProperty("apiKey");
     long tempID = (long) entity.getProperty("providerID");
     providerid = Math.toIntExact(tempID);    
-    System.out.println("API Key:" + xriottoken + "providerCode:" + providerid 
+    System.out.println("API Key:" + xriottoken + "providerID:" + providerid 
     				   + "\n");   
   }
   
