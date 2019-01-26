@@ -54,15 +54,19 @@
 			dataType: 'json',
 			data: $("#tname").find("select,textarea, input").serialize(),
 			success: function(data){				
-				if(data.isValid){												
+				//check if the name is okay
+				//0 -> name already taken 
+				//1 -> name avaliable
+				//2 -> no entry
+				if(data.respcode == 0){												
 					alert("That name is already taken")	
-				}else{									
-					
+				}else if(data.respcode == 1){													
 					$('#respcode').html("New Tournament Id:" + data.tournament);
 					$('#respcode').slideDown(500);		
 				    $('#hold').load('/resources/tournamentExtend.html', 
-		            		 function(){});	  
-				    
+		            		 function(){});	  				    
+				}else if(data.respcode == 2){
+					alert("please input a name for your tournament")	
 				}
 			}	
 		});		
@@ -80,15 +84,10 @@
 			dataType: 'json',
 			data: $("#tname").find("select,textarea, input").serialize(),
 			success: function(data){				
-				if(data.isValid){												
-					alert("That name is already taken")	
-				}else{									
-					
-					$('#respcode').html("New Tournament Id:" + data.tournament);
-					$('#respcode').slideDown(500);		
-				    $('#hold').load('/resources/tournamentExtend.html', 
-		            		 function(){});	  
-				    
+				if(data.respcode == 0){												
+					alert("A tournament with that name already exists")	
+				}else{													
+					alert("Successfully created new tournament")		  		    
 				}
 			}	
 		});		
