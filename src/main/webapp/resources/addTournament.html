@@ -1,0 +1,101 @@
+<div>
+	
+	<!-- Add Team Button Trigger Modal -->
+	<button type="button" class="btn btn-primary" data-toggle="modal" 
+			data-target="#exampleModalLong">
+	  Add Tournament
+	</button>
+	
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" 
+		 aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLongTitle">
+	        	New Tournament</h5>
+	        <button type="button" class="close" data-dismiss="modal" 
+	        		aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div id="modalBody" class="modal-body">              
+	      
+			<div id="tname">
+			    <input type="text" value="text text" name="tname"> <br> 
+			
+			<input type="button" id="checkTname" class="btn btn-primary" 
+														value="Check Name" />
+			<p id="hold" style="border: 1px solid red">
+					Response will come here</p>
+			</div>
+			
+	      </div>
+	      
+	      <div class="modal-footer">
+	        <button id="closebutton" type="button" class="btn btn-secondary" 
+	        		data-dismiss="modal">Close</button>
+	        <button id="tournamentSubmit2" type="button" 
+	        		class="btn btn-primary" >Submit</button>
+	      </div>	      
+	    </div>
+	  </div>
+	</div>
+	
+	<script>
+	
+	$('#checkTname').click(function(){				
+		
+		//$("#hold").html($("#tname").find("select,textarea, input").serialize());
+		
+		$.ajax({
+		url: 'CheckTournamentName',	
+			type: 'POST',
+			dataType: 'json',
+			data: $("#tname").find("select,textarea, input").serialize(),
+			success: function(data){				
+				if(data.isValid){												
+					alert("That name is already taken")	
+				}else{									
+					
+					$('#respcode').html("New Tournament Id:" + data.tournament);
+					$('#respcode').slideDown(500);		
+				    $('#hold').load('/resources/tournamentExtend.html', 
+		            		 function(){});	  
+				    
+				}
+			}	
+		});		
+		
+	return false;
+	});
+	
+	$('#tournamentSubmit2').click(function(){				
+		
+		//$("#hold").html($("#tname").find("select,textarea, input").serialize());
+		
+		$.ajax({
+		url: 'CreateTournament',	
+			type: 'POST',
+			dataType: 'json',
+			data: $("#tname").find("select,textarea, input").serialize(),
+			success: function(data){				
+				if(data.isValid){												
+					alert("That name is already taken")	
+				}else{									
+					
+					$('#respcode').html("New Tournament Id:" + data.tournament);
+					$('#respcode').slideDown(500);		
+				    $('#hold').load('/resources/tournamentExtend.html', 
+		            		 function(){});	  
+				    
+				}
+			}	
+		});		
+		
+	return false;
+	});
+	
+	</script>
+</div>	
+	
