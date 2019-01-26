@@ -29,7 +29,7 @@ public class getProviderData extends HttpServlet {
 		String region;
 		String url;
 
-		System.out.print("We using the example boyzzzz");
+		System.out.print("getProviderData:32: Running \n");
 
 		// Create a map to handle the data
 		Map<String, Object> map = new HashMap<String, Object>();
