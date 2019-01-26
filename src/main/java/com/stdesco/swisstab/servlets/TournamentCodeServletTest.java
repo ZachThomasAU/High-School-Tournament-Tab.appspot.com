@@ -18,33 +18,31 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.stdesco.swisstab.apicode.Tournament;
-import com.stdesco.swisstab.webapp.datastoreConnecter;
 
 
 /**
  * Servlet implementation class UpdateUsername
- * 
  */
 
 @WebServlet("/tournamentCodeTest")
 
-public class tournamentCodeServletTest extends HttpServlet {
+public class TournamentCodeServletTest extends HttpServlet {
   private static final long serialVersionUID = 1l;
-  @SuppressWarnings("unused")
   private static Logger LOGGER = 
-  				Logger.getLogger(tournamentCodeServletTest.class.getName());
+  				Logger.getLogger(TournamentCodeServletTest.class.getName());
   DatastoreService datastore = 
 		  		DatastoreServiceFactory.getDatastoreService();
   
   Entity entity;
   String xriottoken;
-  String httpreturn;
   String region;
+  int providerID;
+  Tournament tour;
  
   public void doPost(HttpServletRequest req, HttpServletResponse resp) 
       throws ServletException, IOException { 
         
-	  System.out.print("We in boyz\n");
+	  System.out.print("We in TournamentCodeServletTest boyz\n");
         
       // Create a map to handle the data 
       Map <String, Object> map = new HashMap<String, Object>();
@@ -64,32 +62,26 @@ public class tournamentCodeServletTest extends HttpServlet {
       // Pull the global properties and set them as variables
       setVars(entity);
         
-      // Create an object of class provider
-      Tournament tour = new Tournament();
-        
+      // The tournamentName would ordinarily come from req
       String tournamentName = "New Tournament"; 
       System.out.print("Registered Tournament Name" + tournamentName + "\n");
-        
-      datastoreConnecter data = new datastoreConnecter();
-        
-      long providerIDlong = (long) data.getProperty("Globals", "highschool", 
-      					    "providerCode");
-      int providerID = Math.toIntExact(providerIDlong);
-        
       System.out.print("ProviderID:" + Integer.toString(providerID)+ "\n");
         
       try {
-        tour.init_Tournament(xriottoken, tournamentName, providerID);
+    	  tour = new Tournament(xriottoken, tournamentName, providerID);
       } catch (Exception e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }      
-        
+    	  LOGGER.severe("Exception thrown constructing new tournament in "
+    	  		+ "TournamentCodeServletTest. API Key, or providerID is likely "
+    	  		+ "invalid!");
+    	  // TODO Probably print out an alert to contact admin to handle this.
+    	  e.printStackTrace();
+      }    
+      
       //Add a new tournament to the datastore
       System.out.print("Added new entity provider in the Datastore");
         
       map.put("isValid", isValid);
-      map.put("tournament", tour.get_TournamentId());
+      map.put("tournament", tour.getTournamentID());
         
       write(resp, map);
   }
@@ -119,11 +111,13 @@ public class tournamentCodeServletTest extends HttpServlet {
   }
   
   /**
-   * Pull the properties from the new entity
+   * Pull the properties from the Globals entity
    */
   private void setVars(Entity entity) {   
     
     xriottoken = (String) entity.getProperty("apiKey");
+    long longProviderID = (long) entity.getProperty("providerID");
+    providerID = Math.toIntExact(longProviderID);
     System.out.println("API Key:" + xriottoken);    
   }
   

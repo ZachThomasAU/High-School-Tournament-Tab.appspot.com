@@ -12,7 +12,7 @@ package com.stdesco.swisstab.apicode;
  * This file cannot be copied and/or distributed without the express
  * permission of the copyright holder.
  * 
- * Generate Provider ID
+ * Generate Tournament ID
  * 
  * @author JLwin
  * @author ZThomas
@@ -24,8 +24,7 @@ public class Tournament {
 	private int TOURNAMENT_ID;
 		 
 	/**
-	 * Public method to initialise the provider ID through the API interface 
-	 * with RIOT games: Returns 1 if successful and 0 if unsuccessful
+	 * Constructs a tournament
 	 * 
 	 * @param xToken
 	 * @param tournamentName
@@ -33,8 +32,8 @@ public class Tournament {
 	 * @return
 	 * @throws Exception
 	 */
-	public int init_Tournament(String xToken, String tournamentName, 
-			int providerID) throws Exception {
+	public Tournament(String xToken, String tournamentName, int providerID) 
+			throws Exception {
 		StringBuffer tcode;
 		SendPostAPI http = new SendPostAPI();
 				
@@ -57,21 +56,19 @@ public class Tournament {
 		// TODO: Save the tournament id to storage
 	
 		System.out.println("Updating Tournament data in the datastore");
-	
-		return 1;
 	}
 	
 	/*
 	 * Sets the provider Id Manually to the input Int
 	 */
-	public void set_TournamentId (int tournament) {
+	public void setTournamentID (int tournament) {
 		TOURNAMENT_ID = tournament;
 	}
 	
 	/*
 	 * Sets the provider Id Manually to the input Int
 	 */
-	public int get_TournamentId () {		
+	public int getTournamentID () {		
 		return TOURNAMENT_ID;
 		
 	}
