@@ -86,17 +86,24 @@ public class CheckTournamentName extends HttpServlet {
         PreparedQuery pq = datastore.prepare(q);
         Entity result = pq.asSingleEntity();
         System.out.print("Query result" + result.toString() + "\n");
-        respcode = 1;
+        respcode = 0;
         
       } catch (Exception e) {        
         // TODO Auto-generated catch block
         e.printStackTrace();
         System.out.print("Query result :" + "NULL" + ": \n");
-        respcode = 0;
+        respcode = 1;
       }
       
-      //Check if the name is already in the datastore
+      //Check if the no name has been entered
            
+      if(tournamentName.contentEquals("new tournament") |
+    		  tournamentName.contentEquals("")){ 	  
+    	  respcode = 2;
+    	  System.out.print("tournamentCodeServlet:102: please "
+    	  								  + "change the tournament name\n");
+      }
+      
       map.put("respcode", respcode);       
       write(resp, map);
   }
