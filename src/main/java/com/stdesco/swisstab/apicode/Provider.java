@@ -24,17 +24,14 @@ public class Provider {
 	private int PROVIDER_ID;
 	
 	/**
-	 * Public method to initialise the provider ID through the API interface 
-	 * with RIOT games: Returns 1 if successful and 0 if unsuccessful
-	 * @author JLwin
+	 * Constructs a provider
 	 * 
 	 * @param returnWeb
 	 * @param xToken
 	 * @param region
-	 * @return
 	 * @throws Exception
 	 */
-	public int init_Provider(String returnWeb, String xToken, String region) 
+	public Provider(String returnWeb, String xToken, String region) 
 			throws Exception {
 	 
 	    // initialise a stringbuffer for return and initalise the 
@@ -59,20 +56,19 @@ public class Provider {
 		
 		// TODO Store in datastore
 		System.out.println("Updating Provider data in the datastore");
-		return 1;
 	} 
 	
 	/*
 	 * Sets the provider Id Manually to the input Int
 	 */
-	public void set_ProviderId (int provider) {
+	public void setProviderID (int provider) {
 		PROVIDER_ID = provider;
 	}
 	
 	/*
 	 * Sets the provider Id Manually to the input Int
 	 */
-	public int get_ProviderId () {
+	public int getProviderID () {
 		return PROVIDER_ID;
 	}
 	
