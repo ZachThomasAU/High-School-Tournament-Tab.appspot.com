@@ -58,7 +58,6 @@ public class GetProviderData extends HttpServlet {
 			throws IOException {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
-		System.out.print("got here - GSON");
 		resp.getWriter().write(new Gson().toJson(map));
 	}
 
