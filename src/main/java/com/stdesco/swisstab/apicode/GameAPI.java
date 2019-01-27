@@ -1,5 +1,8 @@
 package com.stdesco.swisstab.apicode;
 
+import java.util.logging.Logger;
+
+import com.stdesco.swisstab.webapp.GlobalsUtility;
 
 public class GameAPI {
 	
@@ -11,6 +14,9 @@ public class GameAPI {
 	private String TEAMSIZE;
 	private String SPECTYPE;
 	private String GAMEREQ_URL;
+	
+	private static Logger LOGGER = 
+			Logger.getLogger(GameAPI.class.getName());
 	
 	
 	/** 
@@ -35,18 +41,17 @@ public class GameAPI {
 	  PICKTYPE = pickType;
 	  SPECTYPE = spectatorType;
 	  
-	  
-	  System.out.println("Game Object Created: Team A = " + TEAMA + 
+	  LOGGER.finer("Game Object Created: Team A = " + TEAMA + 
 	      " Team B =" + TEAMB + " Maptype = " + MAPTYPE + "Picktype = " 
-			  + PICKTYPE + "\n"); 			  
+			  + PICKTYPE + "\n");		  
 	}
 	
 	/** 
 	 * Public method to initialise the game through the API interface 
-	 * @param xToken	Unique xToken from riot 
-	 * @return			Returns 1 if successful and 0 if unsuccessful 
+	 * @param apiKey	Unique xToken from riot 
+	 * @return			Returns gamecode if successful or 0 if unsuccessful
 	 */ 	
-	public int generate_GameCode(String xToken, int tournamentID, 
+	public String generate_GameCode(String apiKey, int tournamentID, 
 			int providerID) throws Exception {
 	    String meta;
 	       
@@ -70,12 +75,17 @@ public class GameAPI {
          		+ "metadata\": \"" + meta + "\",\"pickType\": \"" + PICKTYPE 
          		+ "\",\"spectatorType\": \"" + SPECTYPE 
         		+ "\",\"teamSize\": " + TEAMSIZE + "}";
-        
-         gcode = http.sendPostApi(xToken, gamerequestPostBody, GAMEREQ_URL);
          
-         System.out.println("GameAPI:82" + gcode.toString() + "\n");        	        
-         System.out.println("Saving Game Information to Database");  
+         //Attempt to get the gamecode from the RIOT API return 0 if fails
+         try {
+        	 gcode = http.sendPostApi(apiKey, gamerequestPostBody, GAMEREQ_URL);
+         } catch (Exception e) {
+        	 e.printStackTrace();
+        	 return "badrequest";
+         }
+         
+         LOGGER.finer("GameAPI:87" + gcode.toString() + "\n");        	         
 	      
-	     return Integer.parseInt(gcode.toString());
+	     return gcode.toString() + meta;
 	}
 }
