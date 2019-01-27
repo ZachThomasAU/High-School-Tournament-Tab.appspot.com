@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
  * Unauthorised copying of this file, via any medium, is strictly
@@ -22,6 +25,7 @@ import java.util.logging.Logger;
 public class Tournament {
 	
 	private List<Team> teams = new ArrayList<Team>();
+	private int tournamentID;
 	private int rounds = 0;
 	private int numberOfTeams;
 	private int currentRound = 0;
@@ -34,6 +38,7 @@ public class Tournament {
 	
 	private int byeTeamid;
 	private Team byeTeam;
+	Key tournamentKey;
 
 	/**
 	 * Constructs a new Tournament 
@@ -53,7 +58,14 @@ public class Tournament {
 	 * @exception IllegalArgumentException 
 	 * if number of teams is not identical to the number of team names.
 	 */
-	public Tournament(int rounds, int numberOfTeams, List<String> names) {
+	public Tournament(int rounds, int numberOfTeams, 
+			List<String> names, int tournamentid, int providerid) {
+		
+		tournamentID = tournamentid;
+		tournamentKey = new KeyFactory.Builder("Provider", providerid)
+				.addChild("Tournament", tournamentID)
+				.getKey();
+		
 		if (rounds <= 0) {
 			throw new IllegalArgumentException(
 					"Illegal number of rounds! You " + "picked " + rounds + 
@@ -201,13 +213,13 @@ public class Tournament {
 	 * @return a pairing with no randomness, decided by teamid order.
 	 */
 	private Pairing firstRoundOrderedPairing() {
-		Pairing pairing = new Pairing(currentRound);
+		Pairing pairing = new Pairing(currentRound, tournamentKey);
 		int teamid = 0;
 		while (teamid < numberOfTeams - 1) {
 			Game game = new Game(currentRound, getTeam(teamid), 
-								 getTeam(teamid + 1));
+						   getTeam(teamid + 1), tournamentID, tournamentKey);
 			allGames.add(game);
-			pairing.addGame(game.getTeam1(), game.getTeam2());
+			pairing.addGame(game);
 			teamid += 2;
 		}
 		if ((numberOfTeams % 2) == 1) {
@@ -223,7 +235,7 @@ public class Tournament {
 	 * @return a first round pairing, paired randomly.
 	 */
 	private Pairing firstRoundRandomPairing() {
-		Pairing pairing = new Pairing(currentRound);
+		Pairing pairing = new Pairing(currentRound, tournamentKey);
 		List<Team> notPairedYet = new ArrayList<Team>(teams);
 		while (notPairedYet.size() > 1) {
 			int team1id = random.nextInt(notPairedYet.size());
@@ -232,9 +244,11 @@ public class Tournament {
 			int team2id = random.nextInt(notPairedYet.size());
 			Team team2 = notPairedYet.get(team2id);
 			notPairedYet.remove(team2id);
-			Game game = new Game(currentRound, team1, team2);
+			Game game = new Game(currentRound, team1, 
+								team2, tournamentID, tournamentKey);
+			
 			allGames.add(game);
-			pairing.addGame(game.getTeam1(), game.getTeam2());
+			pairing.addGame(game);
 		}
 		
 		//TODO: Implement Byeround for this type of pairing
@@ -318,7 +332,7 @@ public class Tournament {
 		List<Team> sortedTeams = new ArrayList<Team>(teams);
 		Collections.sort(sortedTeams);
 		byeTeamid = -1;
-		Pairing newPairing = new Pairing(currentRound);
+		Pairing newPairing = new Pairing(currentRound, tournamentKey);
 		
 		if ((numberOfTeams % 2) == 1) {
 			// the number of teams is odd, so we need to choose a team to have 
@@ -392,10 +406,13 @@ public class Tournament {
 				
 				// TODO: test if Red Side/Blue Side
 				
+				/* TODO: fix this. We changed addGame to only take param Game, 
+				 * but now this code won't work with the new method.  
+				 * 
 				Game game = newPairing.addGame(bestScoreTeam, nextScoreTeam);
 				allGames.add(game);
 				gameForBestTeamFound = true;
-				break;
+				break; */
 			}
 			
 			if (gameForBestTeamFound) {
@@ -471,13 +488,16 @@ public class Tournament {
 							return null;
 						}
 					
+						/* TODO: fix this. We changed addGame to only take param Game, 
+						 * but now this code won't work with the new method.  
+						 * 
 						Game newGame = newPairing.addGame(team1, switchTeam);
 						allGames.add(newGame);
 						newGame = newPairing.addGame(team2,  bestScoreTeam);
 						allGames.add(newGame);
 					
 						gameForBestTeamFound = true;
-						break;
+						break; */
 					}
 				}
 			
