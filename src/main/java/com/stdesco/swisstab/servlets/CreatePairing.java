@@ -160,8 +160,9 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
   	  
 	  //Create object of type tournament
 
-      Tournament tournament = new 
-    		  		   Tournament(rounds, numberofteams, teamslist);     
+      Tournament tournament = new Tournament(rounds, numberofteams, 
+    		  teamslist, tournamentID, providerID);     
+      
       tournament.setFirstRoundPairingRule(pairingrule);
       pairing = tournament.pairNextRound();
       
