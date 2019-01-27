@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.KeyFactory.Builder;
+
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
  * Unauthorised copying of this file, via any medium, is strictly
@@ -20,16 +28,26 @@ import java.util.List;
 public class Pairing {
 	private int round;
 	private List<Game> games = new ArrayList<Game>();
-	
+	private List<String> gameids = new ArrayList<String>();
+	DatastoreService datastore = 
+	  		DatastoreServiceFactory.getDatastoreService();
+	Entity pairing;
+	Key tournamentkey;
 	/**
 	 * A Pairing only contains the round it pairs over and no other 
 	 * information.
 	 * 
 	 * @param round The round the the pairing takes place.
 	 */
-	Pairing(int round) {
+	Pairing(int round, Key tournamentKey) {
 		this.round = round;
+		tournamentkey = tournamentKey;	
+		pairing = new Entity("Pairing", round, tournamentKey);
+		pairing.setProperty("gameNames", gameids);
+		datastore.put(pairing);
 	}
+	
+	
 
 	/**
 	 * @return unmodifiable list of the rounds games
@@ -50,7 +68,11 @@ public class Pairing {
 	 * @exception IllegalArgumentException 
 	 * if one of the teams is already in an existing game.
 	 */
-	Game addGame(Team team1, Team team2) {
+	
+	/* This was old code. Instead of deleting it I'm leaving it here in case I
+	 * broke something down the track. This is called "budget version control".
+	 *  
+	 * void addGame(Team team1, Team team2) {
 		for (Game game : games) {
 			if (game.getTeam1().equals(team1)) {
 				throw new IllegalArgumentException("Could not add match " 
@@ -73,9 +95,59 @@ public class Pairing {
 											+ " : team 2 already in match");
 			}
 		}
-		Game game = new Game(round, team1, team2);
-		games.add(game);
-		return game;
+		//Game game = new Game(round, team1, team2);
+		//games.add(game);
+		//return game;
+	} */
+	
+	Game addGame(Game newGame) {
+		Team team1 = newGame.getTeam1();
+		Team team2 = newGame.getTeam2();
+		for (Game game : games) {
+			if (game.getTeam1().equals(team1)) {
+				throw new IllegalArgumentException("Could not add match " 
+											+ team1 + " - " + team2 
+											+ " : team 1 already in match");
+			}
+			if (game.getTeam2().equals(team1)) {
+				throw new IllegalArgumentException("Could not add match " 
+											+ team1 + " - " + team2 
+											+ " : team 1 already in match");
+			}
+			if (game.getTeam1().equals(team2)) {
+				throw new IllegalArgumentException("Could not add match " 
+											+ team1 + " - " + team2 
+											+ " : team 2 already in match");
+			}
+			if (game.getTeam2().equals(team2)) {
+				throw new IllegalArgumentException("Could not add match " 
+											+ team1 + " - " + team2 
+											+ " : team 2 already in match");
+			}
+		}
+		
+		games.add(newGame);
+		gameids.add(newGame.getGameID());
+		
+		System.out.println("Pairing:128: gameids :" 
+												+ gameids.toString() + "\n");
+		//Add the game to the datastore list
+		
+		Key pairKey = new KeyFactory.Builder(tournamentkey)
+				.addChild("Pairing", round)
+				.getKey();
+		
+		try {
+			pairing = datastore.get(pairKey);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			// TODO Note - the above logging is not handling this exception.
+		}
+		
+		// Save the dummy data
+		pairing.setProperty("gameNames", gameids);
+		datastore.put(pairing);
+		return newGame;
 	}
 	
 	/**
