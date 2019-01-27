@@ -1,14 +1,20 @@
 package com.stdesco.swisstab.webapp;
 
+import java.util.logging.Logger;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.stdesco.swisstab.servlets.CreatePairing;
 
 public class GlobalsUtility {
 	static DatastoreService datastore = 
 								DatastoreServiceFactory.getDatastoreService();
+	private static Logger LOGGER = 
+				Logger.getLogger(GlobalsUtility.class.getName());
+	
 	private Entity globals;
 	private String apikey;
 	private String httpreturn;
@@ -24,14 +30,14 @@ public class GlobalsUtility {
 			Key key = KeyFactory.createKey("Globals", "highschool");
 			globals = datastore.get(key);	
 			apikey = (String) globals.getProperty("apiKey");
-			System.out.println("API Key:" + apikey);
 			httpreturn = (String) globals.getProperty("appUrl");
-			System.out.println("appUrl:" + httpreturn);
 			region = (String) globals.getProperty("region");
-			System.out.println("region:" + region);
-			
 			providerID = Math.toIntExact((long) 
 								globals.getProperty("providerID"));
+			
+			LOGGER.finer("GlobalsUtility:42: retrieved global values : apiKey:"
+					+ apikey + " httpreturn :" + httpreturn + " region :" +
+					region + " providerID :" + providerID + "\n");
 			
 		} catch (Exception e) {
 			//TODO Handle this exception
