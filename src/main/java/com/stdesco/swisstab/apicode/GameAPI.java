@@ -2,7 +2,7 @@ package com.stdesco.swisstab.apicode;
 
 
 public class GameAPI {
-    private int GAMECREATED;
+	
 	private String TEAMA;
 	private String TEAMB;
 	private String MAPTYPE;
@@ -11,11 +11,7 @@ public class GameAPI {
 	private String TEAMSIZE;
 	private String SPECTYPE;
 	private String GAMEREQ_URL;
-	//private String[] TEAMLISTA;
-	//private String[] TEAMLISTB;	
-	//private int GAME_CODE;
 	
-	// TODO: Create get and update functions for all of these private variables
 	
 	/** 
 	 * Create the game with all of its required unique information
@@ -27,9 +23,9 @@ public class GameAPI {
      * @param SpectatorType;
      * @param pickType;
      * 
-     * TODO Consider turning this into a constructor - ZT
+     * COMPLETED: Converted into a constructer
 	 */
-	public void create_Game(String teamA, String teamB, String mapType, 
+	public GameAPI(String teamA, String teamB, String mapType, 
 	    String pickType, String spectatorType)  {
 	  
 	  TEAMA = teamA;
@@ -40,13 +36,9 @@ public class GameAPI {
 	  SPECTYPE = spectatorType;
 	  
 	  
-	  System.out.println("Game Information Recieved: Team A = " + TEAMA + 
+	  System.out.println("Game Object Created: Team A = " + TEAMA + 
 	      " Team B =" + TEAMB + " Maptype = " + MAPTYPE + "Picktype = " 
-			  + PICKTYPE); 
-	  
-	  //Save state probable goes here
-	   System.out.println("Game Created"); 
-	   GAMECREATED = 1;	  			  
+			  + PICKTYPE + "\n"); 			  
 	}
 	
 	/** 
@@ -58,40 +50,32 @@ public class GameAPI {
 			int providerID) throws Exception {
 	    String meta;
 	       
-	    if(GAMECREATED == 1) {
-	       StringBuffer gcode;
-	       meta = TEAMA + "vs" + TEAMB ; 
-	       SendPostAPI http = new SendPostAPI();         
-	       GAMEREQ_URL = "https://americas.api.riotgames.com/lol/"
-	       			   	 + "tournament-stub/v4/codes?count=1&tournamentId=" 
-	       			   	 + Integer.toString(tournamentID);
-	       /* GAMEREQ_URL = "https://americas.api.riotgames.com/lol/
-	       	*		   		+ "tournament-stub/v4/codes?count=1&tournamentId="
-	       	*		   		+ "8039"; 
-	       	*/
-	        
-	       /* Currently this is hardcoded and does not draw from the function 
-	        * need to process concatenate later 
-	        */
-	        String gamerequestPostBody = "{\"mapType\": \"" + MAPTYPE+ "\",\""
-	        		+ "metadata\": \"" + meta + "\",\"pickType\": \"" + PICKTYPE 
-	        		+ "\",\"spectatorType\": \"" + SPECTYPE 
-	        		+ "\",\"teamSize\": " + TEAMSIZE + "}";
-	        
-	        gcode = http.sendPostApi(xToken, gamerequestPostBody, GAMEREQ_URL);
-	        System.out.println(gcode.toString());  
-	        
-	        //TOURNAMENT_ID = Integer.parseInt(tcode.toString());	        
-	        System.out.println("Saving Game Information to Database");  
-	        
-	        // Add your code here Zach
-
-	     return 1; 
-	    } else {
-	      System.out.println("Cannot generate game code yet as create_Game has "
-	      		+ "not input required information"); 
-	      return 0; 	      
-	    }
+        StringBuffer gcode;
+        meta = TEAMA + "vs" + TEAMB ; 
+        SendPostAPI http = new SendPostAPI();         
+        GAMEREQ_URL = "https://americas.api.riotgames.com/lol/"
+        			   	 + "tournament-stub/v4/codes?count=1&tournamentId=" 
+        			   	 + Integer.toString(tournamentID);
+       
+        /* GAMEREQ_URL = "https://americas.api.riotgames.com/lol/
+        	*		   		+ "tournament-stub/v4/codes?count=1&tournamentId="
+        	*		   		+ "8039"; 
+         	*/
+        
+        /* Currently this is hardcoded and does not draw from the function 
+         * need to process concatenate later 
+         */
+       
+         String gamerequestPostBody = "{\"mapType\": \"" + MAPTYPE+ "\",\""
+         		+ "metadata\": \"" + meta + "\",\"pickType\": \"" + PICKTYPE 
+         		+ "\",\"spectatorType\": \"" + SPECTYPE 
+        		+ "\",\"teamSize\": " + TEAMSIZE + "}";
+        
+         gcode = http.sendPostApi(xToken, gamerequestPostBody, GAMEREQ_URL);
+         
+         System.out.println("GameAPI:82" + gcode.toString() + "\n");        	        
+         System.out.println("Saving Game Information to Database");  
+	      
+	     return Integer.parseInt(gcode.toString());
 	}
-
 }
