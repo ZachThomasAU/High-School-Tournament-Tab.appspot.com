@@ -137,7 +137,7 @@ public class CreateTournament extends HttpServlet {
 		createTournament(tournamentID, key, tname, trounds);
 		
 		// Set dummy data
-		//dummyMethod(tournamentID);
+		//dummyMethod(tournamentID);s
 		
 		// I don't know what this is...
 		map.put("tournament", Integer.toString(tournamentID));
