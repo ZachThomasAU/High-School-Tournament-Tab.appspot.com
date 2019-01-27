@@ -17,13 +17,17 @@ import com.google.gson.Gson;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-
-
+import com.stdesco.swisstab.appcode.Tournament;
+import com.stdesco.swisstab.appcode.Tournament.FirstRoundPairingRule;
+import com.stdesco.swisstab.appcode.Pairing;
 
 /**
  * Servlet for running the process to create a new team 
@@ -46,6 +50,13 @@ public class CreatePairing extends HttpServlet {
 		  			DatastoreServiceFactory.getDatastoreService();
   
   private List<String> teamslist;
+  FirstRoundPairingRule pairingrule;
+  Pairing pairing;
+  private int rounds;
+  private int currentround;
+  private int pairingruleint;
+  private int numberofteams;
+  private Entity tournamentEntity;
  
 @SuppressWarnings("unchecked")
 public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -55,10 +66,9 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  
 	  //initialize the hash-map for response back to web-app
 	  Map<String, Object> map = new HashMap<String, Object>();
-	  
 	  int tournamentID = 4579;
-	  
 	  int providerID = new GlobalsUtility().getGlobalProviderID();
+	  
 	  System.out.print("CreatePairing:55: TournamentID:"
 	  		+ tournamentID + "ProviderID:" + providerID + "\n");
 	  
@@ -101,7 +111,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
         }else{
         	//The team list is all good
         	System.out.print("CreatePairing:88: teamslist is all good\n");
-        	teamslist = (List<String>) qresult.getProperty("teams");	
+        	teamslist = (List<String>) qresult.getProperty("teams");
         }
         
         //Yes that tournament name exists you are all good to go.            
@@ -116,8 +126,74 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
         return; //Abort Process
       }
 	     
-      //Create Pairing
-          
+      
+      
+      /* Begin tournament pairing process. Convert the datastore state 
+       * into a useable object -> run the pairing and then save the state
+       * Checks wether or not allGames have results from the previous round
+       * before going ahead with the pairing. 
+       */
+      
+      //Pull the current state
+	  long longProviderID = providerID;
+	  long longTournamentID = tournamentID;
+	  Key tournamentKey = new KeyFactory.Builder("Provider", longProviderID)
+			.addChild("Tournament", longTournamentID)
+			.getKey();
+	  try {
+		 tournamentEntity = datastore.get(tournamentKey);
+	  } catch (EntityNotFoundException e) {
+		 // TODO Note - the above logging is not handling this exception.
+	  }
+      
+	  
+	  //Update the local variables
+	  rounds = Math.toIntExact((long)tournamentEntity.getProperty("rounds"));
+  	  currentround = Math.toIntExact((long) 
+  			tournamentEntity.getProperty("currentRound"));
+  	  pairingruleint = Math.toIntExact((long) 
+    			tournamentEntity.getProperty("pairingRule"));
+  	  numberofteams = Math.toIntExact((long) 
+  			tournamentEntity.getProperty("numberOfTeams"));
+  	  
+  	  setPairingRuleConverter(1);
+  	  
+	  //Create object of type tournament
+
+      Tournament tournament = new 
+    		  		   Tournament(rounds, numberofteams, teamslist);     
+      tournament.setFirstRoundPairingRule(pairingrule);
+      pairing = tournament.pairNextRound();
+      
+      System.out.println("CreatePairing:168: " + pairing + "\n");
+      System.out.println("CreatePairing:169: " + pairing.getGames() + "\n"); 
+      try {
+    	  System.out.println("CreatePairing:171: " + tournament.getByeTeam());
+      } catch (IllegalStateException e) {
+    	  System.out.println("CreatePairing:172: no bye team set");
+      }
+      
+      
+      /*FirstRoundPairingRule pairingrule;
+      setPairingRule(pairingrule);
+      int pairingindicator = tournamententity.getproperty("pairingrule");
+      if (pairingindicator = 1) {
+    	  pairingrule = pairingrule.FIRST_ROUND_GAME_ORDERED;
+      } if (pairingindicator = 2) {
+    	  pairingrule = pairingrule.FIRST_ROUND_GAME_RANDOM;
+      } else {
+    	  throw new IllegalStateException("Someone has entered an invalid " 
+    			  + "pairing rule indicator into the datastore!");
+      }
+      
+      
+      if(currentround == 0) {
+    	  tournament.
+      }else {
+    	  //perform second round pairing
+      }*/
+      
+      
  }
 	
 	/**
@@ -136,6 +212,31 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		System.out.print(new Gson().toJson(map).toString() + "\n");
 		resp.getWriter().write(new Gson().toJson(map));
 	}
+	
+	/**
+	 * Takes the datastore pairing rule indicator and sets the tournament
+	 * pairing rule. 
+	 * 
+	 * @param pairingindicator
+	 * 
+	 * @throws IllegalStateException when the pairing rule in the datastore is
+	 * not a 1 or a 2.
+	 */
+	private void setPairingRuleConverter(int pairingindicator) {
+		System.out.println(pairingindicator + "\n");
+		System.out.println((pairingindicator == 1) + "\n");
+		
+		if (pairingindicator == 1) {
+	    	  pairingrule = pairingrule.FIRST_ROUND_GAME_ORDERED;
+	    } else if (pairingindicator == 2) {
+	    	  pairingrule = pairingrule.FIRST_ROUND_GAME_RANDOM;
+	    } else {
+	    	  throw new IllegalStateException("Someone has entered an invalid" 
+	    			  + "pairing rule indicator into the datastore! \n");
+	    }	
+	}
+	
+	
 
 }	
 

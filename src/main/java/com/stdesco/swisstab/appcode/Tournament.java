@@ -31,6 +31,9 @@ public class Tournament {
 	private RandomWrapper random = new RandomWrapper();
 	private final static Logger LOGGER = 
 						 	Logger.getLogger(Tournament.class.getName());
+	
+	private int byeTeamid;
+	private Team byeTeam;
 
 	/**
 	 * Constructs a new Tournament 
@@ -74,6 +77,19 @@ public class Tournament {
 		}
 		this.rounds = rounds;
 		this.numberOfTeams = numberOfTeams;
+	}
+	
+	/**
+	 * @return the team who currently has a bye.
+	 * @throws IllegalStateException if no bye exists.
+	 */
+	public Team getByeTeam() {
+		try {
+			byeTeam.equals(null);
+			return byeTeam;
+		} catch (NullPointerException e) {
+			throw new IllegalStateException("No byeTeam has been set!");
+		}
 	}
 	
 	/**
@@ -194,6 +210,9 @@ public class Tournament {
 			pairing.addGame(game.getTeam1(), game.getTeam2());
 			teamid += 2;
 		}
+		if ((numberOfTeams % 2) == 1) {
+			byeTeam = getTeam((numberOfTeams - 1));
+		}
 		allPairings.add(pairing);
 		return pairing;
 	}
@@ -217,6 +236,9 @@ public class Tournament {
 			allGames.add(game);
 			pairing.addGame(game.getTeam1(), game.getTeam2());
 		}
+		
+		//TODO: Implement Byeround for this type of pairing
+		
 		allPairings.add(pairing);
 		return pairing;
 	}
@@ -295,7 +317,7 @@ public class Tournament {
 		// sorts the teams by score
 		List<Team> sortedTeams = new ArrayList<Team>(teams);
 		Collections.sort(sortedTeams);
-		int byeTeamid = -1;
+		byeTeamid = -1;
 		Pairing newPairing = new Pairing(currentRound);
 		
 		if ((numberOfTeams % 2) == 1) {
@@ -308,6 +330,7 @@ public class Tournament {
 				if (team.getByeRound() == 0) {
 					team.setByeRound(currentRound);
 					byeTeamid = index;
+					byeTeam = team;
 					LOGGER.fine("team " + team + " bye round " + currentRound);
 					break;
 				}
@@ -324,6 +347,7 @@ public class Tournament {
 			bestTeamId = bestScoreTeam.getTeamid();
 			
 			if (bestTeamId == byeTeamid) {
+				byeTeam = bestScoreTeam;
 				LOGGER.fine("team " + bestScoreTeam + " bye this round");
 				continue;
 			}
@@ -344,6 +368,7 @@ public class Tournament {
 				nextTeamid = nextScoreTeam.getTeamid();
 			
 				if (nextTeamid == byeTeamid) {
+					byeTeam = nextScoreTeam;
 					LOGGER.fine(nextScoreTeam + "bye this round");
 					continue;
 				}

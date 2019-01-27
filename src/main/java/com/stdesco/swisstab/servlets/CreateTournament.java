@@ -246,7 +246,7 @@ public class CreateTournament extends HttpServlet {
 		tour.setProperty("tournamentID", tournamentID);
 		tour.setProperty("teams", null); // List<String>
 		tour.setProperty("rounds", rounds);
-		tour.setProperty("pairingRule", 0);
+		tour.setProperty("pairingRule", 1); //Defaults to first round ordered
 		tour.setProperty("numberOfTeams", 0);
 		tour.setProperty("currentRound", 0);
 		tour.setProperty("allPairings", null); // List<Pairing>

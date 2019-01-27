@@ -47,6 +47,7 @@ public class CreateTeam extends HttpServlet {
   private String tournamenTname;
   private int tournamentID;
   private int providerID;
+  private int numberofteams;
   private Entity tournamentEntity;
   private List<String> teams;
  
@@ -139,6 +140,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		}
 		System.out.print("CreateTeam:121: Added Team to Tournament \n");
 		tournamentEntity.setProperty("teams", teams);
+		tournamentEntity.setProperty("numberOfTeams", teams.size());
 		datastore.put(tournamentEntity);
 		
 	} catch (EntityNotFoundException e) {
