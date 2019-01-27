@@ -1,6 +1,32 @@
 <script>
 
 // AJAX Pass POST and return from servlet
+
+	$('#createPairing').click(function() {
+		
+		alert("Create Pairing")
+		
+		$.ajax( {
+			url: 'CreatePairing',	
+			type: 'POST',
+			dataType: 'json',
+			data: 'tournamentcode=4579',
+			success: function(data) {				
+				if (data.respcode == 0) {				
+					
+					alert('response: ' + data.respcode);
+					
+				} else {
+					
+				    alert('response: ' + data.respcode);	
+				    
+				}
+			}	
+		} );		
+		
+	return false;
+	});
+	
 	
 	$('#tournamentTest').click(function() {				
 		$.ajax( {
