@@ -10,7 +10,7 @@
 			url: 'CreatePairing',	
 			type: 'POST',
 			dataType: 'json',
-			data: 'tournamentcode=4579',
+			data: 'tournamentid=4579',
 			success: function(data) {				
 				if (data.respcode == 0) {				
 					
