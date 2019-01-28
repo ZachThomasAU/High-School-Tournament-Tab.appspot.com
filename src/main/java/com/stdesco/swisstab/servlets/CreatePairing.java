@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import com.stdesco.swisstab.webapp.GlobalsUtility;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,6 +28,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.stdesco.swisstab.appcode.Tournament;
 import com.stdesco.swisstab.appcode.Tournament.FirstRoundPairingRule;
+import com.stdesco.swisstab.utils.Globals;
 import com.stdesco.swisstab.appcode.Pairing;
 
 /**
@@ -66,7 +67,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  
 	  //initialize the hash-map for response back to web-app
 	  Map<String, Object> map = new HashMap<String, Object>();
-	  int providerID = new GlobalsUtility().getGlobalProviderID();
+	  int providerID = new Globals().getGlobalProviderID();
 	  
 	  /* Tournament ID is passed into the HTTP request by referencing 
 	   * tournament name and then doing a query in the datastore to get the ID.
@@ -166,7 +167,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
   	  
 	  //----Create object of type tournament----//
       Tournament tournament = new Tournament(rounds, numberofteams, 
-    		  teamslist, tournamentID, providerID);     
+    		  teamslist, tournamentID);     
       tournament.setFirstRoundPairingRule(pairingrule);
       pairing = tournament.pairNextRound();
       tournament.saveUpdatedDatastoreState();

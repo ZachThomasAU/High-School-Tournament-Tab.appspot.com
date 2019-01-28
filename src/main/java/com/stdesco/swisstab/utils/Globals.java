@@ -1,4 +1,4 @@
-package com.stdesco.swisstab.webapp;
+package com.stdesco.swisstab.utils;
 
 import java.util.logging.Logger;
 
@@ -8,11 +8,11 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
-public class GlobalsUtility {
+public class Globals {
 	static DatastoreService datastore = 
 								DatastoreServiceFactory.getDatastoreService();
 	private static Logger LOGGER = 
-				Logger.getLogger(GlobalsUtility.class.getName());
+				Logger.getLogger(Globals.class.getName());
 	
 	private Entity globals;
 	private String apikey;
@@ -27,7 +27,7 @@ public class GlobalsUtility {
 	 *  @args none
 	 *  
 	 */
-	public GlobalsUtility() {
+	public Globals() {
 		
 		/* Attempt grab globals and set them to variables within this class
 		 */

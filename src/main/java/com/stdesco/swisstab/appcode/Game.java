@@ -6,7 +6,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.stdesco.swisstab.apicode.GameAPI;
-import com.stdesco.swisstab.webapp.GlobalsUtility;
+import com.stdesco.swisstab.utils.Globals;
 
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
@@ -51,7 +51,7 @@ public class Game {
 		GameAPI gameapi = new GameAPI(team1.getName(), team2.getName(), 
 				"SUMMONERS_RIFT", "BLIND_PICK", "ALL");
 		
-		GlobalsUtility globals = new GlobalsUtility();
+		Globals globals = new Globals();
 		
 		//TODO: Figure out how the tournament code gets here
 		//Attempt to get the gamecode accross API
