@@ -26,10 +26,10 @@ import com.stdesco.swisstab.apicode.TournamentAPI;
 
 @WebServlet("/tournamentCodeTest")
 
-public class TournamentCodeServletTest extends HttpServlet {
+public class TournamentTest extends HttpServlet {
   private static final long serialVersionUID = 1l;
   private static Logger LOGGER = 
-  				Logger.getLogger(TournamentCodeServletTest.class.getName());
+  				Logger.getLogger(TournamentTest.class.getName());
   DatastoreService datastore = 
 		  		DatastoreServiceFactory.getDatastoreService();
   
@@ -76,9 +76,6 @@ public class TournamentCodeServletTest extends HttpServlet {
     	  // TODO Probably print out an alert to contact admin to handle this.
     	  e.printStackTrace();
       }    
-      
-      //Add a new tournament to the datastore
-      System.out.print("Added new entity provider in the Datastore");
         
       map.put("isValid", isValid);
       map.put("tournament", tour.getTournamentID());
@@ -90,7 +87,6 @@ public class TournamentCodeServletTest extends HttpServlet {
 		  throws IOException {
       resp.setContentType("application/json");
       resp.setCharacterEncoding("UTF-8");
-      System.out.print("got here - GSON");
       resp.getWriter().write(new Gson().toJson(map));      
   }
   

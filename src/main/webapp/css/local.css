@@ -6318,7 +6318,7 @@ table.tablesorter thead tr th:hover {
 	width: 100%;
 	opacity: 0;
 	transition: .5s ease;
-	background-color: rgba(195,195,195,.95);
+	background-color: rgba(195,195,195,.99);
 }
 .disabled:hover .disabled-overlay {
 	opacity: 1;

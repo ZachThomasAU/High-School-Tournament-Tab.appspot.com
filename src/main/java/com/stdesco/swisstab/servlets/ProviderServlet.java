@@ -105,7 +105,8 @@ public class ProviderServlet extends HttpServlet {
 			throws IOException {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
-		System.out.print("providerServlet:108: Responding to web-app using JSON \n");
+		System.out.print("providerServlet:108: Responding to web-app using "
+																+ "JSON \n");
 		resp.getWriter().write(new Gson().toJson(map));
 	}
 
@@ -163,7 +164,8 @@ public class ProviderServlet extends HttpServlet {
 		provider.setProperty("url", httpreturn);
 		datastore.put(provider);
 		
-		System.out.print("providerServlet:166: New Entity Provider in the Datastore \n");
+		System.out.print("providerServlet:166: New Entity Provider in the "
+				+ "												Datastore \n");
 		
 		return;
 	}

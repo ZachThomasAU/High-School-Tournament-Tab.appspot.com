@@ -24,8 +24,6 @@
         $(document).ready(function() {       	
             $('#javascript').load('/js/scripts.jsp', 
             		function(){});            
-            $('#navigationbar').load('/resources/navbar.html', 
-            		function(){});
             $('#addTournamentPopup').load('/resources/addTournament.html', 
             		function(){});
             $('#addTeamPopup').load('/resources/addTeam.html', 
@@ -135,13 +133,16 @@
 				<div class="col-1 col-lg-2">
 					<button id="testProvider" class="btn btn-primary btn-block">Get Provider</button>
 				</div>
-				<div class="col-2 col-lg-2">
-					<button class="btn btn-primary btn-block disabled">Add Tournament Popup</button>
-				</div>
 				<div class="col-1 col-lg-2">
-					<button class="btn btn-primary btn-block disabled">Add Team Popup</button>
+					<div id="addTournamentPopup"></div>
 				</div>
-				<div class="col-9 col-lg-6">
+				<div class="col-1 col-lg-2">					
+					<div id="addTeamPopup"></div>
+				</div>
+				<div class="col-1 col-lg-2">					
+					<button id="createPairing" class="btn btn-primary btn-block">Create Pairing</button>
+				</div>
+				<div class="col-8 col-lg-4">
 				</div>
 			</div>
 			<!-- These are temporary buttons for temporary implementation and debugging -->
@@ -174,6 +175,10 @@
       </div>		
 	</div>
     <!-- /#wrapper -->
+    
+    <!-- /#javascripts -->
+    <div id="javascript"></div>
+    
 </body>
 </html>
 

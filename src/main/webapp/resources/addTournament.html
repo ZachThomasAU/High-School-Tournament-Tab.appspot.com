@@ -1,7 +1,7 @@
 <div>
 	
 	<!-- Add Team Button Trigger Modal -->
-	<button type="button" class="btn btn-primary" data-toggle="modal" 
+	<button type="button" class="btn btn-primary btn-block" data-toggle="modal" 
 			data-target="#exampleModalLong">
 	  Add Tournament
 	</button>
@@ -22,8 +22,12 @@
 	      <div id="modalBody" class="modal-body">              
 	      
 			<div id="tname">
-			    <input type="text" value="new tournament" name="tname"> <br> 
-			
+			    <input type="text" class="form-control"
+			    			 value="new tournament" name="tname"> 
+			    			 	     
+			<input type="text" class="form-control" 
+								value="number of rounds" name="trounds">
+									
 			<input type="button" id="checkTname" class="btn btn-primary" 
 														value="Check Name" />
 			<p id="hold" style="border: 1px solid red">
@@ -86,8 +90,12 @@
 			success: function(data){				
 				if(data.respcode == 0){												
 					alert("A tournament with that name already exists")	
-				}else{													
+				}else if(data.respcode == 1){													
 					alert("Successfully created new tournament")		  		    
+				}else if(data.respcode == 2){													
+					alert("Number of rounds must be convertable to integer")		  		    
+				}else{
+					alert("No valid response code was returned")
 				}
 			}	
 		});		
