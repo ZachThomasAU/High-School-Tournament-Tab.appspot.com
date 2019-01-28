@@ -43,7 +43,6 @@ import com.stdesco.swisstab.appcode.Pairing;
 
 public class CreatePairing extends HttpServlet {
   private static final long serialVersionUID = 1l;
-  @SuppressWarnings("unused")
   private static Logger LOGGER = 
   					Logger.getLogger(CreatePairing.class.getName());
   DatastoreService datastore = 
@@ -53,6 +52,7 @@ public class CreatePairing extends HttpServlet {
   FirstRoundPairingRule pairingrule;
   Pairing pairing;
   private int rounds;
+  @SuppressWarnings("unused")
   private String returnstr;
   private int currentround;
   private int pairingruleint;
