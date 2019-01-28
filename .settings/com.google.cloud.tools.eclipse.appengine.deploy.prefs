@@ -1,6 +1,7 @@
-account.email=jeremy.lwin@stdesco.com
+account.email=zach.thomas@stdesco.com
 eclipse.preferences.version=1
 include.optional.configuration.files=true
+project.allowObsoleteRuntime=false
 project.bucket=
 project.id=high-school-tournament-tab
 project.previousVersion.stop=true
