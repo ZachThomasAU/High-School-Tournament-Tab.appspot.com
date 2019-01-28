@@ -1,0 +1,41 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {
+	background-color: #F0F0F7
+}
+
+.logo {
+    padding-top: 22.5px;
+    padding-bottom: 22.5px;
+    color: #FFFFFF;
+    font-family: "Source Sans Pro";
+    font-style: bold;
+    font-size: 15px;
+    text-align: left;
+    letter-spacing: 2px;
+    vertical-align: middle;
+    padding-left: 20px;
+}
+
+.menu-buttton {
+	padding-bottom: 3px;
+	padding-top: 3px;
+	
+}
+
+.current-dashmenu {
+	background: rgba(0,0,0,0.1);
+}
+
+.wide {
+	padding: 0px;
+}
+
+.vertical-line {
+	width: 2%;
+}
+
+.snipped {
+	margin: 0;
+}

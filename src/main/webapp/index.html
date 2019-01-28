@@ -1,104 +1,501 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High-School-Tournament-Tab Home</title>
 
-	<!-- Required meta tags -->
-    <meta charset="UTF-8">
-    <meta name="viewport" 
-    	  content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" 
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
-    crossorigin="anonymous">
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <!--  This is copied code that we haven't worked out what it does yet
-    		@author ZT  -->
-    <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" 
-    		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" 
-    		crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" 
-    		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" 
-    		crossorigin="anonymous"></script>
-    
-    <script>
-        $(document).ready(function() {       	
-            $('#javascript').load('/js/scripts.jsp', 
-            		function(){});            
-            $('#navigationbar').load('/resources/navbar.html', 
-            		function(){});
-            $('#addTournamentPopup').load('/resources/addTournament.html', 
-            		function(){});
-            $('#addTeamPopup').load('/resources/addTeam.html', 
-            		function(){});
-        });
-        
-    </script>
-    
-    <title>HSEL Tournament App</title>
-
-	</head>
-	<body>
+	<!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/local.css" />
 	
-		<div id= "navigationbar"></div>
-		
-	<div class="container-fluid">
+	<!-- Bootstrap js -->
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 	
-	   <div class="row align-items-start">
-	     <div class="col">
-	      <div id="providerVal">Provider ID:</div>
-	    </div>		
-	    <div class="col">
-	      <div id="tournamentVal">Tournament ID:</div>
-	    </div>  
-	    <div class="col">
-	      <div id="tournamentVal">Datastore Empty</div>
-	    </div>
-	  </div>
-	  
-	  <div class="row align-items-centre">
-	    <div class="col">
-	    <!-- id="testbutton" links to js/scripts.jsp #testButton -->
-	      <button id="testProvider" class="btn btn-outline-primary">
-	      Get Provider
-	      </button>
-	    </div>
-	    <div class="col">
-	    <!--  id="addTournamentPopup" links to resources/addTournament.html-->
-	      <div id="addTournamentPopup"></div>	  
-	    </div>
-	    <!--  id="addTeam" links to resources/TeamPopup.html-->
-	    <div class="col">       
-	    	<div id="addTeamPopup"></div>
-	    </div>
-	  </div>  
-	  
-	    <div class="row align-items-centre">    
-		    <div class="col">    
-		       All of Zachs return information will print here	      
-		    </div>    
-	    </div>
-	    
-	</div>
+	<!-- Fonts -->
+	<link rel="stylesheet" href="https://use.typekit.net/nwg7knq.css">
+</head>
+<body>
+    <div id="wrapper">
+		  <!-- Both Nav Bars -->
+          <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+              <!-- Navbar + Logo -->
+			  <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a id="Logo" class="navbar-brand" href="index.html">TOURNAMENT APP</a></div>
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+				<!-- Sidebar -->
+                <ul id="active" class="nav navbar-nav side-nav">
+                  <li class="selected active-selected"><a href="index.html"><em class="fa fa-home active-fa"></em> Home</a></li>
+                  <li><a class="disabled" href="#"><em class="fa fa-calendar inhead-fa"></em> Calendar</a></li>
+                  <li><a class="disabled" href="#"><i class="fa fa-inbox inhead-fa"></i> Inbox</a></li>
+                    <li><a class="disabled" href="#"><i class="fa fa-users inhead-fa"></i> Team</a></li>
+                    <li><a href="tournament.html"><i class="fa fa-trophy inhead-fa"></i> Tournament</a></li>
+                    <li><a class="disabled" href="#"><i class="fa fa-question inhead-fa"></i> Help Center</a></li>
+                    <li><a class="disabled" href="#"><i class="fa fa-cog inhead-fa"></i> Settings</a></li>
+                </ul>
+				<!-- Topbar -->
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                    <li class="dropdown messages-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope inhead-fa"></i> Messages <span class="badge">2</span> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">2 New Messages</li>
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell inhead-fa"></i></span>
+                                    <span class="message">Security alert</span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell inhead-fa"></i></span>
+                                    <span class="message">Security alert</span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="#">Go to Inbox <span class="badge">2</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown user-dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><em class="fa fa-user inhead-fa"></em> Zachary Thomas<strong class="caret"></strong></a>
+                      <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-user inhead-fa"></i> Profile</a></li>
+                            <li><a href="#"><i class="fa fa-cog inhead-fa"></i> Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#"><i class="fa fa-power-off inhead-fa"></i> Log Out</a></li>
 
-	 <button id="tournamentTest" class="btn btn-outline-primary">
-	 Tournament Test
-	 </button>
-	 
-	 <!-- id="initDatastore" links to js/scripts.jsp #initDatastore -->
-	 <button id="initDatastore" class="btn btn-outline-primary">
-	  Init Globals
-	 </button>    
+                        </ul>
+                    </li>
+                    <li class="divider-vertical"></li>
+                    <li> </li>
+                </ul>
+            </div>
+        </nav>
 
-<div id="javascript"></div>
+        <div id="page-wrapper">
+			<!-- Jumbotron -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Overview <small>Statistics and more!</small></h1>
+                    <div class="alert alert-dismissable alert-warning">
+                        <button data-dismiss="alert" class="close" type="button">&times;</button>
+                        This is still in pre-alpha. These stats are not functional or accurate, and are just for display purposes only. 
+                        <br />
+						<br />
+                        All things that are actually working are Zach's doing. All things that used to work and are now broken are Jeremy's fault.
+                    </div>
+                </div>
+          	</div>
+			<!-- Top Cards Row -->
+            <div class="row">
+				<!-- Tournament Positions Widget -->
+                <div class="col-md-8">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title"><em class="fa fa-chart-line inhead-fa"></em> Tournament Positions</h3>
+                        </div>
+                        <div class="panel-body">
+                          <div ><img src="img/graph.png"></div>
+                        </div>
+                    </div>
+                </div>
+				<!-- Feed Widget -->
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title"><em class="fa fa-rss inhead-fa"></em> Feed</h3>
+                        </div>
+                        <div class="panel-body feed">
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-medal inline-fa"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        <a href="#">BSHS</a> won against <a href="#">Mount Saint Michaels</a> in the <a href="#">QLD League</a>.
+                                    </div>
+                                    <div class="time pull-left">
+                                        3 h
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-check inline-fa"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        <a href="#">Geelong Grammar School</a> has clinched a space in the <a href="#">VIC League</a> playoffs.
+                                    </div>
+                                    <div class="time pull-left">
+                                        10 h
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-plus inline-fa"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        New team <a href="#">Tasmanian eSchool</a> registered in the <a href="#">VIC League</a>.
+                                    </div>
+                                    <div class="time pull-left">
+                                        Today
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-exclamation-triangle inline-fa" style="color: red;"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text" style="color: red;">
+                                        Riot API response fail rate is above normal! <a href="#">See logs</a> for details.
+                                    </div>
+                                    <div class="time pull-left">
+                                        Yesterday
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-archive inline-fa"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        <a href="#">SA League</a> week 9 bracket is ready to be generated.
+                                    </div>
+                                    <div class="time pull-left">
+                                        Yesterday
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-exclamation-triangle inline-fa" style="color: red;"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text" style="color: red">
+                                        <a href="#">Match #233985</a> is taking a while to return a result. May need additional processing.
+                                    </div>
+                                    <div class="time pull-left">
+                                        Wednesday
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-arrow-down inline-fa"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        <a href="#">Load more...</a>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+			<!-- Middle Cards Row -->
+            <div class="row">
+				<!-- Standings Widget -->
+                <div class="col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-chart-bar inhead-fa"></i> Standings - One month tracking </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="shieldui-grid1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+			<!-- Lower Cards Row -->
+            <div class="row">
+				<!-- Weekly Growth Widget -->
+                <div class="col-lg-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title"><em class="fa fa-chart-bar inhead-fa"></em> Growth per Week</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div> 
+								<span><a href="#">No New</a> <a href="#" style="color: #800000; font-weight: bold;">QLD</a> Schools this week. <a href="#">One</a> less than last week.<br><br></span>
+								<span><a href="#">No New</a> <a href="#" style="color: #7ec0ee; font-weight: bold;">NSW</a> Schools this week. <a href="#">Zero</a> less than last week.<br><br></span>
+								<span><a href="#">One New</a> <a href="#" style="color: #000080; font-weight: bold;">VIC</a> School this week. <a href="#">One</a> more than last week.<br><br></span>
+								<span><a href="#">No New</a> <a href="#" style="color: red; font-weight: bold;">SA</a> Schools this week. <a href="#">Zero</a> less than last week.<br><br></span>
+								<span><a href="#">No New</a> <a href="#" style="color: #FFD700; font-weight: bold;">WA</a> Schools this week. <a href="#">Three</a> less than last week.<br><br></span>
+								<span><a href="#">No New</a> <a href="#" style="color: #000000; font-weight: bold;">NZ</a> Schools this week. <a href="#">Zero</a> less than last week.<br><br></span>
+							</div>
+                        </div>
+                    </div>
+                </div>
+				<!-- Matches Played Overview Widget -->
+                <div class="col-lg-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title"><em class="fa fa-bars inhead-fa"></em> Matches Played</h3>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="server-stats">
+                                <li>
+                                    <div class="key pull-right">QLD</div>
+                                    <div class="stat">
+                                        <div class="info">29% / 71 Remaining / 2.3 hours</div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 29%;" class="progress-bar progress-bar"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="key pull-right">NSW</div>
+                                    <div class="stat">
+                                        <div class="info">70% / 3 Remaining / 3.3 hours</div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 70%;" class="progress-bar"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="key pull-right">VIC</div>
+                                    <div class="stat">
+                                        <div class="info">66% / 27 Remaining / 3.3 hours</div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 66.25%;" class="progress-bar"></div>
+                                        </div>
+                                    </div>
+                                </li>
+								<li>
+                                    <div class="key pull-right">SA</div>
+                                    <div class="stat">
+                                        <div class="info">50% / 18 Remaining / 2.8 hours</div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 50%;" class="progress-bar"></div>
+                                        </div>
+                                    </div>
+                                </li>
+								<li>
+                                    <div class="key pull-right">WA</div>
+                                    <div class="stat">
+                                        <div class="info">0% / 39 Remaining / 0.3 hours</div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 0%;" class="progress-bar"></div>
+                                        </div>
+                                    </div>
+                                </li>
+								<li>
+                                    <div class="key pull-right">NZ</div>
+                                    <div class="stat">
+                                        <div class="info">99% / 1 Remaining / 4.3 hours</div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 99%;" class="progress-bar"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
 
-<script>
-
-</script>
-
+                </div>
+				<!-- Recent Accounts Widget -->
+                <div class="col-lg-4">
+                    <header>
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a data-toggle="tab" href="#stats">Users</a>
+                            </li>
+                            <li class="">
+                                <a data-toggle="tab" href="#report">Teams</a>
+                            </li>
+                            <li class="">
+                                <a data-toggle="tab" href="#dropdown1">Commenters</a>
+                            </li>
+                        </ul>
+                    </header>
+                    <div class="body tab-content">
+                        <div class="tab-pane clearfix active" id="stats">
+                            <h5 class="tab-header"><i class="fa fa-calendar fa-2x"></i> Most Recent Signups</h5>
+                            <ul class="news-list">
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Timothy Joyce</a></div>
+                                        <div class="position">St Paul's School</div>
+                                        <div class="time">Signed Up: Jan 27, 11:11</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Zachary Thomas</a></div>
+                                        <div class="position">Proserpine State High School</div>
+                                        <div class="time">Signed Up: Jan 26, 19:02</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Jeremy Lwin</a></div>
+                                        <div class="position">Goondiwindi State High School</div>
+                                        <div class="time">Signed Up: Jan 16, 2:34</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Chris Schubert</a></div>
+                                        <div class="position">Cranbrook School</div>
+                                        <div class="time">Signed Up: Jan 14, 14:28</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Ben de Ridder</a></div>
+                                        <div class="position">Not Publicly Available College of the Arts</div>
+                                        <div class="time">Signed Up: Jan 14, 5:13</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane" id="report">
+                            <h5 class="tab-header"><i class="fa fa-calendar fa-2x"></i> Most Recent Signups</h5>
+                            <ul class="news-list news-list-no-hover">
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Proserpine State High School A</a></div>
+                                        <div class="options">
+                                            <button class="btn btn-xs btn-warning">
+                                                <i class="fa fa-envelope-o"></i>
+                                                Message
+                                            </button>
+                                        </div>
+										<div class="time">Signed Up: Jan 14, 5:13</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Proserpine State High School B</a></div>
+                                        <div class="options">
+                                            <button class="btn btn-xs btn-warning">
+                                                <i class="fa fa-envelope-o"></i>
+                                                Message
+                                            </button>
+                                        </div>
+										<div class="time">Signed Up: Jan 14, 5:13</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">BGS & BGGS (Composite)</a></div>
+                                        <div class="options">
+                                            <button class="btn btn-xs btn-warning">
+                                                <i class="fa fa-envelope-o"></i>
+                                                Message
+                                            </button>
+                                        </div>
+										<div class="time">Signed Up: Jan 14, 5:13</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Brisbane Girls Grammar School</a></div>
+                                        <div class="options">
+                                            <button class="btn btn-xs btn-warning">
+                                                <i class="fa fa-envelope-o"></i>
+                                                Message
+                                            </button>
+                                        </div>
+										<div class="time">Signed Up: Jan 14, 5:13</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Brisbane Boys Grammar School Senior B</a></div>
+                                        <div class="options">
+                                            <button class="btn btn-xs btn-warning">
+                                                <i class="fa fa-envelope-o"></i>
+                                                Message
+                                            </button>
+                                        </div>
+										<div class="time">Signed Up: Jan 14, 5:13</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane" id="dropdown1">
+                            <h5 class="tab-header"><i class="fa fa-comments fa-2x"></i> Top Commenters</h5>
+                            <ul class="news-list">
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Edin Garey</a></div>
+                                        <div class="comment">
+                                            Nemo enim ipsam voluptatem quia voluptas sit aspernatur 
+                                            aut odit aut fugit,sed quia
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Firel Lund</a></div>
+                                        <div class="comment">
+                                            Duis aute irure dolor in reprehenderit in voluptate velit
+                                             esse cillum dolore eu fugiat.
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Jessica Desingter</a></div>
+                                        <div class="comment">
+                                            Excepteur sint occaecat cupidatat non proident, sunt in
+                                             culpa qui officia deserunt.
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Novel Forel</a></div>
+                                        <div class="comment">
+                                            Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque.
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Wedol Reier</a></div>
+                                        <div class="comment">
+                                            Laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis
+                                            et quasi.
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+      </div>
+</div>
+    <!-- /#wrapper -->
 </body>
 </html>
