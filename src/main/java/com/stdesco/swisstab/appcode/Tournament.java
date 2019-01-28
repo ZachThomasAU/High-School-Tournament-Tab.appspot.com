@@ -599,7 +599,7 @@ public class Tournament {
 		 */
 		FIRST_ROUND_GAME_ORDERED,
 		/**
-		 * Math the first round randomly.
+		 * Match the first round randomly.
 		 */
 		FIRST_ROUND_GAME_RANDOM,
 	}
