@@ -38,8 +38,9 @@
 			data: 'FirstName=Mickey&LastName=Mouse',
 			success: function(data) {				
 				if(data.isValid) {								
-					$('#tournamentVal').html("Tournament ID:" + data.tournament);
-					$('#tournamentVal').slideDown(500);			
+			       //$('#tournamentVal').html("Tournament ID:" + data.tournament);
+				   //$('#tournamentVal').slideDown(500);			
+				   alert('Testtournament Returned');
 				} else {				
 				   alert('Please enter a valid username!!');	
 				}
@@ -89,13 +90,11 @@
 			data: 'FirstName=Mickey&LastName=Mouse',
 			success: function(data) {				
 				if (data.isValid) {				
-					
-					$('#displayInit').html(data.response);
-					$('#displayInit').slideDown(500);
-					
-				} else {
-					
-						alert('Please enter a valid username!!');	
+					alert('Init Datastore:' + data.response);
+					//$('#displayInit').html(data.response);
+					//$('#displayInit').slideDown(500);				
+				} else {				
+					alert('Please enter a valid username!!');	
 				}
 			}	
 		} );		
@@ -116,8 +115,7 @@
 					$('#displayDummy').slideDown(500);
 					
 				} else {
-					
-						alert('ehrm...something is wrong');	
+					alert('ehrm...something is wrong');	
 				}
 			}	
 		} );		

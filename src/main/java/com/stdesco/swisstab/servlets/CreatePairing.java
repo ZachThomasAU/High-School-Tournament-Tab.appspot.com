@@ -157,8 +157,6 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  
 	  //----Update the local variables----//
 	  rounds = Math.toIntExact((long)tournamentEntity.getProperty("rounds"));
-  	  currentround = Math.toIntExact((long) 
-  			tournamentEntity.getProperty("currentRound"));
   	  pairingruleint = Math.toIntExact((long) 
     			tournamentEntity.getProperty("pairingRule"));
   	  numberofteams = Math.toIntExact((long) 
@@ -189,7 +187,9 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
        * with round currentround
        * then assign the local variable teamslist.
        */
-      
+  	  currentround = Math.toIntExact((long) 
+  			tournamentEntity.getProperty("currentRound"));
+  	  
       Filter gameRoundFilter =
           new FilterPredicate("round", FilterOperator.EQUAL, 
         		  										currentround); 
