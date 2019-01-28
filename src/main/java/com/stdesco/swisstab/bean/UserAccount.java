@@ -43,6 +43,7 @@ public class UserAccount {
 	private List<String> teams = new ArrayList<String>();
 	private List<String> tournaments = new ArrayList<String>();
 	
+	@SuppressWarnings("unused")
 	private final static Logger LOGGER = 
 		 	Logger.getLogger(Tournament.class.getName());
 	DatastoreService datastore = 
