@@ -252,6 +252,7 @@ public class Tournament {
 	private Pairing firstRoundRandomPairing() {
 		Pairing pairing = new Pairing(currentRound, tournamentKey);
 		List<Team> notPairedYet = new ArrayList<Team>(teams);
+		
 		while (notPairedYet.size() > 1) {
 			int team1id = random.nextInt(notPairedYet.size());
 			Team team1 = notPairedYet.get(team1id);
@@ -260,13 +261,16 @@ public class Tournament {
 			Team team2 = notPairedYet.get(team2id);
 			notPairedYet.remove(team2id);
 			Game game = new Game(currentRound, team1, 
-								team2, tournamentID, tournamentKey);
+								 team2, tournamentID, tournamentKey);
 			
 			allGames.add(game);
 			pairing.addGame(game);
 		}
 		
 		//TODO: Implement Byeround for this type of pairing
+		if ((numberOfTeams % 2) == 1) {
+			byeTeam = notPairedYet.get(0);
+		}
 		
 		allPairings.add(pairing);
 		return pairing;
