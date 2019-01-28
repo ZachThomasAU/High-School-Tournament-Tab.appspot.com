@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -39,8 +40,6 @@ import com.stdesco.swisstab.appcode.Pairing;
 
 @WebServlet("/CreatePairing")
 
-//Possibly takes in a tournamentcode
-
 public class CreatePairing extends HttpServlet {
   private static final long serialVersionUID = 1l;
   @SuppressWarnings("unused")
@@ -53,6 +52,7 @@ public class CreatePairing extends HttpServlet {
   FirstRoundPairingRule pairingrule;
   Pairing pairing;
   private int rounds;
+  private String returnstr;
   private int currentround;
   private int pairingruleint;
   private int numberofteams;
@@ -66,14 +66,24 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  
 	  //initialize the hash-map for response back to web-app
 	  Map<String, Object> map = new HashMap<String, Object>();
-	  int tournamentID = 4579;
 	  int providerID = new GlobalsUtility().getGlobalProviderID();
+	  
+	  /* Tournament ID is passed into the HTTP request by referencing 
+	   * tournament name and then doing a query in the datastore to get the ID.
+	   * 
+	   * TODO: consider wether a better solution could be created in which the
+	   * user has more than one tournamentID registered to them and therefore 
+	   * is able to input multiple tournament names into the HTTP request.  
+	   */
+	  
+	  int tournamentID = 8249; 
 	  
 	  System.out.print("CreatePairing:55: TournamentID:"
 	  		+ tournamentID + "ProviderID:" + providerID + "\n");
 	  
 	  
-      /* Run a query on the Tournament Code and get the list of teams 
+      /* Step 1: Check that the tournament has been initialized properly
+       * Run a query on the Tournament Code and get the list of teams 
        * check that that list is of okay format for creating a pairing
        * then assign the local variable teamslist.
        */	  
@@ -93,7 +103,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
         //Check if the list of teams that is retrieved is null
         if((List<String>) qresult.getProperty("teams") == null) {
         	//Set response code == 2 - List of teams returned null
-        	System.out.print("CreatePairing:88: teamlist is null\n");
+        	System.out.print("CreatePairing:105: teamlist is null\n");
       	  	map.put("respcode", 2);       
       	  	write(resp, map); 
       	  	return; //Abort Process
@@ -101,7 +111,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
       	//Check if at list 2 teams exist in the tournament  	
         }else if(((List<String>) qresult.getProperty("teams")).size() < 2){
         	//Set response code == 1 - List of teams is less than 2
-        	System.out.print("CreatePairing:88: teamslist has less than 2 "
+        	System.out.print("CreatePairing:113: teamslist has less than 2 "
         			+ "entries \n");
       	  	map.put("respcode", 1);       
       	  	write(resp, map); 
@@ -110,7 +120,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
       	//Set local teamslist to variable teamlist
         }else{
         	//The team list is all good
-        	System.out.print("CreatePairing:88: teamslist is all good\n");
+        	System.out.print("CreatePairing:122: teamslist is all good\n");
         	teamslist = (List<String>) qresult.getProperty("teams");
         }
         
@@ -125,16 +135,14 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
         write(resp, map);
         return; //Abort Process
       }
-	     
       
-      
-      /* Begin tournament pairing process. Convert the datastore state 
-       * into a useable object -> run the pairing and then save the state
-       * Checks wether or not allGames have results from the previous round
-       * before going ahead with the pairing. 
+      /* Step 2: Begin the tournament pairing process
+       * Begin tournament pairing process. Convert the datastore state 
+       * into a useable object -> run the pairing process which will save 
+       * the state and update the datastore as it goes along. 
        */
       
-      //Pull the current state
+      //----Pull Current State----//
 	  long longProviderID = providerID;
 	  long longTournamentID = tournamentID;
 	  Key tournamentKey = new KeyFactory.Builder("Provider", longProviderID)
@@ -147,54 +155,64 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  }
       
 	  
-	  //Update the local variables
+	  //----Update the local variables----//
 	  rounds = Math.toIntExact((long)tournamentEntity.getProperty("rounds"));
   	  currentround = Math.toIntExact((long) 
   			tournamentEntity.getProperty("currentRound"));
   	  pairingruleint = Math.toIntExact((long) 
     			tournamentEntity.getProperty("pairingRule"));
   	  numberofteams = Math.toIntExact((long) 
-  			tournamentEntity.getProperty("numberOfTeams"));
+  			tournamentEntity.getProperty("numberOfTeams")); 	  
+  	  setPairingRuleConverter(pairingruleint);
   	  
-  	  setPairingRuleConverter(1);
   	  
-	  //Create object of type tournament
-
+	  //----Create object of type tournament----//
       Tournament tournament = new Tournament(rounds, numberofteams, 
     		  teamslist, tournamentID, providerID);     
-      
       tournament.setFirstRoundPairingRule(pairingrule);
       pairing = tournament.pairNextRound();
+      tournament.saveUpdatedDatastoreState();
       
-      System.out.println("CreatePairing:168: " + pairing + "\n");
-      System.out.println("CreatePairing:169: " + pairing.getGames() + "\n"); 
+      //Notify the user of pairing status
+      System.out.println("CreatePairing:169: Success:" 
+    		  									+ pairing.getGames() + "\n"); 
+      
+      //Check wether or not the Bye Team is set to null
       try {
     	  System.out.println("CreatePairing:171: " + tournament.getByeTeam());
       } catch (IllegalStateException e) {
     	  System.out.println("CreatePairing:172: no bye team set");
       }
       
+      /* Step 3: Prepare the game information for return back to the user
+       * Run a query on the current Gamelist and get all the list of games
+       * with round currentround
+       * then assign the local variable teamslist.
+       */
       
-      /*FirstRoundPairingRule pairingrule;
-      setPairingRule(pairingrule);
-      int pairingindicator = tournamententity.getproperty("pairingrule");
-      if (pairingindicator = 1) {
-    	  pairingrule = pairingrule.FIRST_ROUND_GAME_ORDERED;
-      } if (pairingindicator = 2) {
-    	  pairingrule = pairingrule.FIRST_ROUND_GAME_RANDOM;
-      } else {
-    	  throw new IllegalStateException("Someone has entered an invalid " 
-    			  + "pairing rule indicator into the datastore!");
+      Filter gameRoundFilter =
+          new FilterPredicate("round", FilterOperator.EQUAL, 
+        		  										currentround); 
+      //initialize the query
+      Query gameRoundQuery = new Query("Game").setFilter(gameRoundFilter);
+      
+      try {  	  
+          PreparedQuery pgameRoundQuery = datastore.prepare(gameRoundQuery);
+          List<Entity> roundResult = pgameRoundQuery.
+        		  asList(FetchOptions.Builder.withDefaults());   		  
+          System.out.print("CreatePairing:82: query result" 
+          							+ roundResult.toString() + "\n");
+          returnstr = roundResult.toString();
+      } catch (Exception e) {
+    	  e.printStackTrace();
+    	  //TODO Create handle for exception
       }
-      
-      
-      if(currentround == 0) {
-    	  tournament.
-      }else {
-    	  //perform second round pairing
-      }*/
-      
-      
+
+      //map.put("gameinfo", returnstr); 
+	  map.put("respcode", 4);       
+	  write(resp, map); 	  
+      //return success to user and information about current games
+	  
  }
 	
 	/**
@@ -216,7 +234,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	
 	/**
 	 * Takes the datastore pairing rule indicator and sets the tournament
-	 * pairing rule. 
+	 * pairing rule for creating a tournament
 	 * 
 	 * @param pairingindicator
 	 * 
@@ -224,20 +242,19 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	 * not a 1 or a 2.
 	 */
 	private void setPairingRuleConverter(int pairingindicator) {
-		System.out.println(pairingindicator + "\n");
-		System.out.println((pairingindicator == 1) + "\n");
 		
 		if (pairingindicator == 1) {
-	    	  pairingrule = pairingrule.FIRST_ROUND_GAME_ORDERED;
+	    	  pairingrule = FirstRoundPairingRule.FIRST_ROUND_GAME_ORDERED;
+	    	  LOGGER.finer("Pairingrule set to: FIRST_ROUND_GAME_ORDERED\n");
 	    } else if (pairingindicator == 2) {
-	    	  pairingrule = pairingrule.FIRST_ROUND_GAME_RANDOM;
+	    	  LOGGER.finer("Pairingrule set to: FIRST_ROUND_GAME_RANDOM\n");
+	    	  pairingrule = FirstRoundPairingRule.FIRST_ROUND_GAME_RANDOM;
 	    } else {
+	    	  LOGGER.severe("Invalid PairingRule Indicator\n");
 	    	  throw new IllegalStateException("Someone has entered an invalid" 
 	    			  + "pairing rule indicator into the datastore! \n");
 	    }	
 	}
-	
-	
 
 }	
 
