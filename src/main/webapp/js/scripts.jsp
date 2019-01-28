@@ -1,6 +1,34 @@
 <script>
 
 // AJAX Pass POST and return from servlet
+
+	$('#createPairing').click(function() {
+		
+		alert("Create Pairing")
+		
+		$.ajax( {
+			url: 'CreatePairing',	
+			type: 'POST',
+			dataType: 'json',
+			data: 'tournamentid=4579',
+			success: function(data) {				
+				if (data.respcode == 4) {
+					
+					alert('Successfully paired' + data.respcode);
+					
+					//$('#returnStr').load(data.gameinfo);
+					
+				} else {
+					
+				    alert('response: ' + data.respcode);	
+				    
+				}
+			}	
+		} );		
+		
+	return false;
+	});
+	
 	
 	$('#tournamentTest').click(function() {				
 		$.ajax( {

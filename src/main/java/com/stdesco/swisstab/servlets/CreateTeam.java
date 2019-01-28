@@ -139,6 +139,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		}
 		System.out.print("CreateTeam:121: Added Team to Tournament \n");
 		tournamentEntity.setProperty("teams", teams);
+		tournamentEntity.setProperty("numberOfTeams", teams.size());
 		datastore.put(tournamentEntity);
 		
 	} catch (EntityNotFoundException e) {
