@@ -7,7 +7,6 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.stdesco.swisstab.servlets.CreatePairing;
 
 public class GlobalsUtility {
 	static DatastoreService datastore = 
@@ -21,6 +20,13 @@ public class GlobalsUtility {
 	private String region;
 	private int providerID;
 	
+	/** Public class for accessing the values of the globals kind 
+	 *  which stores inportant information reuqired for the API to
+	 *  work.
+	 *  
+	 *  @args none
+	 *  
+	 */
 	public GlobalsUtility() {
 		
 		/* Attempt grab globals and set them to variables within this class
