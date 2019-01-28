@@ -5,6 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -32,13 +36,27 @@ public class Tournament {
 	private FirstRoundPairingRule firstRoundPairingRule;
 	private List<Game> allGames = new ArrayList<Game>();
 	private List<Pairing> allPairings = new ArrayList<Pairing>();
+	private int byeTeamid;
+	private Team byeTeam;
+	
+	/* Private variables relating to the datastore services - Jlwin
+	 * These list connect the dstore with the object created during this process
+	 * Strings are references to the child kinds that have been created 
+	 * They will allow for restorations of the objects during later processes
+	 * such as checking the results of allGames before the next round pairing
+	 * is performed.
+	 */
+	private List<String> allGamesDS= new ArrayList<String>();
+	private List<Integer> allPairingsDS = new ArrayList<Integer>();
+	Entity tournament;
+	Key tournamentKey;
+	
 	private RandomWrapper random = new RandomWrapper();
 	private final static Logger LOGGER = 
 						 	Logger.getLogger(Tournament.class.getName());
-	
-	private int byeTeamid;
-	private Team byeTeam;
-	Key tournamentKey;
+	DatastoreService datastore = 
+	  		DatastoreServiceFactory.getDatastoreService();	
+
 
 	/**
 	 * Constructs a new Tournament 
@@ -278,6 +296,9 @@ public class Tournament {
 			throw new IllegalArgumentException(
 					"The Tournament ended after round " + rounds + ".");
 		}
+		
+
+		
 		if (currentRound == 1) {
 			// this executes the first round pairing rule, or throws if rule 
 			// not implemented yet.
@@ -488,8 +509,9 @@ public class Tournament {
 							return null;
 						}
 					
-						/* TODO: fix this. We changed addGame to only take param Game, 
-						 * but now this code won't work with the new method.  
+						/* TODO: fix this. We changed addGame to only take param
+						 * Game, but now this code won't work with the new 
+						 * method.  
 						 * 
 						Game newGame = newPairing.addGame(team1, switchTeam);
 						allGames.add(newGame);
@@ -516,6 +538,45 @@ public class Tournament {
 		}
 		
 		return newPairing;
+	}
+	
+	/** Method for saving the updated datastore state after the Tournament
+	 *  Save Pairing Information to Datastore Tournament
+	 *  allPairings -> List of <int> references to pairings
+	 *  allGames -> List of <String> references to games that were created
+	 *  @args none
+	 */
+	public void saveUpdatedDatastoreState(){
+		
+		Pairing tempPairing;
+		tempPairing = allPairings.get(currentRound - 1);
+		
+		LOGGER.finer("Tournament:553: begin saving state\n");
+		
+		try {
+			tournament = datastore.get(tournamentKey);
+			allGamesDS = tempPairing.getGameIds();
+			allPairingsDS.add(tempPairing.getRound());	
+			
+			//Set properties to their local values obtained from pairing
+			tournament.setProperty("allGames", allGamesDS);
+			tournament.setProperty("allPairings", allPairingsDS);
+			tournament.setProperty("currentRound", currentRound);
+			
+			//Put back into the datastore very important
+			datastore.put(tournament);
+			
+			LOGGER.fine("Tournament:566: updated allGames: " 
+						+ allGamesDS.toString() + 
+						" updated allPairings :" 
+						+ allPairingsDS.toString() + "\n");
+			
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			LOGGER.warning("Unable to save tournament State\n");
+			// TODO Note - the above logging is not handling this exception.
+		}
+		
 	}
 	
 	public enum FirstRoundPairingRule {
