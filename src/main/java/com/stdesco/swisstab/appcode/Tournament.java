@@ -46,8 +46,8 @@ public class Tournament {
 	 * such as checking the results of allGames before the next round pairing
 	 * is performed.
 	 */
-	private List<String> allGamesDS= new ArrayList<String>();
-	private List<Integer> allPairingsDS = new ArrayList<Integer>();
+	private List<String> allGamesDatastore= new ArrayList<String>();
+	private List<Integer> allPairingsDatastore = new ArrayList<Integer>();
 	Entity tournament;
 	Key tournamentKey;
 	
@@ -555,21 +555,21 @@ public class Tournament {
 		
 		try {
 			tournament = datastore.get(tournamentKey);
-			allGamesDS = tempPairing.getGameIds();
-			allPairingsDS.add(tempPairing.getRound());	
+			allGamesDatastore = tempPairing.getGameIds();
+			allPairingsDatastore.add(tempPairing.getRound());	
 			
 			//Set properties to their local values obtained from pairing
-			tournament.setProperty("allGames", allGamesDS);
-			tournament.setProperty("allPairings", allPairingsDS);
+			tournament.setProperty("allGames", allGamesDatastore);
+			tournament.setProperty("allPairings", allPairingsDatastore);
 			tournament.setProperty("currentRound", currentRound);
 			
 			//Put back into the datastore very important
 			datastore.put(tournament);
 			
 			LOGGER.fine("Tournament:566: updated allGames: " 
-						+ allGamesDS.toString() + 
+						+ allGamesDatastore.toString() + 
 						" updated allPairings :" 
-						+ allPairingsDS.toString() + "\n");
+						+ allPairingsDatastore.toString() + "\n");
 			
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
