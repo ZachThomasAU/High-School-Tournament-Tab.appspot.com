@@ -62,19 +62,22 @@ public class Tournament {
 	/**
 	 * Constructs a new Tournament 
 	 * 
-	 * @param rounds Number	of rounds in the tournament. Must be
-	 * greater than zero.
-	 * @param numberOfTeams	Number of teams in the tournament. Must
-	 * be greater than or equal to two.
-	 * @param names	List of names of teams in the tournament.
-	 * @param tournamentid The tournament ID fed from the Riot API
+	 * @param rounds 					Number of rounds in the tournament. 
+	 * 									Must be greater than zero.
+	 * @param numberOfTeams				Number of teams in the tournament. Must
+	 * 									be greater than or equal to two.
+	 * @param names						List of names of teams in the 
+	 * 									tournament.
+	 * @param tournamentid 				The tournament ID fed from the Riot API
 	 *
-	 * @exception IllegalArgumentException 
-	 * if number of rounds is less than or equal to zero.
-	 * @exception IllegalArgumentException
-	 * if number of teams is less than two.
-	 * @exception IllegalArgumentException 
-	 * if number of teams is not identical to the number of team names.
+	 * @throws IllegalArgumentException	
+	 * 									if number of rounds is less than or 
+	 * 									equal to zero.
+	 * @throws IllegalArgumentException	
+	 * 									if number of teams is less than two.
+	 * @throws IllegalArgumentException 
+	 * 									if number of teams is not identical to 
+	 * 									the number of team names.
 	 */
 	public Tournament(int rounds, int numberOfTeams, 
 			List<String> names, int tournamentID) {
@@ -113,9 +116,9 @@ public class Tournament {
 	}
 	
 	/**
-	 * @return the team who currently has a bye.
+	 * @return 							the team who currently has a bye.
 	 * 
-	 * @throws IllegalStateException if no bye exists.
+	 * @throws IllegalStateException	if no bye exists.
 	 */
 	public Team getByeTeam() {
 		try {
@@ -127,14 +130,14 @@ public class Tournament {
 	}
 	
 	/**
-	 * @return number of rounds in the tournament.
+	 * @return	number of rounds in the tournament.
 	 */
 	public int getRounds() {
 		return rounds;
 	}
 	
 	/**
-	 * @return the current round. Result is 0 if the tournament has not started.
+	 * @return	the current round. Result is 0 if the tournament has not started.
 	 */
 	public int getCurrentRound() {
 		return currentRound;
@@ -153,10 +156,10 @@ public class Tournament {
 	}
 	
 	/**
-	 * @return the current pairing.
+	 * @return 							the current pairing.
 	 * 
-	 * @exception IllegalArgumentException if try to get the current pairing
-	 * when the tournament hasn't even begun
+	 * @throws IllegalArgumentException	if try to get the current pairing
+	 * 									when the tournament hasn't even begun
 	 */
 	public Pairing getCurrentPairing() {
 		if (currentRound == 0) {
@@ -168,12 +171,13 @@ public class Tournament {
 	}
 	
 	/**
-	 * @param n The specific round you want the pairing for.
+	 * @param n 						The specific round you want the pairing 
+	 * 									for.
 	 * 
-	 * @return the pairing for the requested round.
+	 * @return 							the pairing for the requested round.
 	 * 
-	 * @exception IllegalArgumentException if try to get a pairing when no 
-	 * rounds have been paired yet.
+	 * @throws IllegalArgumentException	if try to get a pairing when no 
+	 * 									rounds have been paired yet.
 	 */
 	public Pairing getPastPairing(int n) {
 		if (currentRound == 0) {
@@ -184,10 +188,12 @@ public class Tournament {
 	}
 	
 	/**
-	 * @param firstRoundPairingRule
+	 * @param firstRoundPairingRule		the rule that indicates if the first 
+	 * 									round should be paired in order or 
+	 * 									randomly.
 	 * 
-	 * @exception IllegalArgumentException 
-	 * if the first round in the tournament has already been paired.
+	 * @throws IllegalArgumentException	if the first round in the tournament has
+	 * 									already been paired.
 	 */
 	public void setFirstRoundPairingRule(
 			FirstRoundPairingRule firstRoundPairingRule) {
@@ -201,9 +207,9 @@ public class Tournament {
 	/**
 	 * Gets the requested team if given their teamid
 	 * 
-	 * @param teamid is the index given to a team when they are created.
+	 * @param teamid 	is the index given to a team when they are created.
 	 * 
-	 * @return the team requested.
+	 * @return 			the team requested.
 	 */
 	public Team getTeam(int teamid) {
 		return teams.get(teamid);
@@ -212,7 +218,7 @@ public class Tournament {
 	/**
 	 * Gets a list of all teams in the tournament. 
 	 * 
-	 * @return a list of all teams in the tournament.
+	 * @return	a list of all teams in the tournament.
 	 */
 	public List<Team> getTeams() {
 		return new ArrayList<Team>(teams);
@@ -225,7 +231,7 @@ public class Tournament {
 	 * event of odd teams the last team registered will ALWAYS get 
 	 * the bye.
 	 * 
-	 * @return a pairing with no randomness, decided by teamid order.
+	 * @return 	a pairing with no randomness, decided by teamid order.
 	 */
 	private Pairing firstRoundOrderedPairing() {
 		Pairing pairing = new Pairing(currentRound, tournamentKey);
@@ -247,7 +253,7 @@ public class Tournament {
 	/**
 	 * Pairs the first round by a psuedo random method. 
 	 * 
-	 * @return a first round pairing, paired randomly.
+	 * @return 	a first round pairing, paired randomly.
 	 */
 	private Pairing firstRoundRandomPairing() {
 		Pairing pairing = new Pairing(currentRound, tournamentKey);
@@ -279,15 +285,17 @@ public class Tournament {
 	/**
 	 * Pairs the next round, if it can. 
 	 * 
-	 * @return the newly paired round.
+	 * @return 								the newly paired round.
 	 * 
-	 * @exception IllegalArgumentException 
-	 * if the tournament has already ended.
-	 * @exception IllegalArgumentException 
-	 * if it's the first round, and a desired ruleset has not been 
-	 * implemented.
-	 * @exception IllegalStateException 
-	 * if the previous round has not finished yet.
+	 * @throws IllegalArgumentException 	
+	 * 										if the tournament has already ended.
+	 * @throws IllegalArgumentException 	
+	 * 										if it's the first round, and a 
+	 * 										desired ruleset has not been 
+	 * 										implemented.
+	 * @exception IllegalStateException 	
+	 * 										if the previous round has not 
+	 * 										finished yet.
 	 * 
 	 */
 	public synchronized Pairing pairNextRound() {
@@ -333,11 +341,12 @@ public class Tournament {
 	 * Takes a list of games, and two teams, and checks if a game in 
 	 * that list has been create between those two teams.
 	 * 
-	 * @param games a list of games
-	 * @param team1 the team you wish to check is playing against team2
-	 * @param team2 the team you wish to check is playing against team1
+	 * @param games 	a list of games
+	 * @param team1 	the team you wish to check is playing against team2
+	 * @param team2 	the team you wish to check is playing against team1
 	 * 
-	 * @return TRUE if a game exists in that list, otherwise returns FALSE.
+	 * @return 			TRUE if a game exists in that list, otherwise returns 
+	 * 					FALSE.
 	 */
 	private static boolean listContainsGameBetweenTeams(
 			List<Game> games, Team team1, Team team2) {
@@ -349,6 +358,10 @@ public class Tournament {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @return	the Pairing for the next round.
+	 */
 	private Pairing getNextRoundPairing() {
 		// sorts the teams by score
 		List<Team> sortedTeams = new ArrayList<Team>(teams);
