@@ -47,7 +47,6 @@ public class CreateTeam extends HttpServlet {
   private String tournamenTname;
   private int tournamentID;
   private int providerID;
-  private int numberofteams;
   private Entity tournamentEntity;
   private List<String> teams;
  
