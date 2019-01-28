@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.stdesco.swisstab.utils.DatastoreUtils;
 
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
@@ -64,30 +65,32 @@ public class Tournament {
 	 * @param rounds Number	of rounds in the tournament. Must be
 	 * greater than zero.
 	 * @param numberOfTeams	Number of teams in the tournament. Must
-	 * be greater than zero.
+	 * be greater than or equal to two.
 	 * @param names	List of names of teams in the tournament.
-	 * 
-	 * TODO
-	 * @param tournamentid
-	 * The tournament ID fed from the Riot API
+	 * @param tournamentid The tournament ID fed from the Riot API
 	 *
 	 * @exception IllegalArgumentException 
 	 * if number of rounds is less than or equal to zero.
+	 * @exception IllegalArgumentException
+	 * if number of teams is less than two.
 	 * @exception IllegalArgumentException 
 	 * if number of teams is not identical to the number of team names.
 	 */
 	public Tournament(int rounds, int numberOfTeams, 
-			List<String> names, int tournamentid, int providerid) {
+			List<String> names, int tournamentID) {
 		
-		tournamentID = tournamentid;
-		tournamentKey = new KeyFactory.Builder("Provider", providerid)
-				.addChild("Tournament", tournamentID)
-				.getKey();
+		this.tournamentID = tournamentID;
+		tournamentKey = DatastoreUtils.getTournamentKey(tournamentID);
 		
 		if (rounds <= 0) {
 			throw new IllegalArgumentException(
 					"Illegal number of rounds! You " + "picked " + rounds + 
 					" rounds. Pick an integer greater " + "than zero");
+		}
+		if (numberOfTeams < 2) {
+			throw new IllegalArgumentException(
+					"You need at least two teams to have a tournament you "
+					+ "certified numpty.");
 		}
 		if (names == null) {
 			names = new ArrayList<String>();
@@ -111,6 +114,7 @@ public class Tournament {
 	
 	/**
 	 * @return the team who currently has a bye.
+	 * 
 	 * @throws IllegalStateException if no bye exists.
 	 */
 	public Team getByeTeam() {
@@ -123,8 +127,6 @@ public class Tournament {
 	}
 	
 	/**
-	 * Gets the number of rounds in the tournament.
-	 * 
 	 * @return number of rounds in the tournament.
 	 */
 	public int getRounds() {
@@ -132,10 +134,7 @@ public class Tournament {
 	}
 	
 	/**
-	 * Gets the current round in the tournament.
-	 * 
-	 * @return 
-	 * the current round. Result is 0 if the tournament has not started.
+	 * @return the current round. Result is 0 if the tournament has not started.
 	 */
 	public int getCurrentRound() {
 		return currentRound;
@@ -185,7 +184,6 @@ public class Tournament {
 	}
 	
 	/**
-	 * 
 	 * @param firstRoundPairingRule
 	 * 
 	 * @exception IllegalArgumentException 
@@ -203,8 +201,7 @@ public class Tournament {
 	/**
 	 * Gets the requested team if given their teamid
 	 * 
-	 * @param 
-	 * teamid is the index given to a team when they are created.
+	 * @param teamid is the index given to a team when they are created.
 	 * 
 	 * @return the team requested.
 	 */
