@@ -10,7 +10,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.KeyFactory.Builder;
+
 
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
@@ -24,24 +24,38 @@ import com.google.appengine.api.datastore.KeyFactory.Builder;
  * 
  * @author zthomas
  * January 2019
+ * 
+ * Edited: JLwin <jeremy.lwin@stdesco.com> 17/01/2019  
+ * Added datastore functionality when creating Pairing which can be accessd
+ * and updated later and used to restore object state. Jlwin
  */
 public class Pairing {
 	private int round;
 	private List<Game> games = new ArrayList<Game>();
+	
+	/* List of String Ids for Games added to the datastore can be used to 
+	 * to access the games from datastore kind "Game" Jlwin
+	 */
 	private List<String> gameids = new ArrayList<String>();
 	DatastoreService datastore = 
 	  		DatastoreServiceFactory.getDatastoreService();
 	Entity pairing;
 	Key tournamentkey;
+	
 	/**
 	 * A Pairing only contains the round it pairs over and no other 
 	 * information.
 	 * 
 	 * @param round The round the the pairing takes place.
+	 * @param tounamentKey is an Object of Class Key from the datastore 
+	 * references that unlocks the parent kind "Tournament" this tournament
 	 */
 	Pairing(int round, Key tournamentKey) {
+		//Sets local versions of arguments
 		this.round = round;
 		tournamentkey = tournamentKey;	
+		
+		//---Datastore---// Create New Entity "Pairing"
 		pairing = new Entity("Pairing", round, tournamentKey);
 		pairing.setProperty("gameNames", gameids);
 		datastore.put(pairing);
@@ -208,4 +222,22 @@ public class Pairing {
 		}
 		return true;
 	}
+	
+	/** Public method for getting gameIds list 
+	 * 
+	 * @return List<String> containing the gameIDs currently in pairing
+	 * @author Jlwin
+	 */
+	public List<String> getGameIds(){
+	    return gameids;
+	}
+	
+	/** Public method for getting the round of this Pairing which 
+	 * alligns with its datastoreID
+	 * @return List<String> containing the gameIDs currently in pairing
+	 * @author Jlwin
+	 */
+	public int getRound(){
+	    return round;
+	} 
 }
