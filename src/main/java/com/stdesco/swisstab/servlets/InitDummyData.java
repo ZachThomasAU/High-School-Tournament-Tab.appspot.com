@@ -30,7 +30,6 @@ import com.stdesco.swisstab.apicode.TournamentAPI;
 
 @WebServlet("/initDummyData")
 public class InitDummyData {
-	@SuppressWarnings("unused")
 	private static Logger LOGGER = 
 			Logger.getLogger(InitDatastore.class.getName());
 	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
