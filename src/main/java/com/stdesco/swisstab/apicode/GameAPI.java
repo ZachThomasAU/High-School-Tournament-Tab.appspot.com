@@ -2,7 +2,6 @@ package com.stdesco.swisstab.apicode;
 
 import java.util.logging.Logger;
 
-import com.stdesco.swisstab.webapp.GlobalsUtility;
 
 public class GameAPI {
 	
