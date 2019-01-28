@@ -1,0 +1,85 @@
+<div>
+	
+	<!-- Add Team Button Trigger Modal -->
+	<button type="button" class="btn btn-primary btn-block" data-toggle="modal" 
+			data-target="#addResultsModalLong">
+	  Add Results
+	</button>
+	
+	<!-- Modal -->
+	<div class="modal fade" id="addResultsModalLong" tabindex="-1" role="dialog" 
+		 aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="AddResultsModalTitle">
+	        	Add Results</h5>
+	        <button type="button" class="close" data-dismiss="modal" 
+	        		aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      
+	      <div id="addResultsModalBody" class="modal-body">              
+			
+			<div id="addresults">
+					
+				<label for="tnameaddresult">Tournament Name</label> 	
+			    <input type="text" class="form-control" 
+								value="tournament name" name="tnameaddresult">
+				<br>
+							
+				<label for="gamecode">Game Code</label> 
+				<input type="text" class="form-control" 
+								value="game code" name="gamecode">
+				<br>			
+				<label for="resultcode">Winner</label> 		
+				<select name="resultcode" class="form-control">
+				     <option>Team 1</option>
+				     <option>Team 2</option>
+		    	</select>   	
+				<br/>
+				<p id="holdresults" style="border: 1px solid red">
+						Response will come here</p>
+			</div>			 	
+	      </div>     
+	      <div class="modal-footer">
+	        <button id="AddResultsCloseButton" type="button" class="btn btn-secondary" 
+	        		data-dismiss="modal">Close</button>
+	        		
+	        <button id="AddResultsSubmitButton" type="button" 
+	        		class="btn btn-primary" >Submit</button>
+	      </div>	      
+	    </div>
+	  </div>
+	</div>
+	
+	<script>
+	
+	$('#AddResultsSubmitButton').click(function(){	
+		
+		alert('button clicked')
+		$("#holdresults").html($("#addresults").find("select,textarea, input").serialize());
+		
+		$.ajax({
+		url: 'addResults',	
+			type: 'POST',
+			dataType: 'json',
+			data: $("#addresults").find("select,textarea, input").serialize(),
+			success: function(data){				
+				if(data.respcode == 100){												
+					alert("Success: Added Result to the datastore")	
+				}else if(data.respcode == 400){													
+					alert("That Tournament as not found")					    
+				}else {
+					alert("Returned unknown code!")	
+				}
+			}	
+		});		
+		
+	return false;
+	});
+	
+	</script>
+</div>	
+	

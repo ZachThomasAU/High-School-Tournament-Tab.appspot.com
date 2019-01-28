@@ -28,6 +28,8 @@
             		function(){});
             $('#addTeamPopup').load('/resources/addTeam.html', 
             		function(){});
+            $('#addResults').load('/resources/addResults.html', 
+            		function(){});
         });
         
     </script>
@@ -154,10 +156,13 @@
 				<div class="col-1 col-lg-2">
 					<button id="tournamentTest" class="btn btn-primary btn-block">Tournament Test</button>
 				</div>
-				<div class="col-2 col-lg-2">
+				<div class="col-1 col-lg-2">
 					<button id="initDatastore" class="btn btn-primary btn-block">Init Globals</button>
 				</div>
-				<div class="col-9 col-lg-8">
+			    <div class="col-1 col-lg-2">
+					<div id="addResults"> </div>
+				</div>
+				<div class="col-9 col-lg-6">
 				</div>
 			</div>
 			<!-- This is the output div -->
