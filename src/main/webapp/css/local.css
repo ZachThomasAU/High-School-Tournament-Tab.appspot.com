@@ -6333,3 +6333,13 @@ table.tablesorter thead tr th:hover {
   	transform: translate(-50%, -50%);
   	text-align: center;
 }
+.form-garnish {
+	height: 100vh;
+	background: #b8b8b8;
+}
+.full-form {
+	height: 100vh;
+	background: #FFFFFF;
+	font-family: "Source Sans Pro";
+	color: #43425D;
+}
