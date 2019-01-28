@@ -15,7 +15,7 @@ import com.stdesco.swisstab.bean.UserAccount;
  * This file cannot be copied and/or distributed without the express
  * permission of the author.
  * 
- * Tournament Class
+ * DAO Class
  * 
  * @author zthomas
  * January 2019

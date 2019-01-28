@@ -18,7 +18,7 @@ import com.stdesco.swisstab.appcode.Tournament;
  * This file cannot be copied and/or distributed without the express
  * permission of the author.
  * 
- * Tournament Class
+ * User Account (Initialisation) Class
  * 
  * @author zthomas
  * January 2019
@@ -52,7 +52,6 @@ public class UserAccount {
 
 	/**
 	 * Constructor for a user account.
-	 * 
 	 */
 	public UserAccount(String fname, String lname, String username, 
 					   String email, String gender, Date dob, 
