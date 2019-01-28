@@ -12,9 +12,11 @@
 			dataType: 'json',
 			data: 'tournamentid=4579',
 			success: function(data) {				
-				if (data.respcode == 0) {				
+				if (data.respcode == 4) {
 					
-					alert('response: ' + data.respcode);
+					alert('Successfully paired' + data.respcode);
+					
+					//$('#returnStr').load(data.gameinfo);
 					
 				} else {
 					
