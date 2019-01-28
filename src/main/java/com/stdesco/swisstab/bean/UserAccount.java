@@ -71,82 +71,162 @@ public class UserAccount {
 		initialiseUserAccount();
 	}
 	
+	/**
+	 * @return the Users first name
+	 */
 	public String getFirstName() {
 		return fname;
 	}
 	
+	/**
+	 * Changes the users first name to the parameter given.
+	 * 
+	 * @param fname	The Users new first name
+	 */
 	public void setFirstName(String fname) {
 		this.fname = fname;
 	}
 	
+	/**
+	 * @return the Users last name
+	 */
 	public String getLastName() {
 		return lname;
 	}
 	
+	/**
+	 * Changes the users last name to the parameter given.
+	 * 
+	 * @param lname	The Users new last name
+	 */
 	public void setLastName(String lname) {
 		this.lname = lname;
 	}
 	
+	/**
+	 * @return the Users full name
+	 */
 	public String getFullName() {
 		return (fname + lname);
 	}
 	
+	/**
+	 * @return the Users username
+	 */
 	public String getUsername() {
 		return username;
 	}
 	
+	/**
+	 * @return the Users email
+	 */
 	public String getEmail() {
 		return email;
 	}
 	
+	/**
+	 * Changes the users email address to the parameter given.
+	 * 
+	 * @param email	The Users new email
+	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
 	
+	/**
+	 * @return the Users gender
+	 */
 	public String getGender() {
 		return gender;
 	}
 	
+	/**
+	 * Changes the users gender to the parameter given.
+	 * 
+	 * @param gender	The Users new gender
+	 */
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
 	
+	/**
+	 * @return the Users date of birth
+	 */
 	public Date getDOB() {
 		return dob;
 	}
 	
+	/**
+	 * Changes the users Date of Birth to the parameter given.
+	 * 
+	 * @param dob	The Users new Date of Birth
+	 */
 	public void setDOB(Date dob) {
 		this.dob = dob;
 	}
 	
+	/**
+	 * @return the Users organisation
+	 */
 	public String getOrganisation() {
 		return organisation;
 	}
 	
+	/**
+	 * Changes the users organisation to the parameter given.
+	 * 
+	 * @param organisation	The Users new organisation
+	 */
 	public void setOrganisation(String organisation) {
 		this.organisation = organisation;
 	}
 	
+	/**
+	 * @return the Users year level
+	 */
 	public int getGrade() {
 		return grade;
 	}
 	
+	/**
+	 * Changes the users grade to the parameter given.
+	 * 
+	 * @param grade	The Users new year level
+	 */
 	public void setGrade(int grade) {
 		this.grade = grade;
 	}
 	
+	/**
+	 * @return the Users password
+	 */
 	public String getPassword() {
 		return password;
 	}
 	
+	/**
+	 * Changes the users password to the parameter given.
+	 * 
+	 * @param password	The Users new password
+	 */
 	public void setPassword(String password) {
 		this.password = password; // TODO Encrypt with KMS
 	}
 	
+	/**
+	 * @return A list of the Users roles/privileges
+	 */
 	public List<String> getRoles() {
 		return roles;
 	}
 	
+	/**
+	 * Adds a new role / privilege to the User
+	 * 
+	 * @param role 						The Users new role
+	 * 
+	 * @throws IllegalArgumentException	If the User already has that role
+	 */
 	public void addRole(String role) {
 		if (roles.contains(role)) {
 			throw new IllegalArgumentException("UserAccount: ln 152 - The User"
@@ -156,6 +236,13 @@ public class UserAccount {
 		}
 	}
 	
+	/**
+	 * Removes a role / privilege from the User
+	 * 
+	 * @param role 						The role to be removed from the User
+	 * 
+	 * @throws IllegalArgumentException	If the User does not have that role
+	 */
 	public void removeRole(String role) {
 		if (role.equals("Player")) {
 			throw new IllegalArgumentException("UserAccount: ln 159 - You "
@@ -168,10 +255,20 @@ public class UserAccount {
 		}
 	}
 	
+	/**
+	 * @return A list of the teams the User plays for
+	 */
 	public List<String> getTeams() {
 		return teams;
 	}
 	
+	/**
+	 * Adds a new team to the User
+	 * 
+	 * @param team 						The Users new team
+	 * 
+	 * @throws IllegalArgumentException	If the User already plays for that team
+	 */
 	public void addTeam(String team) {
 		if (teams.contains(team)) {
 			throw new IllegalArgumentException("UserAccount: ln 177 - The User"
@@ -181,6 +278,13 @@ public class UserAccount {
 		}
 	}
 	
+	/**
+	 * Removes a team from the User
+	 * 
+	 * @param team 						The team to be removed from the User
+	 * 
+	 * @throws IllegalArgumentException	If the User does not play for that team
+	 */
 	public void removeTeam(String team) {
 		if (!teams.contains(team)) {
 			throw new IllegalArgumentException("UserAccount: ln 186 - The User"
@@ -190,10 +294,21 @@ public class UserAccount {
 		}
 	}
 	
+	/**
+	 * @return A list of the tournaments the User plays in
+	 */
 	public List<String> getTournaments() {
 		return tournaments;
 	}
 	
+	/**
+	 * Adds a new tournament to the User
+	 * 
+	 * @param tournament				The Users new tournament
+	 * 
+	 * @throws IllegalArgumentException	If the User already plays in that 
+	 * 									tournament
+	 */
 	public void addTournament(String tournament) {
 		if (tournaments.contains(tournament)) {
 			throw new IllegalArgumentException("UserAccount: ln 199 - The User"
@@ -203,6 +318,15 @@ public class UserAccount {
 		}
 	}
 	
+	/**
+	 * Removes a tournament from the User
+	 * 
+	 * @param tournament				The tournament to be removed from the 
+	 * 									User
+	 * 
+	 * @throws IllegalArgumentException	If the User does not play in that 
+	 * 									tournament
+	 */
 	public void removeTournament(String tournament) {
 		if (!tournaments.contains(tournament)) {
 			throw new IllegalArgumentException("UserAccount: ln 208 - The User"
@@ -211,8 +335,6 @@ public class UserAccount {
 			tournaments.remove(tournament);
 		}
 	}
-	
-	
 	
 	/**
 	 * Saves a newly created user to the GAE Datastore
