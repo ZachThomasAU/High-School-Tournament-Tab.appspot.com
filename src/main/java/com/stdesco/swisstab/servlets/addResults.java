@@ -10,17 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import com.stdesco.swisstab.utils.DatastoreUtils;
+import com.stdesco.swisstab.utils.ServletUtils;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
+
 
 
 
@@ -40,6 +36,7 @@ public class addResults extends HttpServlet {
   					Logger.getLogger(addResults.class.getName());
   DatastoreService datastore = 
 		  			DatastoreServiceFactory.getDatastoreService();
+  DatastoreUtils datastoreUtils = new DatastoreUtils();
  
   String gamecode;
   String tournamentname;
@@ -55,6 +52,7 @@ public class addResults extends HttpServlet {
   //Return 500 if team does not exist
   //Return 400 if the tournament is not found
   //Return 300 if the game is not found
+  //Return 200 if the game already has a result
   //Return 100 if successful!
   
 public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -64,6 +62,8 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  
 	  //initialize the hash-map for response back to web-app
 	  Map<String, Object> map = new HashMap<String, Object>();
+	  int tournamentID = 0;
+	  String winningTeam;
 	  
 	  tournamentname = req.getParameter("tnameaddresult");
 	  gamecode = req.getParameter("gamecode");
@@ -73,127 +73,73 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			  + tournamentname + " gamecode :" + gamecode + 
 			  			" resultcode :" + resultcode +"\n");
 	  
-	  //----Get the tournament code using a query on tournament name---// 
-	  /* Use a google data-store query to check whether or not the tournament 
-       * that the team is trying to assign to has already been created
-       */
+	  //---- Convert the tournament name to tournament API ID ----//
+	  try {
+		  tournamentID = DatastoreUtils.getTournamentID(tournamentname);
+	  } catch(NullPointerException e) {
+		  //Catch the null pointer exception 
+		  e.printStackTrace();
+	      map.put("respcode", 400); 
+	      ServletUtils.writeback(resp, map);
+	      return;
+	  }
 	  
-      Filter propertyFilter =
-          new FilterPredicate("tournamentName", FilterOperator.EQUAL, 
-        		  										tournamentname);
+      //----Generate the Keys and get the Game Entity from Datastore----//  
+      Key gameKey = DatastoreUtils.getGameKey(gamecode, 1, tournamentID);
+      Entity game = DatastoreUtils.getdataStoreEntity(gameKey);
       
-      //initialize the query
-      Query q = new Query("Tournament").setFilter(propertyFilter);
-
-      try {   
-    	//Run the query  
-        PreparedQuery pq = datastore.prepare(q);
-        Entity qresult = pq.asSingleEntity();
-        System.out.print("Query result" + qresult.toString() + "\n");
-        //yes that tournament exists you are good to go!        
-        tournamentID = Math.toIntExact((long) 
-  	    						qresult.getProperty("tournamentID"));
-        
-        
-      } catch (Exception e) {        
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-        System.out.print("Query result :" + "NULL" + ": \n");
-        map.put("respcode", 400);       
-        write(resp, map);
-        return;
+      if(game == null) {
+    	  // Return to user that the gamecode was not found
+          map.put("respcode", 300); 
+          ServletUtils.writeback(resp, map);
+          return;
       }
-	  
-      //----Generate the key for the game in the datastore----//
-      Key gameKey = new KeyFactory
-    		  .Builder("Game","[\"OCE8249-TOURNAMENTCODE0001\"]ANUvsAdeliade-round-1")
-    		  .getKey();
       
-      try {
-			Game = datastore.get(gameKey);
-			
-			teamAid = (String) Game.getProperty("teamA");
-			teamBid = (String) Game.getProperty("teamB");
-			
-			
-			//If statement on resultcode
-			if(resultcode.equals("Team 1")) {
-				//Team A wins	  
-				System.out.print("AddResults:118: Team A Wins!\n");
-				Game.setProperty("gameResult", 1);				
-			}else{
-				//Team B wins
-				System.out.print("AddResults:118: Team B Wins!\n");
-				Game.setProperty("gameResult", 2);				
-			}
-			
-			//finished with game in the datastore
-			datastore.put(Game);	
-			
-		} catch (EntityNotFoundException e) {
-			System.out.print("AddResults:130:"
-						+ "No Entity was found with that gamecode\n");
-			LOGGER.severe("No Enity was found with that gamecode \n");
-			e.printStackTrace();
-	        map.put("respcode", 300);       
-	        write(resp, map);
-	        return;
-	  }
       
-	  Key teamKeyA = new KeyFactory.Builder("Team", teamAid).getKey();
-	  Key teamKeyB = new KeyFactory.Builder("Team", teamBid).getKey();
-	  
-	  if(resultcode.equals("Team 1")) {
-		  try {
-			teamA = datastore.get(teamKeyA);
-			int temp = (int) teamA.getProperty("tournamentScore");
-			teamA.setProperty("tournamentScore", temp + 1);
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			//Team does not exist - should never get here
-	        System.out.print("Query result :" + "NULL" + ": \n");
-	        map.put("respcode", 500);       
-	        write(resp, map);
-	        return;
-		}
-	  }else{
-		  try {
-			teamB = datastore.get(teamKeyB);
-			int temp = (int) teamB.getProperty("tournamentScore");
-			teamB.setProperty("tournamentScore", temp + 1);
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			//Team does not exist - should never get here
-	        System.out.print("Query result :" + "NULL" + ": \n");
-	        map.put("respcode", 500);       
-	        write(resp, map);
-	        return;
-		}	
-	  }
-			
-      map.put("respcode", 100); 
-      write(resp, map);
+      if(Math.toIntExact((long)game.getProperty("gameResult")) == 0){
+	    	  
+	      
+	      System.out.print("AddResults:98: "
+	      		+ game.toString() +"\n");
+	      
+	      //----Check which team is the winner----//
+	      if(resultcode.equals("Team 1")) {
+	    	  System.out.print("AddResults:98: Team 1 Wins\n");
+	    	  game.setProperty("gameResult", 1);
+	    	  winningTeam = (String) game.getProperty("teamA");
+	      }else {
+	    	  System.out.print("AddResults:98: Team 2 Wins\n");
+	    	  game.setProperty("gameResult", 2);
+	    	  winningTeam = (String) game.getProperty("teamB");
+	      }
+	      
+	      System.out.print("AddResults:107: Winning Team: "
+	      		+ winningTeam + "\n");
+	      
+	      //---- Get access to the winning team from Datastore----// 
+	      Key teamKey = DatastoreUtils.getTeamKey(winningTeam, tournamentID);
+	      Entity wteam = DatastoreUtils.getdataStoreEntity(teamKey);
+	      
+	      //---- Increase the score for the winning team by 1----// 
+	      int tempscore = Math.toIntExact((long)wteam
+	    		  				.getProperty("tournamentScore"));
+	      tempscore = tempscore + 1;
+	      System.out.print("AddResults:51: Winning Team: "
+	      		+ winningTeam + ": Score now: " + tempscore + "\n");
+	      
+	      wteam.setProperty("tournamentScore", tempscore);
+	      
+	      //---- Put the Entities back in the datastore and ServletUtils.writeback success back----//
+	      datastore.put(game);
+	      datastore.put(wteam);
+	      
+	      map.put("respcode", 100); 
+	      ServletUtils.writeback(resp, map);
+	      return;
+      	}
       
- }
-	
-	/**
-	 * Writes the HttpServletResponse resp back to the web-application
-	 * Map is sent back a JSON which can be accessed by the AJAX callback
-	 * function and return information to user
-	 * @param resp
-	 * @param map
-	 * @throws IOException
-	 */
-	private void write(HttpServletResponse resp, Map<String, Object> map)
-			throws IOException {
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-		System.out.print("CreateTeam:154: Sending JSON Response \n");
-		System.out.print(new Gson().toJson(map).toString() + "\n");
-		resp.getWriter().write(new Gson().toJson(map));
-	}
-
-}	
-
+      //Write that the game already has a result
+      map.put("respcode", 200); 
+      ServletUtils.writeback(resp, map);
+	}	
+}
