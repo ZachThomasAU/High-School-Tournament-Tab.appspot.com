@@ -264,7 +264,7 @@ public class DatastoreUtils {
 	 * @param key - Key to get the entity from the datastore
 	 * @return Entity 
 	 */
-	public static Entity getDataStoreEntity(Key key) {		
+	public static Entity getEntityFromKey(Key key) {		
 		 Entity entity;	
 		 
 		 try {
@@ -286,7 +286,7 @@ public class DatastoreUtils {
 						String EntityName, Key parentKey) {	
 		
 		 Key key = getTeamKey(EntityName, parentKey);
-		 Entity entity = getDataStoreEntity(key);
+		 Entity entity = getEntityFromKey(key);
 		 
 		 if(entity == null) {
 			 return false; 

@@ -85,7 +85,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  initTeam(teamName, tournament);
 	  
 	  //---- Append the new team to the teamlist in tournament ----//
-	  tournamentEntity = DatastoreUtils.getDataStoreEntity(tournament);
+	  tournamentEntity = DatastoreUtils.getEntityFromKey(tournament);
 	  
 	  try {
 		  teams = (List<String>) tournamentEntity.getProperty("teams");

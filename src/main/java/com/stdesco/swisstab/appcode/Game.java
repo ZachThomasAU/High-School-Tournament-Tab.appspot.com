@@ -2,10 +2,9 @@ package com.stdesco.swisstab.appcode;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.stdesco.swisstab.apicode.GameAPI;
+import com.stdesco.swisstab.utils.AppCodeUtils;
 import com.stdesco.swisstab.utils.Globals;
 
 /**
@@ -25,7 +24,6 @@ import com.stdesco.swisstab.utils.Globals;
 public class Game {
 	private int round;
 	private Key tournamentkey;
-	Entity game;
 	private Team team1;
 	private Team team2;
 	private String gameID;
@@ -53,7 +51,6 @@ public class Game {
 		
 		Globals globals = new Globals();
 		
-		//TODO: Figure out how the tournament code gets here
 		//Attempt to get the gamecode accross API
 		try {
 			gameID = gameapi.generate_GameCode(globals.getGlobalApiKey(),
@@ -68,24 +65,10 @@ public class Game {
 		
 		gameID = gameID + "-round-" + Integer.toString(round);
 		
-		System.out.println("Game:56" + gameID + "\n");
+		AppCodeUtils.saveStateToDataStoreGame(tournamentKey, team1.getName(), 
+						team2.getName(), round, gameID);
 		
-		//----Save Game to DataStore---//
-		
-		Key pairKey = new KeyFactory.Builder(tournamentkey)
-				.addChild("Pairing", round)
-				.getKey();
-		
-		game = new Entity("Game", gameID, pairKey);
-		game.setProperty("gameID", gameID);
-		game.setProperty("teamA", team1.getName());
-		game.setProperty("teamB", team2.getName());
-		game.setProperty("mapType", "SUMMONERS_RIFT");
-		game.setProperty("pickType", "BLIND_PICK");
-		game.setProperty("spectatorType", "ALL");
-		game.setProperty("round", round);	
-		game.setProperty("gameResult", 0);
-		datastore.put(game);
+		System.out.println("Game:56" + gameID + "\n");	
 		
 	}
 	

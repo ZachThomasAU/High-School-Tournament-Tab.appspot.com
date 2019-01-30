@@ -3,13 +3,8 @@ package com.stdesco.swisstab.appcode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
+import com.stdesco.swisstab.utils.AppCodeUtils;
 
 
 /**
@@ -37,9 +32,6 @@ public class Pairing {
 	 * to access the games from datastore kind "Game" Jlwin
 	 */
 	private List<String> gameids = new ArrayList<String>();
-	DatastoreService datastore = 
-	  		DatastoreServiceFactory.getDatastoreService();
-	Entity pairing;
 	Key tournamentkey;
 	
 	/**
@@ -53,12 +45,11 @@ public class Pairing {
 	Pairing(int round, Key tournamentKey) {
 		//Sets local versions of arguments
 		this.round = round;
-		tournamentkey = tournamentKey;	
+		this.tournamentkey = tournamentKey;	
 		
-		//---Datastore---// Create New Entity "Pairing"
-		pairing = new Entity("Pairing", round, tournamentKey);
-		pairing.setProperty("gameNames", gameids);
-		datastore.put(pairing);
+		//Create an entity to save the Pairing State to datastore
+		AppCodeUtils.createEntityPairingFromTkey
+				(this.round, tournamentkey); 		
 	}
 	
 	
@@ -143,24 +134,6 @@ public class Pairing {
 		games.add(newGame);
 		gameids.add(newGame.getGameID());
 		
-		System.out.println("Pairing:128: gameids :" 
-												+ gameids.toString() + "\n");
-		//Add the game to the datastore list
-		
-		Key pairKey = new KeyFactory.Builder(tournamentkey)
-				.addChild("Pairing", round)
-				.getKey();
-		
-		try {
-			pairing = datastore.get(pairKey);
-		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
-			// TODO Note - the above logging is not handling this exception.
-		}
-		
-		// Save the dummy data
-		pairing.setProperty("gameNames", gameids);
-		datastore.put(pairing);
 		return newGame;
 	}
 	
@@ -239,5 +212,12 @@ public class Pairing {
 	 */
 	public int getRound(){
 	    return round;
+	} 
+	
+	/** Public Method for saving the current state of the 
+	 *  object to the datastore
+	 */
+	public void saveState(){
+	    AppCodeUtils.saveStateToDataStorePairing(round, tournamentkey, gameids);
 	} 
 }

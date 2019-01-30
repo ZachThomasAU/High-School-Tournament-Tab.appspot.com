@@ -17,10 +17,7 @@ import com.google.gson.Gson;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
@@ -28,6 +25,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.stdesco.swisstab.appcode.Tournament;
 import com.stdesco.swisstab.appcode.Tournament.FirstRoundPairingRule;
+import com.stdesco.swisstab.utils.DatastoreUtils;
 import com.stdesco.swisstab.utils.Globals;
 import com.stdesco.swisstab.appcode.Pairing;
 
@@ -142,19 +140,9 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
        * into a useable object -> run the pairing process which will save 
        * the state and update the datastore as it goes along. 
        */
-      
-      //----Pull Current State----//
-	  long longProviderID = providerID;
-	  long longTournamentID = tournamentID;
-	  Key tournamentKey = new KeyFactory.Builder("Provider", longProviderID)
-			.addChild("Tournament", longTournamentID)
-			.getKey();
-	  try {
-		 tournamentEntity = datastore.get(tournamentKey);
-	  } catch (EntityNotFoundException e) {
-		 // TODO Note - the above logging is not handling this exception.
-	  }
-      
+	  
+	  tournamentEntity = DatastoreUtils
+			  .getEntityFromKey(DatastoreUtils.getTournamentKey(tournamentID));
 	  
 	  //----Update the local variables----//
 	  rounds = Math.toIntExact((long)tournamentEntity.getProperty("rounds"));
@@ -170,6 +158,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
     		  teamslist, tournamentID);     
       tournament.setFirstRoundPairingRule(pairingrule);
       pairing = tournament.pairNextRound();
+      pairing.saveState();
       tournament.saveUpdatedDatastoreState();
       
       //Notify the user of pairing status
@@ -188,6 +177,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
        * with round currentround
        * then assign the local variable teamslist.
        */
+      
   	  currentround = Math.toIntExact((long) 
   			tournamentEntity.getProperty("currentRound"));
   	  
