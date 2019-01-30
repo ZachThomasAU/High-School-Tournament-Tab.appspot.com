@@ -36,7 +36,7 @@ public class WebAppUtils {
 	 */
 	public static void storeLoggedInUser(HttpSession session, 
 			UserAccount loggedInUser) {
-		// The JSP can access via ${loggedInUser}
+		// The JSP can access this via ${loggedInUser}
 		session.setAttribute("loggedInUser", loggedInUser);
 	}
 	
@@ -47,6 +47,23 @@ public class WebAppUtils {
 		UserAccount loggedInUser = 
 				(UserAccount) session.getAttribute("loggedInUser");
 		return loggedInUser;
+	}
+	
+	/**
+	 * 
+	 */
+	public static int storeRedirectAfterLoginURL(HttpSession session, 
+												 String requestURI) {
+		Integer id = uri_id_map.get(requestURI);
+		
+		if (id == null) {
+			id = REDIRECT_ID++;
+			
+			uri_id_map.put(requestURI, id);
+			id_uri_map.put(id, requestURI);
+			return id;
+		}
+		return id;
 	}
 	
 	/**
