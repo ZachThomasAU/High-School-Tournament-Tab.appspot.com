@@ -293,4 +293,35 @@ public class DatastoreUtils {
 		 }
 		 return true;
      }
+	
+	/** Public static method for checking if a given property of kind
+	 *  exists in the datastore regardless of if it has a parent
+	 * 
+	 * @param kind - String corresponding to the target kind 
+	 * @param propertyName - String corrresponding to the column name
+	 * @param propertyValue - String corresponding to the property value 
+	 * @return
+	 */
+	public static boolean checkIfPropertyExists(String kind, 
+			String propertyName, String propertyValue) {	
+		
+	  Filter propertyFilter =
+         new FilterPredicate(propertyName, FilterOperator.EQUAL, propertyValue);
+	  
+      Query q = new Query(kind).setFilter(propertyFilter);
+
+      try { 
+        PreparedQuery pq = datastore.prepare(q);
+        Entity result = pq.asSingleEntity();
+        LOGGER.finer("Cannot override tournament" + result.toString()+"\n");
+        return true;
+      } catch (Exception e) {        
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+        LOGGER.fine("CreateTournament:54: No record in column "
+        		+ "propertyName: " + propertyName + "With value: "
+        		+ propertyValue + "\n");
+        return false;
+      }
+   }   
 }

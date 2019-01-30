@@ -15,17 +15,13 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.gson.Gson;
 import com.stdesco.swisstab.apicode.TournamentAPI;
+import com.stdesco.swisstab.utils.DatastoreUtils;
+import com.stdesco.swisstab.utils.ServletUtils;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-
 
 /**
  * Servlet implementation class UpdateUsername
@@ -48,119 +44,91 @@ public class CreateTournament extends HttpServlet {
   int tournamentID;
   int trounds;
   Entity tour;
-
-
  
+  //Return 500 if rounds not of the form number
+  //Return 400 if tournament already exists 
+  
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		  throws ServletException, IOException {
 	  
 	  System.out.print("CreateTournament:50: Running \n");
 	  
 	  Map<String, Object> map = new HashMap<String, Object>();
-	  String tname = req.getParameter("tname"); 
+	  String tname = req.getParameter("tname");
+	  String pairingType = req.getParameter("pairingtype");
 	  
+	  LOGGER.finer("CreateTournament:63: Pairingtype :"
+	  		+ pairingType + "\n");
+	  
+	  //---- Check whether or not trounds is convertable to int ----//
 	  try {
 		  trounds = Integer.parseInt(req.getParameter("trounds")); 
-	  } catch (NumberFormatException e1) {
-		  //TODO Write exception handle for from number format
-		  e1.printStackTrace();
-		  map.put("respcode", 2); //Not a number in input abort
-		  write(resp, map);
+	  } catch (NumberFormatException e) {
+		  //e.printStackTrace();
+		  map.put("respcode", 500); //Not a number in input abort
+		  ServletUtils.writeback(resp, map);
 		  return;
-
-	  } catch (Exception e2) {
-		//TODO Write exception handle for generic exception
-		  e2.printStackTrace();	 
-	  }
+	  } 
 	  
 	  System.out.print("CreateTournament:54: Tournament Name:"
 			  	+ tname + "Number of Rounds: " + trounds + "\n");
 		
-      /*
-       * Query to check whether or not that name already exist and if it 
-       * does not exist already continue to create the tournament code 
-       * and record using the API. 
-       */
-      Filter propertyFilter =
-          new FilterPredicate("tournamentName", FilterOperator.EQUAL, tname);
-      Query q = new Query("Tournament").setFilter(propertyFilter);
-
-      try {
-    	//attempt to run the query 
-        PreparedQuery pq = datastore.prepare(q);
-        Entity result = pq.asSingleEntity();
-        System.out.print("Cannot override tournament" + result.toString()+"\n");
-		map.put("respcode", 0);	
-		write(resp, map);
-		return;
-        
-      } catch (Exception e) {        
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-        System.out.print("CreateTournament:54: No record was found continue "
-        		+ "with creation of the tournament" + tname + "\n");
-      }
-      
-	    
-		// Generates the Provider Entity Key for parenting.
-		int count = 0;
-		while(true) {
-			try {
-				key = getProviderKey();
-				break;
-			} catch (EntityNotFoundException e) {
-				if (count == 1) {
-					LOGGER.severe("EntityNotFoundException despite Globals "
-							+ "set!");
-					e.printStackTrace();
-					break;
-				}
-				LOGGER.warning("Global entity not found. Need to init Globals "
-						+ "first ");
-				InitDatastore.createGlobals();
-				count++;
-			}
-		}
-		
-		// Generates the tournamentID to be used as the keyName.
+      //---- Check if that tournament already exists ----//
+	  
+	  if(DatastoreUtils.checkIfPropertyExists("Tournament"
+			  									,"tournamentName", tname)) {
+		  LOGGER.finer("CreateTournament:88: Property check found "
+			  	+ "Tournament with name:" + tname + "\n");
+		  map.put("respcode", 400);	
+		  ServletUtils.writeback(resp, map);
+		  return;
+	  } else {
+		  LOGGER.finer("CreateTournament:91:That "
+		  				+ "tournament does not exist continue creation \n");
+	  }
+	  
+	  // Generates the Provider Entity Key for parenting.
+	  int count = 0;
+	  while(true) {
 		try {
-			tournamentID = generateTournamentID(tname);
-		} catch (Exception e) {
-			// TODO Handles this. Probs with alert to Admin.
-			LOGGER.severe("Tournament could not construct. Probably because "
-					+ "apiKey or providerID invalid, or tournamentName "
-					+ "illegal.");
-			e.printStackTrace();
-		}
+			key = getProviderKey();
+			break;
+		} catch (EntityNotFoundException e) {
+			if (count == 1) {
+				LOGGER.severe("EntityNotFoundException despite Globals "
+						+ "set!");
+				e.printStackTrace();
+				break;
+			}
+			LOGGER.warning("Global entity not found. Need to init Globals "
+					+ "first ");
+			InitDatastore.createGlobals();
+			count++;
+		  }
+	 }
 		
-		// Generates the Tournament Entity.
-		createTournament(tournamentID, key, tname, trounds);
+  	 //Generate Tournament tournamentID across API
+    
+	 try {
+	 	 tournamentID = generateTournamentID(tname);
+	 } catch (Exception e) {
+		 // TODO Handles this. Probs with alert to Admin.
+		 LOGGER.severe("Tournament could not construct. Probably because "
+				+ "apiKey or providerID invalid, or tournamentName "
+				+ "illegal.");
+		 e.printStackTrace();
+	 }
 		
-		// Set dummy data
-		//dummyMethod(tournamentID);s
+	 //---- Generates the Tournament Entity ----//
+	 createTournament(tournamentID, key, tname, trounds);
 		
-		// I don't know what this is...
-		map.put("tournament", Integer.toString(tournamentID));
-		map.put("respcode", 1); //Record successfully created
-		write(resp, map);
 		
-	}
-	
-	/**
-	 * I don't know what this does. 
-	 * 
-	 * @param resp
-	 * @param map
-	 * @throws IOException
-	 */
-	private void write(HttpServletResponse resp, Map<String, Object> map)
-			throws IOException {
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-		System.out.print("Sending back response to the webapp -> GSON\n");
-		System.out.print(new Gson().toJson(map).toString() + "\n");
-		resp.getWriter().write(new Gson().toJson(map));
-	}
+	 //---- ServletUtils.writeback back to webapp  ----//..
+	 map.put("tournament", Integer.toString(tournamentID));
+	 map.put("respcode", 100); //Record successfully created
+	 ServletUtils.writeback(resp, map);
+		
+	}	
 	
 	/**
 	 * Grabs the key to the Provider Entity by pulling the provider ID from the

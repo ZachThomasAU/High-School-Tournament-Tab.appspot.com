@@ -20,13 +20,21 @@
 	        </button>
 	      </div>
 	      <div id="modalBody" class="modal-body">              
-	      
+
 			<div id="tname">
 			    <input type="text" class="form-control"
 			    			 value="new tournament" name="tname"> 
-			    			 	     
+			<br>    			 	     
 			<input type="text" class="form-control" 
 								value="number of rounds" name="trounds">
+											
+			<br>			
+				<label for="pairingtype">First Round Pairingtype?</label> 		
+				<select name="pairingtype" class="form-control">
+				     <option>Ordered</option>
+				     <option>Random</option>
+		    	</select>   	
+			<br/>
 									
 			<input type="button" id="checkTname" class="btn btn-primary" 
 														value="Check Name" />
@@ -87,12 +95,16 @@
 			type: 'POST',
 			dataType: 'json',
 			data: $("#tname").find("select,textarea, input").serialize(),
-			success: function(data){				
-				if(data.respcode == 0){												
+			success: function(data){
+				
+				  //Return 500 if rounds not of the form number
+				  //Return 400 if tournament already exists 
+				  
+				if(data.respcode == 400){												
 					alert("A tournament with that name already exists")	
-				}else if(data.respcode == 1){													
+				}else if(data.respcode == 100){													
 					alert("Successfully created new tournament")		  		    
-				}else if(data.respcode == 2){													
+				}else if(data.respcode == 500){													
 					alert("Number of rounds must be convertable to integer")		  		    
 				}else{
 					alert("No valid response code was returned")
