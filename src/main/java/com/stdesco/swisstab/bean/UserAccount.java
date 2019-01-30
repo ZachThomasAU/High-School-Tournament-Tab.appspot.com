@@ -28,6 +28,7 @@ import com.stdesco.swisstab.appcode.Tournament;
 public class UserAccount {
 	public static final String GENDER_MALE = "M";
 	public static final String GENDER_FEMALE = "F";
+	public static final String GENDER_OTHER = "O";
 	
 	private String username;
 	private String fname;
