@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.stdesco.swisstab.bean.UserAccount;
 import com.stdesco.swisstab.utils.SecurityUtils;
+import com.stdesco.swisstab.utils.WebAppUtils;
 
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
@@ -53,7 +54,7 @@ public class SecurityFilter implements Filter {
 		String servletPath = httpreq.getServletPath();
 		
 		UserAccount loggedInUser = 
-							AppUtils.getLoggedInUser(httpreq.getSession());
+							WebAppUtils.getLoggedInUser(httpreq.getSession());
 		
 		if (servletPath.equals("/login")) {
 			chain.doFilter(httpreq, httpresp);
@@ -76,7 +77,7 @@ public class SecurityFilter implements Filter {
 				String requestURI = httpreq.getRequestURI();
 				
 				// Store the current page to redirect back to, after login.
-				int redirectID = AppUtils.storeRedirectAfterLoginURL(
+				int redirectID = WebAppUtils.storeRedirectAfterLoginURL(
 											httpreq.getSession(), requestURI);
 				
 				httpresp.sendRedirect(wrapRequest.getContextPath() 

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.stdesco.swisstab.apicode.GameAPI;
 import com.stdesco.swisstab.bean.UserAccount;
 import com.stdesco.swisstab.utils.DataAccessObject;
+import com.stdesco.swisstab.utils.WebAppUtils;
 
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
@@ -67,7 +68,7 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		
-		AppUtils.storeLoggedInUser(request.getSession(), userAccount);
+		WebAppUtils.storeLoggedInUser(request.getSession(), userAccount);
 		
 		int redirectID = -1;
 		try {
@@ -77,7 +78,7 @@ public class LoginServlet extends HttpServlet {
 			LOGGER.severe("LoginServlet ln:74 - We call this ignoring the "
 					+ "problem and hoping it goes away...");
 		}
-		String requestURI = AppUtils.getRedirectAfterLoginURL(
+		String requestURI = WebAppUtils.getRedirectAfterLoginURL(
 											request.getSession(), redirectID);
 		if (requestURI != null) {
 			response.sendRedirect(requestURI);
