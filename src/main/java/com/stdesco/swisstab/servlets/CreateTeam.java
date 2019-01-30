@@ -12,18 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.gson.Gson;
-//import com.stdesco.swisstab.apicode.InitialisationPost;
+import com.stdesco.swisstab.utils.DatastoreUtils;
+import com.stdesco.swisstab.utils.ServletUtils;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 
 /**
@@ -44,132 +37,93 @@ public class CreateTeam extends HttpServlet {
 		  			DatastoreServiceFactory.getDatastoreService();
   
   private String teamName;
-  private String tournamenTname;
+  private String tournamentName;
   private int tournamentID;
-  private int providerID;
+  @SuppressWarnings("unused")
+private int providerID;
   private Entity tournamentEntity;
   private List<String> teams;
  
+  // Returns 100 - If successful in adding team
+  // Returns 400 - If tournament is not found
+  // Returns 500 - If team already exists
   @SuppressWarnings("unchecked")
 public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		  throws ServletException, IOException {  
 	  
 	  System.out.print("CreateTeam:51: Running \n");
 	  
-	  //initialize the hash-map for response back to web-app
+	  //---- initialize the hash-map for response back to web-app ----//
 	  Map<String, Object> map = new HashMap<String, Object>();
-	  int respcode = 0;
 	  teamName = req.getParameter("teamname");
-	  tournamenTname = req.getParameter("tournamentname");
-	  
-	  Key globalsKey = KeyFactory.createKey("Globals", "highschool");
-      Entity globals;
-		try {
-			globals = datastore.get(globalsKey);
-			providerID = Math.toIntExact((long) 
-									globals.getProperty("providerID"));
-		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	  
-      /* 
-       * Use a google data-store query to check whether or not the tournament 
-       * that the team is trying to assign to has already been created
-       */
-      Filter propertyFilter =
-          new FilterPredicate("tournamentName", FilterOperator.EQUAL, 
-        		  												tournamenTname);
-      
-      //initialize the query
-      Query q = new Query("Tournament").setFilter(propertyFilter);
+	  tournamentName = req.getParameter("tournamentname");	  	  
+	  providerID = DatastoreUtils.getProviderID();
 
-      try {   
-    	//Run the query  
-        PreparedQuery pq = datastore.prepare(q);
-        Entity qresult = pq.asSingleEntity();
-        System.out.print("Query result" + qresult.toString() + "\n");
-        //yes it exists you are good to go         
-        respcode = 0;
-        tournamentID = Math.toIntExact((long) 
-  	    						qresult.getProperty("tournamentID"));
-        
-        
-      } catch (Exception e) {        
-        // TODO Auto-generated catch block
+      //---- Attempt to convert the tournament name to tournament code ----//  
+      try {    	  
+    	tournamentID = DatastoreUtils.getTournamentID(tournamentName); 
+      } catch (Exception e) {       
+    	//Respond to client that the tournamentName does not exist  
         e.printStackTrace();
-        System.out.print("Query result :" + "NULL" + ": \n");
-        //no tournament was found with that name exit the servlet 
-        respcode = 1;
-        //Respond to client that the tournamentName does not exist
-        map.put("respcode", respcode);       
-        write(resp, map);
-        //Abort Process
+        map.put("respcode",  400);       
+        ServletUtils.writeback(resp, map);
         return;
       }
+            
+	  //---- Create a key for the current Tournament ----//
+	  Key tournament = DatastoreUtils.getTournamentKey(tournamentID);
       
-      //TODO: Implement checking for the team already existing
-      
-	  //Create a key for the Tournament that has been given 
-	  Key tourKey = new KeyFactory.Builder("Provider", providerID)
-			  .addChild("Tournament", tournamentID)
-			  .getKey();
-      
-      
-      //Create an entity of kind "Team" in the data-store
-      // Create the new provider Entity
-	  Entity team = new Entity("Team", teamName, tourKey);
-	  team.setProperty("tournamentTeamID", null);
-	  team.setProperty("tournamentScore", 0);
-	  team.setProperty("tournamentByeRound", 0);
-      team.setProperty("coach", null);
-      team.setProperty("players", null);    
-	  datastore.put(team);     
-
+	  //---- Check whether or not the team already exists ----//
+	  if(DatastoreUtils.checkIfEntityExistsByName("Team",teamName,tournament)){
+		  //Return to user that team alrady exists
+	      map.put("respcode",  500);       
+	      ServletUtils.writeback(resp, map);
+	      return;
+	  }  
+	  
+	  //---- Initialise a basic team structure and add it to the ds ----//
+	  initTeam(teamName, tournament);
+	  
+	  //---- Append the new team to the teamlist in tournament ----//
+	  tournamentEntity = DatastoreUtils.getDataStoreEntity(tournament);
+	  
 	  try {
-		tournamentEntity = datastore.get(tourKey);
-		try {
-			teams = (List<String>) tournamentEntity.getProperty("teams");
-			teams.add(teamName);
-		} catch (NullPointerException e) {
-			teams = new ArrayList<String>();
-			teams.add(teamName);
-			System.out.print("CreateTeam:112: "
-					+ "Caught Null Pointer Exception \n");
-		}
-		System.out.print("CreateTeam:121: Added Team to Tournament \n");
-		tournamentEntity.setProperty("teams", teams);
-		tournamentEntity.setProperty("numberOfTeams", teams.size());
-		datastore.put(tournamentEntity);
-		
-	} catch (EntityNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+		  teams = (List<String>) tournamentEntity.getProperty("teams");
+		  teams.add(teamName);
+	  } catch (NullPointerException e) {
+		  teams = new ArrayList<String>();
+		  teams.add(teamName);
+		  System.out.print("CreateTeam:112: "
+				+ "Caught Null Pointer Exception \n");
+	  }
+	  
+	  //---- Update the teamlist property and put back in the datastore ----//
+	  System.out.print("CreateTeam:121: Added Team to Tournament \n");
+	  tournamentEntity.setProperty("teams", teams);
+	  tournamentEntity.setProperty("numberOfTeams", teams.size());
+	  datastore.put(tournamentEntity);
 
-	  //Return to client that the creation of the team has been successful
+	  //---- Return to client a success message ----//
 	  System.out.print("CreateTeam:135: Created New Team \n");
-	  map.put("respcode", respcode);       
-      write(resp, map);    
-          
- }
-	
-	/**
-	 * Writes the HttpServletResponse resp back to the web-application
-	 * Map is sent back a JSON which can be accessed by the AJAX callback
-	 * function and return information to user
-	 * @param resp
-	 * @param map
-	 * @throws IOException
-	 */
-	private void write(HttpServletResponse resp, Map<String, Object> map)
-			throws IOException {
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-		System.out.print("CreateTeam:154: Sending JSON Response \n");
-		System.out.print(new Gson().toJson(map).toString() + "\n");
-		resp.getWriter().write(new Gson().toJson(map));
-	}
-
+	  map.put("respcode", 100);       
+      ServletUtils.writeback(resp, map);             
+  	}
+  	
+  	/** Private method for initalizing the basic team structure
+  	 * 
+  	 * @param teamName - String
+  	 * @param tournament - Key for current Tournament
+  	 * @return
+  	 */
+  	private Entity initTeam(String teamName, Key tournament){
+	  	Entity team = new Entity("Team", teamName, tournament);
+	  	team.setProperty("tournamentTeamID", null);
+	  	team.setProperty("tournamentScore", 0);
+	  	team.setProperty("tournamentByeRound", 0);
+	    team.setProperty("coach", null);
+	    team.setProperty("players", null);    
+	  	datastore.put(team);  
+  		return team;
+  	}
 }	
 

@@ -86,7 +86,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  
       //----Generate the Keys and get the Game Entity from Datastore----//  
       Key gameKey = DatastoreUtils.getGameKey(gamecode, 1, tournamentID);
-      Entity game = DatastoreUtils.getdataStoreEntity(gameKey);
+      Entity game = DatastoreUtils.getDataStoreEntity(gameKey);
       
       if(game == null) {
     	  // Return to user that the gamecode was not found
@@ -118,7 +118,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	      
 	      //---- Get access to the winning team from Datastore----// 
 	      Key teamKey = DatastoreUtils.getTeamKey(winningTeam, tournamentID);
-	      Entity wteam = DatastoreUtils.getdataStoreEntity(teamKey);
+	      Entity wteam = DatastoreUtils.getDataStoreEntity(teamKey);
 	      
 	      //---- Increase the score for the winning team by 1----// 
 	      int tempscore = Math.toIntExact((long)wteam

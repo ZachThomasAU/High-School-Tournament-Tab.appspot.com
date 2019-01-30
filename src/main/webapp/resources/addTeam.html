@@ -58,16 +58,15 @@
 			dataType: 'json',
 			data: $("#teamname").find("select,textarea, input").serialize(),
 			success: function(data){				
-				//check if the name is okay
-				//0 -> name already taken 
-				//1 -> name avaliable
-				//2 -> no entry
-				if(data.respcode == 0){												
-					alert("Yes that tournament exists")	
-				}else if(data.respcode == 1){													
-					alert("Please enter a valid tournament name")					    
-				}else if(data.respcode == 2){
-					alert("please input a name for your tournament")	
+				  // Returns 100 - If successful in adding team
+				  // Returns 400 - If tournament is not found
+				  // Returns 500 - If team already exists
+				if(data.respcode == 100){												
+					alert("Successfully added team")	
+				}else if(data.respcode == 400){													
+					alert("Tournament not found")					    
+				}else if(data.respcode == 500){
+					alert("That team already exists")	
 				}
 			}	
 		});		

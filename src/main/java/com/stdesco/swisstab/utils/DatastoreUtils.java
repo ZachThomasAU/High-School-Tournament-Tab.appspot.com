@@ -51,6 +51,15 @@ public class DatastoreUtils {
 		return key;
 	}
 	
+	/** Public static method for getting provider ID from globals
+	 * 
+	 * @return int - provider ID
+	 */
+	public static int getProviderID() {
+		int providerID = globals.getGlobalProviderID();
+		return providerID;
+	}
+	
 	/** Public Method with the Datastore Utils to return the key to a 
 	 *  tournament with a given ID 
 	 * 
@@ -255,7 +264,7 @@ public class DatastoreUtils {
 	 * @param key - Key to get the entity from the datastore
 	 * @return Entity 
 	 */
-	public static Entity getdataStoreEntity(Key key) {		
+	public static Entity getDataStoreEntity(Key key) {		
 		 Entity entity;	
 		 
 		 try {
@@ -267,5 +276,21 @@ public class DatastoreUtils {
 		       return null;	
 		  }	
 	}
-
+	/** Public static method to check if an entity already exists with name
+	 * @param kind - String reference to the kind 
+	 * @param EntityName - String Reference to the entity name
+	 * @param parentKey - Key for the parent of the Entity
+	 * @return = true if the property exists | false if it does not
+	 */
+	public static boolean checkIfEntityExistsByName(String kind, 
+						String EntityName, Key parentKey) {	
+		
+		 Key key = getTeamKey(EntityName, parentKey);
+		 Entity entity = getDataStoreEntity(key);
+		 
+		 if(entity == null) {
+			 return false; 
+		 }
+		 return true;
+     }
 }
