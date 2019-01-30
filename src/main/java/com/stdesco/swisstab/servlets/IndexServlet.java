@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  * This file cannot be copied and/or distributed without the express
  * permission of the author.
  * 
- * User Role Request Wrapper Class
+ * Index Servlet Class
  * 
  * @author zthomas
  * January 2019
