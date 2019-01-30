@@ -14,7 +14,7 @@ import java.util.Set;
  * This file cannot be copied and/or distributed without the express
  * permission of the author.
  * 
- * DAO Class
+ * Security Configuration Class
  * 
  * @author zthomas
  * January 2019
