@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.stdesco.swisstab.apicode.GameAPI;
 import com.stdesco.swisstab.bean.UserAccount;
 import com.stdesco.swisstab.utils.DataAccessObject;
 import com.stdesco.swisstab.utils.WebAppUtils;
