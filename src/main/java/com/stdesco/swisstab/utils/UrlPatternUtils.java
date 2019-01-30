@@ -41,9 +41,9 @@ public class UrlPatternUtils {
 	 * 
 	 * @param request	the servlet request (the URL + URI)
 	 * 
-	 * @return 			"/", the servletPath, a substring of the servletPath, 
-	 * 					or the if there is no pathInfo, a path to the 
-	 * 					SecurityFilter.
+	 * @return 			the IndexServlet, the servletPath, a substring of the 
+	 * 					servletPath, or the if there is no pathInfo, a path to 
+	 * 					the SecurityFilter.
 	 */
 	public static String getUrlPattern(HttpServletRequest request) {
 		ServletContext servletContext = request.getServletContext();
