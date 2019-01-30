@@ -49,6 +49,7 @@ public class UserRoleRequestWrapper extends HttpServletRequestWrapper {
 		return roles.contains(role);
 	}
 	
+	// TODO add an Override here?
 	public Principal getUserPrinciple() {
 		if (this.user == null) {
 			return realRequest.getUserPrincipal();
