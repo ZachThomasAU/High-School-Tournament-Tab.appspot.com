@@ -28,11 +28,11 @@ import com.google.appengine.api.datastore.Key;
  */
 
 @WebServlet("/addResults")
-public class addResults extends HttpServlet {
+public class AddResults extends HttpServlet {
   private static final long serialVersionUID = 1l;
   @SuppressWarnings("unused")
   private static Logger LOGGER = 
-  					Logger.getLogger(addResults.class.getName());
+  					Logger.getLogger(AddResults.class.getName());
   DatastoreService datastore = 
 		  			DatastoreServiceFactory.getDatastoreService();
   DatastoreUtils datastoreUtils = new DatastoreUtils();

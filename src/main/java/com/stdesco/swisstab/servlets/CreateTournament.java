@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.gson.Gson;
 import com.stdesco.swisstab.apicode.TournamentAPI;
 import com.stdesco.swisstab.utils.DatastoreUtils;
 import com.stdesco.swisstab.utils.ServletUtils;
@@ -55,7 +54,17 @@ public class CreateTournament extends HttpServlet {
 	  
 	  Map<String, Object> map = new HashMap<String, Object>();
 	  String tname = req.getParameter("tname");
+	  int pairingRule = 0;
 	  String pairingType = req.getParameter("pairingtype");
+	  
+	  //---- Check the pairing type ----//
+	  if(pairingType.equals("Ordered")){
+		  //Ordered First Round Pairing
+		  pairingRule = 1;
+	  } else {
+		  //Random First Round Pairing
+		  pairingRule = 2;
+	  }
 	  
 	  LOGGER.finer("CreateTournament:63: Pairingtype :"
 	  		+ pairingType + "\n");
@@ -120,7 +129,7 @@ public class CreateTournament extends HttpServlet {
 	 }
 		
 	 //---- Generates the Tournament Entity ----//
-	 createTournament(tournamentID, key, tname, trounds);
+	 createTournament(tournamentID, key, tname, trounds, pairingRule);
 		
 		
 	 //---- ServletUtils.writeback back to webapp  ----//..
@@ -209,12 +218,12 @@ public class CreateTournament extends HttpServlet {
 	 * @param tname			The desired name of the tournament.
 	 */
 	private void createTournament(int tournamentID, Key providerKey, 
-								  String tname, int rounds) {
+								  String tname, int rounds, int pairingrule) {
 		tour = new Entity("Tournament", tournamentID, providerKey);
 		tour.setProperty("tournamentID", tournamentID);
 		tour.setProperty("teams", null); // List<String>
 		tour.setProperty("rounds", rounds);
-		tour.setProperty("pairingRule", 1); //Defaults to first round ordered
+		tour.setProperty("pairingRule", pairingrule); 
 		tour.setProperty("numberOfTeams", 0);
 		tour.setProperty("currentRound", 0);
 		tour.setProperty("allPairings", null); // List<Pairing>
