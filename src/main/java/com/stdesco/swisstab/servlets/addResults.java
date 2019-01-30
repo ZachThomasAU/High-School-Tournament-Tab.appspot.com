@@ -9,7 +9,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
 import com.stdesco.swisstab.utils.DatastoreUtils;
 import com.stdesco.swisstab.utils.ServletUtils;
 import com.google.appengine.api.datastore.DatastoreService;
