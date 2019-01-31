@@ -110,9 +110,15 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
       
       //TODO: Implement checking for the team already existing
       
+	  //Create a key for the Tournament that has been given 
+	  Key tourKey = new KeyFactory.Builder("Provider", providerID)
+			  .addChild("Tournament", tournamentID)
+			  .getKey();
+      
+      
       //Create an entity of kind "Team" in the data-store
       // Create the new provider Entity
-	  Entity team = new Entity("Team", teamName);
+	  Entity team = new Entity("Team", teamName, tourKey);
 	  team.setProperty("tournamentTeamID", null);
 	  team.setProperty("tournamentScore", 0);
 	  team.setProperty("tournamentByeRound", 0);
@@ -120,12 +126,6 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
       team.setProperty("players", null);    
 	  datastore.put(team);     
 
-	  
-	  //Create a key for the Tournament that has been given 
-	  
-	  Key tourKey = new KeyFactory.Builder("Provider", providerID)
-			  .addChild("Tournament", tournamentID)
-			  .getKey();
 	  try {
 		tournamentEntity = datastore.get(tourKey);
 		try {
@@ -139,6 +139,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		}
 		System.out.print("CreateTeam:121: Added Team to Tournament \n");
 		tournamentEntity.setProperty("teams", teams);
+		tournamentEntity.setProperty("numberOfTeams", teams.size());
 		datastore.put(tournamentEntity);
 		
 	} catch (EntityNotFoundException e) {

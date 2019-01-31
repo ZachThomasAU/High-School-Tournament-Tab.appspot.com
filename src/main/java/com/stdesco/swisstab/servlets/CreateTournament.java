@@ -46,6 +46,7 @@ public class CreateTournament extends HttpServlet {
   String apiKey;
   int providerID;
   int tournamentID;
+  int trounds;
   Entity tour;
 
 
@@ -55,12 +56,25 @@ public class CreateTournament extends HttpServlet {
 	  
 	  System.out.print("CreateTournament:50: Running \n");
 	  
-	  String tname = req.getParameter("tname");
-	  
-	  System.out.print("CreateTournament:54: Tournament Name: " + tname + "\n");
-	  
 	  Map<String, Object> map = new HashMap<String, Object>();
-	  int respcode = 0;
+	  String tname = req.getParameter("tname"); 
+	  
+	  try {
+		  trounds = Integer.parseInt(req.getParameter("trounds")); 
+	  } catch (NumberFormatException e1) {
+		  //TODO Write exception handle for from number format
+		  e1.printStackTrace();
+		  map.put("respcode", 2); //Not a number in input abort
+		  write(resp, map);
+		  return;
+
+	  } catch (Exception e2) {
+		//TODO Write exception handle for generic exception
+		  e2.printStackTrace();	 
+	  }
+	  
+	  System.out.print("CreateTournament:54: Tournament Name:"
+			  	+ tname + "Number of Rounds: " + trounds + "\n");
 		
       /*
        * Query to check whether or not that name already exist and if it 
@@ -75,7 +89,7 @@ public class CreateTournament extends HttpServlet {
     	//attempt to run the query 
         PreparedQuery pq = datastore.prepare(q);
         Entity result = pq.asSingleEntity();
-        System.out.print("Cannot override tournament" + result.toString() + "\n");
+        System.out.print("Cannot override tournament" + result.toString()+"\n");
 		map.put("respcode", 0);	
 		write(resp, map);
 		return;
@@ -83,9 +97,8 @@ public class CreateTournament extends HttpServlet {
       } catch (Exception e) {        
         // TODO Auto-generated catch block
         e.printStackTrace();
-        System.out.print("CreateTournament:54: No record was found continue with "
-        		+ "creation of the tournament" + tname + "\n");
-        //respcode = 1;
+        System.out.print("CreateTournament:54: No record was found continue "
+        		+ "with creation of the tournament" + tname + "\n");
       }
       
 	    
@@ -121,10 +134,10 @@ public class CreateTournament extends HttpServlet {
 		}
 		
 		// Generates the Tournament Entity.
-		createTournament(tournamentID, key, tname);
+		createTournament(tournamentID, key, tname, trounds);
 		
 		// Set dummy data
-		//dummyMethod(tournamentID);
+		//dummyMethod(tournamentID);s
 		
 		// I don't know what this is...
 		map.put("tournament", Integer.toString(tournamentID));
@@ -145,6 +158,7 @@ public class CreateTournament extends HttpServlet {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 		System.out.print("Sending back response to the webapp -> GSON\n");
+		System.out.print(new Gson().toJson(map).toString() + "\n");
 		resp.getWriter().write(new Gson().toJson(map));
 	}
 	
@@ -227,12 +241,12 @@ public class CreateTournament extends HttpServlet {
 	 * @param tname			The desired name of the tournament.
 	 */
 	private void createTournament(int tournamentID, Key providerKey, 
-								  String tname) {
+								  String tname, int rounds) {
 		tour = new Entity("Tournament", tournamentID, providerKey);
 		tour.setProperty("tournamentID", tournamentID);
 		tour.setProperty("teams", null); // List<String>
-		tour.setProperty("rounds", 0);
-		tour.setProperty("pairingRule", 0);
+		tour.setProperty("rounds", rounds);
+		tour.setProperty("pairingRule", 1); //Defaults to first round ordered
 		tour.setProperty("numberOfTeams", 0);
 		tour.setProperty("currentRound", 0);
 		tour.setProperty("allPairings", null); // List<Pairing>

@@ -5,6 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.stdesco.swisstab.utils.DatastoreUtils;
+
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
  * Unauthorised copying of this file, via any medium, is strictly
@@ -22,39 +29,70 @@ import java.util.logging.Logger;
 public class Tournament {
 	
 	private List<Team> teams = new ArrayList<Team>();
+	private int tournamentID;
 	private int rounds = 0;
 	private int numberOfTeams;
 	private int currentRound = 0;
 	private FirstRoundPairingRule firstRoundPairingRule;
 	private List<Game> allGames = new ArrayList<Game>();
 	private List<Pairing> allPairings = new ArrayList<Pairing>();
+	private int byeTeamid;
+	private Team byeTeam;
+	
+	/* Private variables relating to the datastore services - Jlwin
+	 * These list connect the dstore with the object created during this process
+	 * Strings are references to the child kinds that have been created 
+	 * They will allow for restorations of the objects during later processes
+	 * such as checking the results of allGames before the next round pairing
+	 * is performed.
+	 */
+	private List<String> allGamesDatastore= new ArrayList<String>();
+	private List<Integer> allPairingsDatastore = new ArrayList<Integer>();
+	Entity tournament;
+	Key tournamentKey;
+	
 	private RandomWrapper random = new RandomWrapper();
 	private final static Logger LOGGER = 
 						 	Logger.getLogger(Tournament.class.getName());
+	DatastoreService datastore = 
+	  		DatastoreServiceFactory.getDatastoreService();	
+
 
 	/**
 	 * Constructs a new Tournament 
 	 * 
-	 * @param rounds Number	of rounds in the tournament. Must be
-	 * greater than zero.
-	 * @param numberOfTeams	Number of teams in the tournament. Must
-	 * be greater than zero.
-	 * @param names	List of names of teams in the tournament.
-	 * 
-	 * TODO
-	 * @param tournamentid
-	 * The tournament ID fed from the Riot API
+	 * @param rounds 					Number of rounds in the tournament. 
+	 * 									Must be greater than zero.
+	 * @param numberOfTeams				Number of teams in the tournament. Must
+	 * 									be greater than or equal to two.
+	 * @param names						List of names of teams in the 
+	 * 									tournament.
+	 * @param tournamentid 				The tournament ID fed from the Riot API
 	 *
-	 * @exception IllegalArgumentException 
-	 * if number of rounds is less than or equal to zero.
-	 * @exception IllegalArgumentException 
-	 * if number of teams is not identical to the number of team names.
+	 * @throws IllegalArgumentException	
+	 * 									if number of rounds is less than or 
+	 * 									equal to zero.
+	 * @throws IllegalArgumentException	
+	 * 									if number of teams is less than two.
+	 * @throws IllegalArgumentException 
+	 * 									if number of teams is not identical to 
+	 * 									the number of team names.
 	 */
-	public Tournament(int rounds, int numberOfTeams, List<String> names) {
+	public Tournament(int rounds, int numberOfTeams, 
+			List<String> names, int tournamentID) {
+		
+		this.tournamentID = tournamentID;
+		tournamentKey = DatastoreUtils.getTournamentKey(tournamentID);
+		
 		if (rounds <= 0) {
 			throw new IllegalArgumentException(
 					"Illegal number of rounds! You " + "picked " + rounds + 
 					" rounds. Pick an integer greater " + "than zero");
+		}
+		if (numberOfTeams < 2) {
+			throw new IllegalArgumentException(
+					"You need at least two teams to have a tournament you "
+					+ "certified numpty.");
 		}
 		if (names == null) {
 			names = new ArrayList<String>();
@@ -77,19 +115,28 @@ public class Tournament {
 	}
 	
 	/**
-	 * Gets the number of rounds in the tournament.
+	 * @return 							the team who currently has a bye.
 	 * 
-	 * @return number of rounds in the tournament.
+	 * @throws IllegalStateException	if no bye exists.
+	 */
+	public Team getByeTeam() {
+		try {
+			byeTeam.equals(null);
+			return byeTeam;
+		} catch (NullPointerException e) {
+			throw new IllegalStateException("No byeTeam has been set!");
+		}
+	}
+	
+	/**
+	 * @return	number of rounds in the tournament.
 	 */
 	public int getRounds() {
 		return rounds;
 	}
 	
 	/**
-	 * Gets the current round in the tournament.
-	 * 
-	 * @return 
-	 * the current round. Result is 0 if the tournament has not started.
+	 * @return	the current round. Result is 0 if the tournament has not started.
 	 */
 	public int getCurrentRound() {
 		return currentRound;
@@ -108,10 +155,10 @@ public class Tournament {
 	}
 	
 	/**
-	 * @return the current pairing.
+	 * @return 							the current pairing.
 	 * 
-	 * @exception IllegalArgumentException if try to get the current pairing
-	 * when the tournament hasn't even begun
+	 * @throws IllegalArgumentException	if try to get the current pairing
+	 * 									when the tournament hasn't even begun
 	 */
 	public Pairing getCurrentPairing() {
 		if (currentRound == 0) {
@@ -123,12 +170,13 @@ public class Tournament {
 	}
 	
 	/**
-	 * @param n The specific round you want the pairing for.
+	 * @param n 						The specific round you want the pairing 
+	 * 									for.
 	 * 
-	 * @return the pairing for the requested round.
+	 * @return 							the pairing for the requested round.
 	 * 
-	 * @exception IllegalArgumentException if try to get a pairing when no 
-	 * rounds have been paired yet.
+	 * @throws IllegalArgumentException	if try to get a pairing when no 
+	 * 									rounds have been paired yet.
 	 */
 	public Pairing getPastPairing(int n) {
 		if (currentRound == 0) {
@@ -139,11 +187,12 @@ public class Tournament {
 	}
 	
 	/**
+	 * @param firstRoundPairingRule		the rule that indicates if the first 
+	 * 									round should be paired in order or 
+	 * 									randomly.
 	 * 
-	 * @param firstRoundPairingRule
-	 * 
-	 * @exception IllegalArgumentException 
-	 * if the first round in the tournament has already been paired.
+	 * @throws IllegalArgumentException	if the first round in the tournament has
+	 * 									already been paired.
 	 */
 	public void setFirstRoundPairingRule(
 			FirstRoundPairingRule firstRoundPairingRule) {
@@ -157,10 +206,9 @@ public class Tournament {
 	/**
 	 * Gets the requested team if given their teamid
 	 * 
-	 * @param 
-	 * teamid is the index given to a team when they are created.
+	 * @param teamid 	is the index given to a team when they are created.
 	 * 
-	 * @return the team requested.
+	 * @return 			the team requested.
 	 */
 	public Team getTeam(int teamid) {
 		return teams.get(teamid);
@@ -169,7 +217,7 @@ public class Tournament {
 	/**
 	 * Gets a list of all teams in the tournament. 
 	 * 
-	 * @return a list of all teams in the tournament.
+	 * @return	a list of all teams in the tournament.
 	 */
 	public List<Team> getTeams() {
 		return new ArrayList<Team>(teams);
@@ -182,17 +230,20 @@ public class Tournament {
 	 * event of odd teams the last team registered will ALWAYS get 
 	 * the bye.
 	 * 
-	 * @return a pairing with no randomness, decided by teamid order.
+	 * @return 	a pairing with no randomness, decided by teamid order.
 	 */
 	private Pairing firstRoundOrderedPairing() {
-		Pairing pairing = new Pairing(currentRound);
+		Pairing pairing = new Pairing(currentRound, tournamentKey);
 		int teamid = 0;
 		while (teamid < numberOfTeams - 1) {
 			Game game = new Game(currentRound, getTeam(teamid), 
-								 getTeam(teamid + 1));
+						   getTeam(teamid + 1), tournamentID, tournamentKey);
 			allGames.add(game);
-			pairing.addGame(game.getTeam1(), game.getTeam2());
+			pairing.addGame(game);
 			teamid += 2;
+		}
+		if ((numberOfTeams % 2) == 1) {
+			byeTeam = getTeam((numberOfTeams - 1));
 		}
 		allPairings.add(pairing);
 		return pairing;
@@ -201,11 +252,12 @@ public class Tournament {
 	/**
 	 * Pairs the first round by a psuedo random method. 
 	 * 
-	 * @return a first round pairing, paired randomly.
+	 * @return 	a first round pairing, paired randomly.
 	 */
 	private Pairing firstRoundRandomPairing() {
-		Pairing pairing = new Pairing(currentRound);
+		Pairing pairing = new Pairing(currentRound, tournamentKey);
 		List<Team> notPairedYet = new ArrayList<Team>(teams);
+		
 		while (notPairedYet.size() > 1) {
 			int team1id = random.nextInt(notPairedYet.size());
 			Team team1 = notPairedYet.get(team1id);
@@ -213,10 +265,18 @@ public class Tournament {
 			int team2id = random.nextInt(notPairedYet.size());
 			Team team2 = notPairedYet.get(team2id);
 			notPairedYet.remove(team2id);
-			Game game = new Game(currentRound, team1, team2);
+			Game game = new Game(currentRound, team1, 
+								 team2, tournamentID, tournamentKey);
+			
 			allGames.add(game);
-			pairing.addGame(game.getTeam1(), game.getTeam2());
+			pairing.addGame(game);
 		}
+		
+		//TODO: Implement Byeround for this type of pairing
+		if ((numberOfTeams % 2) == 1) {
+			byeTeam = notPairedYet.get(0);
+		}
+		
 		allPairings.add(pairing);
 		return pairing;
 	}
@@ -224,15 +284,17 @@ public class Tournament {
 	/**
 	 * Pairs the next round, if it can. 
 	 * 
-	 * @return the newly paired round.
+	 * @return 								the newly paired round.
 	 * 
-	 * @exception IllegalArgumentException 
-	 * if the tournament has already ended.
-	 * @exception IllegalArgumentException 
-	 * if it's the first round, and a desired ruleset has not been 
-	 * implemented.
-	 * @exception IllegalStateException 
-	 * if the previous round has not finished yet.
+	 * @throws IllegalArgumentException 	
+	 * 										if the tournament has already ended.
+	 * @throws IllegalArgumentException 	
+	 * 										if it's the first round, and a 
+	 * 										desired ruleset has not been 
+	 * 										implemented.
+	 * @exception IllegalStateException 	
+	 * 										if the previous round has not 
+	 * 										finished yet.
 	 * 
 	 */
 	public synchronized Pairing pairNextRound() {
@@ -242,6 +304,9 @@ public class Tournament {
 			throw new IllegalArgumentException(
 					"The Tournament ended after round " + rounds + ".");
 		}
+		
+
+		
 		if (currentRound == 1) {
 			// this executes the first round pairing rule, or throws if rule 
 			// not implemented yet.
@@ -275,11 +340,12 @@ public class Tournament {
 	 * Takes a list of games, and two teams, and checks if a game in 
 	 * that list has been create between those two teams.
 	 * 
-	 * @param games a list of games
-	 * @param team1 the team you wish to check is playing against team2
-	 * @param team2 the team you wish to check is playing against team1
+	 * @param games 	a list of games
+	 * @param team1 	the team you wish to check is playing against team2
+	 * @param team2 	the team you wish to check is playing against team1
 	 * 
-	 * @return TRUE if a game exists in that list, otherwise returns FALSE.
+	 * @return 			TRUE if a game exists in that list, otherwise returns 
+	 * 					FALSE.
 	 */
 	private static boolean listContainsGameBetweenTeams(
 			List<Game> games, Team team1, Team team2) {
@@ -291,12 +357,16 @@ public class Tournament {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @return	the Pairing for the next round.
+	 */
 	private Pairing getNextRoundPairing() {
 		// sorts the teams by score
 		List<Team> sortedTeams = new ArrayList<Team>(teams);
 		Collections.sort(sortedTeams);
-		int byeTeamid = -1;
-		Pairing newPairing = new Pairing(currentRound);
+		byeTeamid = -1;
+		Pairing newPairing = new Pairing(currentRound, tournamentKey);
 		
 		if ((numberOfTeams % 2) == 1) {
 			// the number of teams is odd, so we need to choose a team to have 
@@ -308,6 +378,7 @@ public class Tournament {
 				if (team.getByeRound() == 0) {
 					team.setByeRound(currentRound);
 					byeTeamid = index;
+					byeTeam = team;
 					LOGGER.fine("team " + team + " bye round " + currentRound);
 					break;
 				}
@@ -324,6 +395,7 @@ public class Tournament {
 			bestTeamId = bestScoreTeam.getTeamid();
 			
 			if (bestTeamId == byeTeamid) {
+				byeTeam = bestScoreTeam;
 				LOGGER.fine("team " + bestScoreTeam + " bye this round");
 				continue;
 			}
@@ -344,6 +416,7 @@ public class Tournament {
 				nextTeamid = nextScoreTeam.getTeamid();
 			
 				if (nextTeamid == byeTeamid) {
+					byeTeam = nextScoreTeam;
 					LOGGER.fine(nextScoreTeam + "bye this round");
 					continue;
 				}
@@ -367,10 +440,13 @@ public class Tournament {
 				
 				// TODO: test if Red Side/Blue Side
 				
+				/* TODO: fix this. We changed addGame to only take param Game, 
+				 * but now this code won't work with the new method.  
+				 * 
 				Game game = newPairing.addGame(bestScoreTeam, nextScoreTeam);
 				allGames.add(game);
 				gameForBestTeamFound = true;
-				break;
+				break; */
 			}
 			
 			if (gameForBestTeamFound) {
@@ -446,13 +522,17 @@ public class Tournament {
 							return null;
 						}
 					
+						/* TODO: fix this. We changed addGame to only take param
+						 * Game, but now this code won't work with the new 
+						 * method.  
+						 * 
 						Game newGame = newPairing.addGame(team1, switchTeam);
 						allGames.add(newGame);
 						newGame = newPairing.addGame(team2,  bestScoreTeam);
 						allGames.add(newGame);
 					
 						gameForBestTeamFound = true;
-						break;
+						break; */
 					}
 				}
 			
@@ -473,13 +553,52 @@ public class Tournament {
 		return newPairing;
 	}
 	
+	/** Method for saving the updated datastore state after the Tournament
+	 *  Save Pairing Information to Datastore Tournament
+	 *  allPairings -> List of <int> references to pairings
+	 *  allGames -> List of <String> references to games that were created
+	 *  @args none
+	 */
+	public void saveUpdatedDatastoreState(){
+		
+		Pairing tempPairing;
+		tempPairing = allPairings.get(currentRound - 1);
+		
+		LOGGER.finer("Tournament:553: begin saving state\n");
+		
+		try {
+			tournament = datastore.get(tournamentKey);
+			allGamesDatastore = tempPairing.getGameIds();
+			allPairingsDatastore.add(tempPairing.getRound());	
+			
+			//Set properties to their local values obtained from pairing
+			tournament.setProperty("allGames", allGamesDatastore);
+			tournament.setProperty("allPairings", allPairingsDatastore);
+			tournament.setProperty("currentRound", currentRound);
+			
+			//Put back into the datastore very important
+			datastore.put(tournament);
+			
+			LOGGER.fine("Tournament:566: updated allGames: " 
+						+ allGamesDatastore.toString() + 
+						" updated allPairings :" 
+						+ allPairingsDatastore.toString() + "\n");
+			
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			LOGGER.warning("Unable to save tournament State\n");
+			// TODO Note - the above logging is not handling this exception.
+		}
+		
+	}
+	
 	public enum FirstRoundPairingRule {
 		/**
 		 * Match the first round in an ordered method.
 		 */
 		FIRST_ROUND_GAME_ORDERED,
 		/**
-		 * Math the first round randomly.
+		 * Match the first round randomly.
 		 */
 		FIRST_ROUND_GAME_RANDOM,
 	}

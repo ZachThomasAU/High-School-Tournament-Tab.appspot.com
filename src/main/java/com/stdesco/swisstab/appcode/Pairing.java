@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+
+
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
  * Unauthorised copying of this file, via any medium, is strictly
@@ -16,20 +24,44 @@ import java.util.List;
  * 
  * @author zthomas
  * January 2019
+ * 
+ * Edited: JLwin <jeremy.lwin@stdesco.com> 17/01/2019  
+ * Added datastore functionality when creating Pairing which can be accessd
+ * and updated later and used to restore object state. Jlwin
  */
 public class Pairing {
 	private int round;
 	private List<Game> games = new ArrayList<Game>();
+	
+	/* List of String Ids for Games added to the datastore can be used to 
+	 * to access the games from datastore kind "Game" Jlwin
+	 */
+	private List<String> gameids = new ArrayList<String>();
+	DatastoreService datastore = 
+	  		DatastoreServiceFactory.getDatastoreService();
+	Entity pairing;
+	Key tournamentkey;
 	
 	/**
 	 * A Pairing only contains the round it pairs over and no other 
 	 * information.
 	 * 
 	 * @param round The round the the pairing takes place.
+	 * @param tounamentKey is an Object of Class Key from the datastore 
+	 * references that unlocks the parent kind "Tournament" this tournament
 	 */
-	Pairing(int round) {
+	Pairing(int round, Key tournamentKey) {
+		//Sets local versions of arguments
 		this.round = round;
+		tournamentkey = tournamentKey;	
+		
+		//---Datastore---// Create New Entity "Pairing"
+		pairing = new Entity("Pairing", round, tournamentKey);
+		pairing.setProperty("gameNames", gameids);
+		datastore.put(pairing);
 	}
+	
+	
 
 	/**
 	 * @return unmodifiable list of the rounds games
@@ -50,7 +82,11 @@ public class Pairing {
 	 * @exception IllegalArgumentException 
 	 * if one of the teams is already in an existing game.
 	 */
-	Game addGame(Team team1, Team team2) {
+	
+	/* This was old code. Instead of deleting it I'm leaving it here in case I
+	 * broke something down the track. This is called "budget version control".
+	 *  
+	 * void addGame(Team team1, Team team2) {
 		for (Game game : games) {
 			if (game.getTeam1().equals(team1)) {
 				throw new IllegalArgumentException("Could not add match " 
@@ -73,9 +109,59 @@ public class Pairing {
 											+ " : team 2 already in match");
 			}
 		}
-		Game game = new Game(round, team1, team2);
-		games.add(game);
-		return game;
+		//Game game = new Game(round, team1, team2);
+		//games.add(game);
+		//return game;
+	} */
+	
+	Game addGame(Game newGame) {
+		Team team1 = newGame.getTeam1();
+		Team team2 = newGame.getTeam2();
+		for (Game game : games) {
+			if (game.getTeam1().equals(team1)) {
+				throw new IllegalArgumentException("Could not add match " 
+											+ team1 + " - " + team2 
+											+ " : team 1 already in match");
+			}
+			if (game.getTeam2().equals(team1)) {
+				throw new IllegalArgumentException("Could not add match " 
+											+ team1 + " - " + team2 
+											+ " : team 1 already in match");
+			}
+			if (game.getTeam1().equals(team2)) {
+				throw new IllegalArgumentException("Could not add match " 
+											+ team1 + " - " + team2 
+											+ " : team 2 already in match");
+			}
+			if (game.getTeam2().equals(team2)) {
+				throw new IllegalArgumentException("Could not add match " 
+											+ team1 + " - " + team2 
+											+ " : team 2 already in match");
+			}
+		}
+		
+		games.add(newGame);
+		gameids.add(newGame.getGameID());
+		
+		System.out.println("Pairing:128: gameids :" 
+												+ gameids.toString() + "\n");
+		//Add the game to the datastore list
+		
+		Key pairKey = new KeyFactory.Builder(tournamentkey)
+				.addChild("Pairing", round)
+				.getKey();
+		
+		try {
+			pairing = datastore.get(pairKey);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			// TODO Note - the above logging is not handling this exception.
+		}
+		
+		// Save the dummy data
+		pairing.setProperty("gameNames", gameids);
+		datastore.put(pairing);
+		return newGame;
 	}
 	
 	/**
@@ -136,4 +222,22 @@ public class Pairing {
 		}
 		return true;
 	}
+	
+	/** Public method for getting gameIds list 
+	 * 
+	 * @return List<String> containing the gameIDs currently in pairing
+	 * @author Jlwin
+	 */
+	public List<String> getGameIds(){
+	    return gameids;
+	}
+	
+	/** Public method for getting the round of this Pairing which 
+	 * alligns with its datastoreID
+	 * @return List<String> containing the gameIDs currently in pairing
+	 * @author Jlwin
+	 */
+	public int getRound(){
+	    return round;
+	} 
 }
