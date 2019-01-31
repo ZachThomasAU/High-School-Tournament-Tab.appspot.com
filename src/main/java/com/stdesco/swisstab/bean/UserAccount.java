@@ -1,6 +1,4 @@
 package com.stdesco.swisstab.bean;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,8 +25,7 @@ import com.stdseco.swisstab.config.SecurityConfig;
  *
  */
 
-public class UserAccount implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class UserAccount {
 	public static final String GENDER_MALE = "M";
 	public static final String GENDER_FEMALE = "F";
 	public static final String GENDER_OTHER = "O";

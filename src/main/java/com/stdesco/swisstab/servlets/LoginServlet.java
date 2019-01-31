@@ -71,9 +71,9 @@ public class LoginServlet extends HttpServlet {
 		
 		int redirectID = -1;
 		try {
+			System.out.println(request.getParameter("redirectID"));
 			redirectID = Integer.parseInt(request.getParameter("redirectID"));
 		} catch (Exception e) {
-			e.printStackTrace();
 			LOGGER.severe("LoginServlet ln:74 - We call this ignoring the "
 					+ "problem and hoping it goes away...");
 		}
