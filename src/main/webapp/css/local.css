@@ -6334,12 +6334,43 @@ table.tablesorter thead tr th:hover {
   	text-align: center;
 }
 .form-garnish {
-	height: 100vh;
-	background: #b8b8b8;
+	height: 100%;
+    background-color: #43425D;
+    overflow-x: hidden;
+    padding-top: 20px;
 }
-.full-form {
-	height: 100vh;
-	background: #FFFFFF;
-	font-family: "Source Sans Pro";
-	color: #43425D;
+.form-full {
+	padding: 0px 10px;
+}
+.login-main-text {
+    margin: auto;
+    padding: 60px;
+    color: #FFFFFF;
+}
+.login-main-text h1 {
+    font-family: "Source Sans Pro";
+	font-size: 35;
+	color: #FFFFFF;
+	letter-spacing: 2px;
+	font-weight: bold;
+}
+.login-main-text p {
+	color: FFFFFF;
+}
+
+@media screen and (max-height: 450px) {
+    .form-garnish {padding-top: 15px;}
+}
+
+@media screen and (min-width: 768px) {
+    .form-full {
+        margin-left: 40%; 
+    }
+    .form-garnish {
+        width: 40%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+    }
 }
