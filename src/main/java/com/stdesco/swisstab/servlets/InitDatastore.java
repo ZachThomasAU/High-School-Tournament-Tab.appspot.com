@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Entity;
 //import com.google.appengine.api.datastore.Key;
 //import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
+import com.stdesco.swisstab.apicode.ProviderAPI;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
 //import com.stdesco.swisstab.apicode.Provider;
 
@@ -34,6 +35,7 @@ public class InitDatastore extends HttpServlet {
 	static String region;
 	static String appUrl;
 	static Entity globals;
+	static ProviderAPI providerapi;
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -82,7 +84,7 @@ public class InitDatastore extends HttpServlet {
 	
 	private void setVars() {
 		//Updated API Key expires 29th January @ 2:04pm
-		apiKey = "RGAPI-cd398d93-fa8f-450f-b325-44de2bcdf6b8";
+		apiKey = "RGAPI-5bf7fb0c-dcce-4179-a23c-bde0f47eeeed";
 		region = "OCE";
 		appUrl = "http://high-school-tournament-tab.appspot.com/Hello";
 		return;
@@ -95,7 +97,16 @@ public class InitDatastore extends HttpServlet {
 		globals.setProperty("apiKey", apiKey);
 		globals.setProperty("appUrl", appUrl);
 		globals.setProperty("region", region);
-		globals.setProperty("providerID", 0);
+		
+		try {
+			providerapi = new ProviderAPI(appUrl, apiKey, region);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		globals.setProperty("providerID", providerapi.getProviderID());
+		
 		return;
 	}
 

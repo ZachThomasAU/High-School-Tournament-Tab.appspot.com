@@ -1,5 +1,7 @@
 package com.stdesco.swisstab.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -323,5 +325,27 @@ public class DatastoreUtils {
         		+ propertyValue + "\n");
         return false;
       }
-   }   
+    } 
+		
+	/** Public static method for creating a list of parameter values in a
+	 *  coloumn 
+	 * 
+	 * @param  entitylist - List of Entitys retrieved from query
+	 * @param  propertyname - String corresponding to target propertyname
+	 * @return A list of <String> preopertylist
+	 */
+    public static List<String> getPropertyListofEntityColumn(
+  		  List<Entity> entitylist, String propertyname ) {
+    	
+  	  List<String> propertyList = new ArrayList<String>();
+  	  
+		int size = entitylist.size();
+		for (int i = 0; i < size; i++) {
+			Entity entity = entitylist.get(i);
+			System.out.print("DatastoreUtils:345:" + entity.toString() + "\n");			
+			String property = (String) entity.getProperty(propertyname);		
+			propertyList.add(property);
+		}		
+  	  return propertyList;
+    }	
 }

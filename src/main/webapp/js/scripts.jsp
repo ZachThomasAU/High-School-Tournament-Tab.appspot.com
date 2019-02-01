@@ -123,5 +123,14 @@
 	return false;
 	} );
 	
+	function initGlobals() {			
+		$.ajax( {
+			url: 'initDatastore',	
+			type: 'POST',
+			dataType: 'json',
+			data: 'FirstName=Mickey&LastName=Mouse',
+			success: function() {}	
+		});	
+	}	
 
 </script>

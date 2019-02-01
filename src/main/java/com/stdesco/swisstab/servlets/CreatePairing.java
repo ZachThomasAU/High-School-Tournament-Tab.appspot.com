@@ -75,7 +75,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	   * is able to input multiple tournament names into the HTTP request.  
 	   */
 	  
-	  int tournamentID = 2689; 
+	  int tournamentID = 479; 
 	  
 	  System.out.print("CreatePairing:55: TournamentID:"
 	  		+ tournamentID + "ProviderID:" + providerID + "\n");

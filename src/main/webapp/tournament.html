@@ -21,6 +21,38 @@
 	<link rel="stylesheet" href="https://use.typekit.net/nwg7knq.css">
     
     <script>
+    
+		function fill_tdropdown(){
+			
+			// Function for filling tournament dropdown from list of tournaments
+			alert('load tournamentname')
+			
+			var html_code = '';
+			
+			//AJAX Serlvet Request to Get JSON Data	
+			$.ajax( {
+				url: 'getPropertyList',	
+				type: 'POST',
+				dataType: 'json',
+				data: 'kind=Tournament&propertyname=tournamentName',
+				success: function(data) {
+					$('#output_box').html('returned' + data.propertylist[0]);
+					data.propertylist.forEach(function (value) {
+						html_code += '<option>'+ value +'</option>';
+						//alert('returned data :' + value)
+						//$('#output_box').html(html_code);
+						$('#tournamentSelect').html(html_code);
+						set_current_tournament('<h1>'+data.propertylist[0]+'</h1>');
+					});
+				}
+			});		
+		}
+		
+		function set_current_tournament(tour){
+			$('#tournamentName').html(tour);
+			//alert('setting tournament')
+		}
+    
         $(document).ready(function() {       	
             $('#javascript').load('/js/scripts.jsp', 
             		function(){});            
@@ -30,6 +62,12 @@
             		function(){});
             $('#addResults').load('/resources/addResults.html', 
             		function(){});
+            
+            set_current_tournament('<h1>UQ MINI</h1>'); 
+            
+            //initGlobals();
+            fill_tdropdown();
+            
         });
         
     </script>
@@ -130,10 +168,23 @@
                     </div>
                 </div>
           	</div>
+          	
+          	<div class="row">
+                <div class="col-lg-9" id="tournamentName">
+                    <h1></h1>
+                </div>
+                <div class="col-lg-3" id="divtournamentSelect">
+                    <label for="currentTournamentSelect">Current Tournament</label>
+				    <select class="form-control" id="tournamentSelect">
+				      <option>UQ MINI</option>
+				      <option>QLD HIGHSCHOOL</option>
+				    </select>
+                </div>
+          	</div>  	
 			<!-- Actual buttons -->
 			<div class="row">
 				<div class="col-1 col-lg-2">
-					<button id="testProvider" class="btn btn-primary btn-block">Get Provider</button>
+					<div id="addResults"> </div>
 				</div>
 				<div class="col-1 col-lg-2">
 					<div id="addTournamentPopup"></div>
@@ -147,24 +198,13 @@
 				<div class="col-8 col-lg-4">
 				</div>
 			</div>
+			
 			<!-- These are temporary buttons for temporary implementation and debugging -->
 			<div class="row">
 				<div class="col-12 bufferbreak">
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-1 col-lg-2">
-					<button id="tournamentTest" class="btn btn-primary btn-block">Tournament Test</button>
-				</div>
-				<div class="col-1 col-lg-2">
-					<button id="initDatastore" class="btn btn-primary btn-block">Init Globals</button>
-				</div>
-			    <div class="col-1 col-lg-2">
-					<div id="addResults"> </div>
-				</div>
-				<div class="col-9 col-lg-6">
-				</div>
-			</div>
+
 			<!-- This is the output div -->
 			<div class="row">
 				<div class="col-12 bufferbreak">
@@ -177,13 +217,13 @@
 					</div>
 				</div>
 			</div>
+			</div> 
       </div>		
-	</div>
     <!-- /#wrapper -->
     
     <!-- /#javascripts -->
     <div id="javascript"></div>
-    
+   
 </body>
 </html>
 
