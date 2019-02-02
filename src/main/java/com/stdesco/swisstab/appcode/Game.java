@@ -23,6 +23,7 @@ import com.stdesco.swisstab.utils.Globals;
 
 public class Game {
 	private int round;
+	@SuppressWarnings("unused")
 	private Key tournamentkey;
 	private Team team1;
 	private Team team2;

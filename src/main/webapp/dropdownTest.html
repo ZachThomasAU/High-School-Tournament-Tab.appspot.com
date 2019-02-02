@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High-School-Tournament-Tab Tournament - Stable Pre Alpha 0.01</title>
+
+	<!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/local.css" />
+	
+	<!-- Bootstrap js -->
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" 
+    		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" 
+    		crossorigin="anonymous"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+	
+	<!-- Fonts -->
+	<link rel="stylesheet" href="https://use.typekit.net/nwg7knq.css">
+    
+    <script>
+    
+		function fill_tdropdown(){
+			
+			// Function for filling tournament dropdown from list of tournaments
+			alert('load tournamentname')
+			
+			var html_code = '';
+			
+			//AJAX Serlvet Request to Get JSON Data	
+			$.ajax( {
+				url: 'GetCSVData',	
+				type: 'POST',
+				dataType: 'json',
+				data: 'postcode=2620&suburb=QUEANBEYAN',
+				success: function(data) {
+					$('#output_box').html('returned' + data.postcodelist[0]);
+					data.postcodelist.forEach(function (value) {
+						html_code += '<option>'+ value +'</option>';
+						//alert('returned data :' + value)
+						$('#output_box').html(html_code);
+						$('#SuberbSelect').html(html_code);
+					});
+				}
+			});		
+		}
+		
+		function set_current_tournament(tour){
+			$('#tournamentName').html(tour);
+			//alert('setting tournament')
+		}
+    
+        $(document).ready(function() {       	
+            $('#javascript').load('/js/scripts.jsp', 
+            		function(){}); 
+            
+            fill_tdropdown();
+        });
+        
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+		  <!-- Both Nav Bars -->
+          <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+              <!-- Navbar + Logo -->
+			  <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a id="Logo" class="navbar-brand" href="index.html">TOURNAMENT APP</a></div>
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+				<!-- Sidebar -->
+                <ul id="active" class="nav navbar-nav side-nav">
+                  <li><a href="index.html"><em class="fa fa-home inhead-fa"></em> Home</a></li>
+                  <li><a class="disabled" href="#"><em class="fa fa-calendar inhead-fa"></em> 
+					  Calendar
+					  <!-- Coming Soon Hover -->
+					  <span class="disabled-overlay"><span class="disabled-text">Coming Soon</span></span>
+					  </a></li>
+                  <li><a class="disabled" href="#"><i class="fa fa-inbox inhead-fa"></i> 
+					  Inbox
+					  <!-- Coming Soon Hover -->
+					  <span class="disabled-overlay"><span class="disabled-text">Coming Soon</span></span>
+					  </a></li>
+                    <li><a class="disabled" href="#"><i class="fa fa-users inhead-fa"></i> 
+						Team
+						<!-- Coming Soon Hover -->
+					  	<span class="disabled-overlay"><span class="disabled-text">Coming Soon</span></span>
+						</a></li>
+                    <li class="selected active-selected"><a href="tournament.html"><i class="fa fa-trophy active-fa"></i> Tournament</a></li>
+                    <li><a class="disabled" href="#"><i class="fa fa-question inhead-fa"></i> 
+						Help Center
+						<!-- Coming Soon Hover -->
+					  	<span class="disabled-overlay"><span class="disabled-text">Coming Soon</span></span>
+						</a></li>
+                    <li><a class="disabled" href="#"><i class="fa fa-cog inhead-fa"></i> 
+						Settings
+						<!-- Coming Soon Hover -->
+					  	<span class="disabled-overlay"><span class="disabled-text">Coming Soon</span></span>
+						</a></li>
+                </ul>
+				<!-- Topbar -->
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                    <li class="dropdown messages-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope inhead-fa"></i> Messages <span class="badge">2</span> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">2 New Messages</li>
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell inhead-fa"></i></span>
+                                    <span class="message">Security alert</span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell inhead-fa"></i></span>
+                                    <span class="message">Security alert</span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="#">Go to Inbox <span class="badge">2</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown user-dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><em class="fa fa-user inhead-fa"></em> Zachary Thomas<strong class="caret"></strong></a>
+                      <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-user inhead-fa"></i> Profile</a></li>
+                            <li><a href="#"><i class="fa fa-cog inhead-fa"></i> Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#"><i class="fa fa-power-off inhead-fa"></i> Log Out</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="divider-vertical"></li>
+                    <li> </li>
+                </ul>
+            </div>
+        </nav>
+		
+          <div id="page-wrapper">
+			<!-- Jumbotron -->
+            <div class="row">
+				<div class="col-1 col-lg-4">
+					
+				</div>
+				<div class="col-1 col-lg-4">
+					  <div class="form-group">
+					    <label for="exampleFormControlSelect1">State</label>
+					    <select class="form-control" id="exampleFormControlSelect1">
+					      <option>1</option>
+					      <option>2</option>
+					      <option>3</option>
+					      <option>4</option>
+					      <option>5</option>
+					    </select>
+					  </div>
+				</div>
+				<div class="col-1 col-lg-4">
+				
+				</div>
+          	</div>
+          	
+          	<div class="row">
+				<div class="col-1 col-lg-4">
+					
+				</div>
+				<div class="col-1 col-lg-4">
+					 <label for="exampleFormControlSelect1">Suburb</label>
+					    <select class="form-control" id="SuberbSelect">
+					      <option>1</option>
+					      <option>2</option>
+					      <option>3</option>
+					      <option>4</option>
+					      <option>5</option>
+					    </select>
+				</div>
+				<div class="col-1 col-lg-4">					
+				
+				</div>
+          	</div>  	
+			<!-- Actual buttons -->
+			<div class="row">
+				<div class="col-1 col-lg-4">
+					
+				</div>
+				<div class="col-1 col-lg-4">
+					<label for="exampleFormControlSelect1">School</label>
+					    <select class="form-control" id="exampleFormControlSelect1">
+					      <option>1</option>
+					      <option>2</option>
+					      <option>3</option>
+					      <option>4</option>
+					      <option>5</option>
+					</select>
+				</div>
+				<div class="col-1 col-lg-4">					
+				
+				</div>
+			</div>
+			
+			<!-- These are temporary buttons for temporary implementation and debugging -->
+			<div class="row">
+				<div class="col-12 bufferbreak">
+				</div>
+			</div>
+			
+			<!-- Actual buttons -->
+			<div class="row">
+				<div class="col-1 col-lg-4">
+				<button type="button" class="btn btn-primary">Check Postcode</button>
+				</div>
+				<div class="col-1 col-lg-4">
+				  <div class="form-group">
+				    <label for="exampleFormControlInput1">Postcode</label>
+				    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="4075">
+				  </div>
+				</div>
+				<div class="col-1 col-lg-4">					
+				
+				</div>
+			</div>
+
+			<!-- This is the output div -->
+			<div class="row">
+				<div class="col-12 bufferbreak">
+			</div>
+			</div>
+			<div class="row">
+			  <div class="col-12">
+					<div id="output_box" class="output-box">
+						<span style="padding-left: 10px;">OUTPUT'S GO HERE. . .</span>
+					</div>
+				</div>
+			</div>
+			</div> 
+      </div>		
+    <!-- /#wrapper -->
+    
+    <!-- /#javascripts -->
+    <div id="javascript"></div>
+   
+</body>
+</html>
+
