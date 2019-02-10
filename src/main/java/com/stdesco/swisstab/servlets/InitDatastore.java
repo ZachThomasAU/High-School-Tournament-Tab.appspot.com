@@ -82,7 +82,7 @@ public class InitDatastore extends HttpServlet {
 	
 	private void setVars() {
 		//Updated API Key expires 29th January @ 2:04pm
-		apiKey = "RGAPI-668eca00-586b-4726-868b-cd463c82bec4";
+		apiKey = "RGAPI-8a65d046-509b-4200-83fc-3f31a8a12fb4";
 		region = "OCE";
 		appUrl = "http://high-school-tournament-tab.appspot.com/Hello";
 		return;
