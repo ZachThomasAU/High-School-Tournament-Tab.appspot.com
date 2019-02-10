@@ -1,5 +1,4 @@
 package com.stdesco.swisstab.bean;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +8,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.stdesco.swisstab.appcode.Tournament;
+import com.stdseco.swisstab.config.SecurityConfig;
 
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
@@ -28,6 +28,7 @@ import com.stdesco.swisstab.appcode.Tournament;
 public class UserAccount {
 	public static final String GENDER_MALE = "M";
 	public static final String GENDER_FEMALE = "F";
+	public static final String GENDER_OTHER = "O";
 	
 	private String username;
 	private String fname;
@@ -66,7 +67,7 @@ public class UserAccount {
 		this.grade = grade;
 		this.password = password; // TODO encrypt with GAE KMS https://cloud.google.com/kms/
 		roles = new ArrayList<String>();
-		roles.add("Player");
+		roles.add(SecurityConfig.ROLE_PLAYER);
 		
 		initialiseUserAccount();
 	}
