@@ -56,7 +56,11 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  //---- initialize the hash-map for response back to web-app ----//
 	  Map<String, Object> map = new HashMap<String, Object>();
 	  teamName = req.getParameter("teamname");
-	  tournamentName = req.getParameter("tournamentname");	  	  
+	  tournamentName = req.getParameter("tournamentname");
+	  
+	  System.out.print("CreateTeam:51: Tournamentname :" 
+			  								+ tournamentName + "\n");
+	  
 	  providerID = DatastoreUtils.getProviderID();
 
       //---- Attempt to convert the tournament name to tournament code ----//  
@@ -69,7 +73,10 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
         ServletUtils.writeback(resp, map);
         return;
       }
-            
+      
+      System.out.print("CreateTeam:51: Tournament ID: "
+    		  + tournamentID + "\n");
+      
 	  //---- Create a key for the current Tournament ----//
 	  Key tournament = DatastoreUtils.getTournamentKey(tournamentID);
       

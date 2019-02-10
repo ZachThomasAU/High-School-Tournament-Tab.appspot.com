@@ -23,12 +23,7 @@
 	      <div id="addResultsModalBody" class="modal-body">              
 			
 			<div id="addresults">
-					
-				<label for="tnameaddresult">Tournament Name</label> 	
-			    <input type="text" class="form-control" 
-								value="tournament name" name="tnameaddresult">
-				<br>
-							
+				
 				<label for="gamecode">Game Code</label> 
 				<input type="text" class="form-control" 
 								value="game code" name="gamecode">
@@ -58,14 +53,18 @@
 	
 	$('#AddResultsSubmitButton').click(function(){	
 		
-		alert('button clicked')
 		$("#holdresults").html($("#addresults").find("select,textarea, input").serialize());
+		
+		var datastring = $("#addresults").find("select,textarea, input").serialize()
+		 + '&tnameaddresult=' + $('#tournamentSelect').val();
+		
+		alert(datastring);
 		
 		$.ajax({
 		url: 'addResults',	
 			type: 'POST',
 			dataType: 'json',
-			data: $("#addresults").find("select,textarea, input").serialize(),
+			data: datastring,
 			success: function(data){				
 				if(data.respcode == 100){												
 					alert("Success: Added Result to the datastore")	

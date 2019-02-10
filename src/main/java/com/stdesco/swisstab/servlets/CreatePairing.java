@@ -70,12 +70,14 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  /* Tournament ID is passed into the HTTP request by referencing 
 	   * tournament name and then doing a query in the datastore to get the ID.
 	   * 
-	   * TODO: consider wether a better solution could be created in which the
+	   * TODO: consider whether a better solution could be created in which the
 	   * user has more than one tournamentID registered to them and therefore 
 	   * is able to input multiple tournament names into the HTTP request.  
 	   */
 	  
-	  int tournamentID = 479; 
+	  String tournamentName = req.getParameter("tournamentname"); 
+	  
+	  int tournamentID = DatastoreUtils.getTournamentID(tournamentName); 
 	  
 	  System.out.print("CreatePairing:55: TournamentID:"
 	  		+ tournamentID + "ProviderID:" + providerID + "\n");
@@ -152,34 +154,49 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
   			tournamentEntity.getProperty("numberOfTeams")); 	  
   	  setPairingRuleConverter(pairingruleint);
   	  
+  	  //----Get the Current Round from Datastore----//
+  	  currentround = Math.toIntExact((long) 
+  			tournamentEntity.getProperty("currentRound")); 	 
   	  
-	  //----Create object of type tournament----//
-      Tournament tournament = new Tournament(rounds, numberofteams, 
-    		  teamslist, tournamentID);     
-      tournament.setFirstRoundPairingRule(pairingrule);
-      pairing = tournament.pairNextRound();
-      pairing.saveState();
-      tournament.saveUpdatedDatastoreState();
-      
-      //Notify the user of pairing status
-      System.out.println("CreatePairing:169: Success:" 
-    		  									+ pairing.getGames() + "\n"); 
-      
-      //Check wether or not the Bye Team is set to null
-      try {
-    	  System.out.println("CreatePairing:171: " + tournament.getByeTeam());
-      } catch (IllegalStateException e) {
-    	  System.out.println("CreatePairing:172: no bye team set");
-      }
+	  System.out.println("CreatePairing:161: CurrentRound:" + 
+			  										currentround + "\n");
+  	  
+  	  if(currentround == 0) { 	
+		  //----Create the first round pairing---//
+	      Tournament tournament = new Tournament(rounds, numberofteams, 
+	    		  teamslist, tournamentID);     
+	      tournament.setFirstRoundPairingRule(pairingrule);
+	      pairing = tournament.pairNextRound();
+	      pairing.saveState();
+	      tournament.saveUpdatedDatastoreState();     
+  	  
+	      //Notify the user of pairing status
+	      System.out.println("CreatePairing:169: Success:" 
+	    		  								+ pairing.getGames() + "\n");
+	      
+	      //Check wether or not the Bye Team is set to null
+	      try {
+	    	  System.out.println("CreatePairing:171: " + tournament.getByeTeam());
+	      } catch (IllegalStateException e) {
+	    	  System.out.println("CreatePairing:172: no bye team set");
+	      }
+	      
+	      currentround++;
+	      
+  	  } else {
+  		  
+  		  System.out.println("CreatePairing:184: not round 0\n");
+  		  //Check whether or not all the games in the current 
+  		  //round have a result
+  		  
+  		  //Recreate tournament of round X from data-store
+  	  }
       
       /* Step 3: Prepare the game information for return back to the user
        * Run a query on the current Gamelist and get all the list of games
        * with round currentround
        * then assign the local variable teamslist.
        */
-      
-  	  currentround = Math.toIntExact((long) 
-  			tournamentEntity.getProperty("currentRound"));
   	  
       Filter gameRoundFilter =
           new FilterPredicate("round", FilterOperator.EQUAL, 

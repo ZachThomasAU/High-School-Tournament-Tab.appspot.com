@@ -25,7 +25,7 @@
 		function fill_tdropdown(){
 			
 			// Function for filling tournament dropdown from list of tournaments
-			alert('load tournamentname')
+			//alert('load tournamentname')
 			
 			var html_code = '';
 			
@@ -52,7 +52,13 @@
 			$('#tournamentName').html(tour);
 			//alert('setting tournament')
 		}
-    
+		
+		function initApp() {
+			//Running the initialisations that were prevoiusly on buttons
+			$.ajax( {url: 'initDatastore', type:'POST',});	
+			$.ajax( {url: 'provider', type:'POST',});	
+		}	
+		
         $(document).ready(function() {       	
             $('#javascript').load('/js/scripts.jsp', 
             		function(){});            
@@ -65,7 +71,7 @@
             
             set_current_tournament('<h1>UQ MINI</h1>'); 
             
-            //initGlobals();
+            initApp();
             fill_tdropdown();
             
         });
@@ -176,8 +182,8 @@
                 <div class="col-lg-3" id="divtournamentSelect">
                     <label for="currentTournamentSelect">Current Tournament</label>
 				    <select class="form-control" id="tournamentSelect">
-				      <option>UQ MINI</option>
-				      <option>QLD HIGHSCHOOL</option>
+				      <option value="UQ MINI">UQ MINI</option>
+				      <option value="QLD HIGHSCHOOL">QLD HIGHSCHOOL</option>
 				    </select>
                 </div>
           	</div>  	

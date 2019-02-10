@@ -4,13 +4,16 @@
 
 	$('#createPairing').click(function() {
 		
-		alert("Create Pairing")
+		
+		var datastring = 'tournamentid=4579'+ '&tournamentname=' 
+											+ $('#tournamentSelect').val();	
+		alert(datastring);
 		
 		$.ajax( {
 			url: 'CreatePairing',	
 			type: 'POST',
 			dataType: 'json',
-			data: 'tournamentid=4579',
+			data: datastring,
 			success: function(data) {				
 				if (data.respcode == 4) {
 					
@@ -123,14 +126,5 @@
 	return false;
 	} );
 	
-	function initGlobals() {			
-		$.ajax( {
-			url: 'initDatastore',	
-			type: 'POST',
-			dataType: 'json',
-			data: 'FirstName=Mickey&LastName=Mouse',
-			success: function() {}	
-		});	
-	}	
 
 </script>

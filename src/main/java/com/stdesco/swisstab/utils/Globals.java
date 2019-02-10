@@ -60,7 +60,9 @@ public class Globals {
 	 *  If providerID == 0 then the global provider has not yet been 
 	 *  initialized across the riotAPI
 	 */
-	public int getGlobalProviderID() {	
+	public int getGlobalProviderID() {
+	   System.out.print("Globals:64: ProviderID: "
+	    		  + providerID + "\n");
 		return providerID;
 	}
 	

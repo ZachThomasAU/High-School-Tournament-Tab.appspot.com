@@ -25,9 +25,6 @@
 			
 				<input type="text" class="form-control" 
 								value="new team" name="teamname"> <br> 
-				
-				<input type="text" class="form-control" 
-							value="join tournament?" name="tournamentname">
 			
 				<p id="holdteam" style="border: 1px solid red">
 						Response will come here</p>
@@ -52,11 +49,14 @@
 	
 		$("#holdteam").html($("#teamname").find("select,textarea, input").serialize());
 		
+		var datastring = $("#teamname").find("select,textarea, input").serialize()
+						 + '&tournamentname=' + $('#tournamentSelect').val();
+		
 		$.ajax({
 		url: 'CreateTeam',	
 			type: 'POST',
 			dataType: 'json',
-			data: $("#teamname").find("select,textarea, input").serialize(),
+			data: datastring,
 			success: function(data){				
 				  // Returns 100 - If successful in adding team
 				  // Returns 400 - If tournament is not found
