@@ -168,7 +168,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	    		  teamslist, tournamentID);     
 	      tournament.setFirstRoundPairingRule(pairingrule);
 	      pairing = tournament.pairNextRound();
-	      pairing.saveState();
+	      pairing.saveState(DatastoreUtils.getTournamentKey(tournamentID));
 	      tournament.saveUpdatedDatastoreState();     
   	  
 	      //Notify the user of pairing status
@@ -197,14 +197,14 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
   					numberofteams, teamslist, tournamentID);
   			nextroundtournament.setFirstRoundPairingRule(pairingrule);
   			nextroundtournament.restoreStateFromDataStore(tournamentName);
+  			Pairing nextround = nextroundtournament.pairNextRound();
+  			nextround.saveState(DatastoreUtils.getTournamentKey(tournamentID));
   			
   			map.put("respcode", 400);       
   			ServletUtils.writeback(resp, map);
   			return;  			
   		  } else {
   			System.out.println("CreatePairing:194: Still waiting on results\n");
-  			
-  			//DatastoreUtils.getTournamentGameList(tournamentName);
   			
   			map.put("respcode", 300);       
   			ServletUtils.writeback(resp, map);

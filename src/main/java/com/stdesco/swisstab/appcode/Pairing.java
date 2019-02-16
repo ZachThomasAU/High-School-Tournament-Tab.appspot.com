@@ -42,16 +42,19 @@ public class Pairing {
 	 * @param tounamentKey is an Object of Class Key from the datastore 
 	 * references that unlocks the parent kind "Tournament" this tournament
 	 */
-	Pairing(int round, Key tournamentKey) {
+	public Pairing(int round) {
 		//Sets local versions of arguments
-		this.round = round;
-		this.tournamentkey = tournamentKey;	
-		
-		//Create an entity to save the Pairing State to datastore
-		AppCodeUtils.createEntityPairingFromTkey
-				(this.round, tournamentkey); 		
+		this.round = round;		
 	}
 	
+	/** Public method for setting the list games dirrectly. used to reconstruct
+	 *  pairing from the datastore.
+	 * 
+	 * @param pairingGames 
+	 */
+	public void setGames(List<Game> pairingGames) {
+		this.games = pairingGames;
+	}
 	
 
 	/**
@@ -217,7 +220,13 @@ public class Pairing {
 	/** Public Method for saving the current state of the 
 	 *  object to the datastore
 	 */
-	public void saveState(){
+	public void saveState(Key tournamentKey){
+		
+		this.tournamentkey = tournamentKey;	
+		
+		//Create an entity to save the Pairing State to datastore
+		AppCodeUtils.createEntityPairingFromTkey
+				(this.round, tournamentkey); 
 	    AppCodeUtils.saveStateToDataStorePairing(round, tournamentkey, gameids);
 	} 
 }

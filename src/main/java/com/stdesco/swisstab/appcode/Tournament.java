@@ -234,7 +234,7 @@ public class Tournament {
 	 * @return 	a pairing with no randomness, decided by teamid order.
 	 */
 	private Pairing firstRoundOrderedPairing() {
-		Pairing pairing = new Pairing(currentRound, tournamentKey);
+		Pairing pairing = new Pairing(currentRound);
 		int teamid = 0;
 		while (teamid < numberOfTeams - 1) {
 			Game game = new Game(currentRound, getTeam(teamid), 
@@ -258,7 +258,7 @@ public class Tournament {
 	 * @return 	a first round pairing, paired randomly.
 	 */
 	private Pairing firstRoundRandomPairing() {
-		Pairing pairing = new Pairing(currentRound, tournamentKey);
+		Pairing pairing = new Pairing(currentRound);
 		List<Team> notPairedYet = new ArrayList<Team>(teams);
 		
 		while (notPairedYet.size() > 1) {
@@ -370,7 +370,7 @@ public class Tournament {
 		List<Team> sortedTeams = new ArrayList<Team>(teams);
 		Collections.sort(sortedTeams);
 		currentByeTeamId = -1;
-		Pairing newPairing = new Pairing(currentRound, tournamentKey);
+		Pairing newPairing = new Pairing(currentRound);
 		
 		if ((numberOfTeams % 2) == 1) {
 			// the number of teams is odd, so we need to choose a team to have 
@@ -544,7 +544,9 @@ public class Tournament {
 					break;
 				}
 			}
-		
+			
+			LOGGER.info(bestScoreTeam.toString());
+			
 			if (!gameForBestTeamFound) {
 				// this is mostly a bug tester. This should only ever occur 
 				// when the (number of teams) / 2 < (number of rounds). 
@@ -591,7 +593,7 @@ public class Tournament {
 			tournament.setProperty("allPairings", allPairingsDatastore);
 			tournament.setProperty("currentRound", currentRound);
 			tournament.setProperty("currentByeTeam", currentByeTeam.getName());
-			tournament.setProperty("currentByeTeamId", currentByeTeamId);
+			tournament.setProperty("currentByeTeamId", currentByeTeam.getTeamid());
 			
 			//Put back into the datastore very important
 			datastore.put(tournament);
@@ -648,9 +650,9 @@ public class Tournament {
 									tournament.getProperty("currentRound"));
 		
 		teams = DatastoreUtils.getTeamList(tournamentName);			
-		allGames = DatastoreUtils.getTournamentGameList(tournamentName, teams);		
-		
-		//allPairings = new ArrayList<Pairing>();
+		allGames = DatastoreUtils.getTournamentGameList(tournamentName, teams);				
+		allPairings = DatastoreUtils.getAllPairingsList(tournamentName, 
+														  currentRound, teams);
 		
 		currentByeTeamId = Math.toIntExact((long) 
 				tournament.getProperty("currentByeTeamId"));		

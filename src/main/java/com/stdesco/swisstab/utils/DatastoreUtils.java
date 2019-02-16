@@ -17,6 +17,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.stdesco.swisstab.appcode.Game;
+import com.stdesco.swisstab.appcode.Pairing;
 import com.stdesco.swisstab.appcode.Team;
 
 /**
@@ -265,6 +266,7 @@ public class DatastoreUtils {
 	 */
 	public static Key getTeamKey(String teamName, int TournamentID) {
 		
+		Globals globals = new Globals();
 		int providerID = globals.getGlobalProviderID();
 		
 		Key teamKey = new KeyFactory.Builder("Provider", providerID)
@@ -432,7 +434,70 @@ public class DatastoreUtils {
 	    }	    
     }
     
-    //public static int getGameResult(Key tournamentKey, )
+    public static List<Pairing> getAllPairingsList
+    	(String tournamentName, int currentRound, List<Team> allTeams){
+    	
+    	List<Pairing> allPairings = new ArrayList<Pairing>();
+    	List<Game> allGames = new ArrayList<Game>();
+    	Team team1 = null, team2=null;
+    	
+	    System.out.println("DatastoreUtils:379: Reconstructing AllPairings"
+	    + ": round:" + currentRound +": tournamentname:" + tournamentName +"\n");
+	    
+	    for(int searchround=1; searchround < currentRound+1; searchround++) {
+	    	
+		    //Create filters for retrieving from the datastore
+		    Filter tournamentFilter = new FilterPredicate("tournamentName", 
+			        		  		  FilterOperator.EQUAL, tournamentName);	    
+		    Filter roundFilter = new FilterPredicate("round", 
+			  		  FilterOperator.EQUAL, currentRound);
+		    
+		    //Prepare and run query with filters
+			Query q = new Query("Game")
+						.setFilter(tournamentFilter)
+						.setFilter(roundFilter);
+			
+		    PreparedQuery currentPairingQ = datastore.prepare(q); 	    
+		    List<Entity> roundResult = currentPairingQ.
+	      		  asList(FetchOptions.Builder.withDefaults());
+	    	
+		    for (Entity iterator: roundResult) {
+		    	int gameRound = Math.toIntExact((long) iterator.getProperty("round"));
+		    	String team1str = (String) iterator.getProperty("teamA");
+		    	String team2str = (String) iterator.getProperty("teamB");
+		    	
+		    	for (Team teamIter: allTeams) {
+		    		if(team1str.equals(teamIter.getName())){
+		    			team1 = teamIter;
+		    		}
+		    	}
+		    	
+		    	for (Team teamIter2: allTeams) {
+		    		if(team2str.equals(teamIter2.getName())){
+		    			team2 = teamIter2;
+		    		}
+		    	}
+		    	
+		    	Game game = new Game(gameRound, team1, team2);
+	        	
+		    	//set the game result from integer and gameresult enumerator 
+		    	game.setGameResultfromInt(Math.toIntExact((long) 
+		    			iterator.getProperty("gameResult")));
+		    
+				System.out.println("DatastoreUtils: 486: game added: "
+						+ game.toString() +"\n");
+				
+		    	allGames.add(game);
+		    }
+		    
+		   Pairing tempPairing = new Pairing(searchround);
+		   tempPairing.setGames(allGames);
+		   allPairings.add(tempPairing);
+		   
+	    }
+    	
+    	return allPairings;
+    }
     
     /** Public method for reconstructing allGames from the datastore list
      * 
