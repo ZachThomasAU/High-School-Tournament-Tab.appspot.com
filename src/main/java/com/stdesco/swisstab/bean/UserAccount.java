@@ -12,6 +12,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
 public class UserAccount {
+	@SuppressWarnings("unused")
 	private final static Logger LOGGER = 
 			Logger.getLogger(UserAccount.class.getName());
 	static DatastoreService datastore = 

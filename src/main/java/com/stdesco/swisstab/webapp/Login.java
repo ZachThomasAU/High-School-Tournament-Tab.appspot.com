@@ -28,7 +28,7 @@ public class Login extends HttpServlet {
 		String password = request.getParameter("password");
 		
 		if (Validate.checkUser(username, password)) {
-			LOGGER.info("login attempt by " + username + "was successful");
+			LOGGER.info("login attempt by " + username + " was successful");
 			response.sendRedirect(request.getContextPath() + "/index.html");;
 		} else {
 			LOGGER.log(Level.INFO, "ln 33: Username or Password incorrect");
