@@ -7,7 +7,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
-public class datastoreConnecter {
+public class DatastoreConnecter {
 
 	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	Entity entity;

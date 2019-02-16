@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
-import com.stdesco.swisstab.webapp.datastoreConnecter;
+import com.stdesco.swisstab.webapp.DatastoreConnecter;
 
 /**
  * Servlet implementation class UpdateUsername
@@ -36,7 +36,7 @@ public class GetProviderData extends HttpServlet {
 		boolean isValid = true;
 
 		// Create a new datastore connector to get access to the ds data.
-		datastoreConnecter data = new datastoreConnecter();
+		DatastoreConnecter data = new DatastoreConnecter();
 		provcode = (long) data.getProperty("Provider", 349, "providerID");
 		url = (String) data.getProperty("Provider", 349, "url");
 		region = (String) data.getProperty("Provider", 349, "region");
