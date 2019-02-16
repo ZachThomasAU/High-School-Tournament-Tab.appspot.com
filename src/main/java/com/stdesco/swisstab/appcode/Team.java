@@ -1,5 +1,6 @@
 package com.stdesco.swisstab.appcode;
 
+
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
  * Unauthorised copying of this file, via any medium, is strictly
@@ -34,7 +35,7 @@ public class Team implements Comparable<Team> {
 	 * @param players
 	 * A list of of strings with the Summoner Names of each player.
 	 */
-	Team(String name, int teamid) {
+	public Team(String name, int teamid) {
 		if (name == null) {
 			throw new IllegalArgumentException("Illegal Team Name. Team Name "
 					+ "cannot be null");
@@ -107,6 +108,18 @@ public class Team implements Comparable<Team> {
 			return -1;
 		}
 		return 0;
+	}
+	
+	/** Public method for reconstucting a team and directly setting its 
+	 *  internal variables score and byeround
+	 * 
+	 * @param score
+	 * @param byeround
+	 */
+	
+	public void reconstruct(float score, int byeround) {
+		this.score = score;
+		this.byeRound = byeround;
 	}
 	
 }

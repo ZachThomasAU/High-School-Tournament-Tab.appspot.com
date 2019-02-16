@@ -39,12 +39,25 @@ public class Game {
 	 * @param team1 The Blue Side team in the game.
 	 * @param team2 The Red Side team in the game.
 	 */
-	Game(int round, Team team1, Team team2, int tournamentID, 
-			Key tournamentKey) {
-		tournamentkey = tournamentKey;
+	public Game(int round, Team team1, Team team2) {
 		this.round = round;
 		this.team1 = team1;
-		this.team2 = team2;
+		this.team2 = team2;	
+		
+	}
+	
+	/** public method for getting the gamecode across the API 
+	 *  this method is only called once for each game object
+	 *  it should not be called again during reconstructions of games
+	 *  
+	 *  @param - int tournamentID
+	 *  @param - Key tournamentKey
+	 */
+	
+	public void getGameCodewithAPI(int tournamentID, 
+			Key tournamentKey) {
+		
+		tournamentkey = tournamentKey;
 		
 		//get gamecode accross GameAPI
 		GameAPI gameapi = new GameAPI(team1.getName(), team2.getName(), 
@@ -70,7 +83,6 @@ public class Game {
 						team2.getName(), round, gameID);
 		
 		System.out.println("Game:56" + gameID + "\n");	
-		
 	}
 	
 	/**
@@ -164,6 +176,24 @@ public class Game {
 	 */
 	public String getGameID() {
 		return gameID;
+	}
+	
+	
+	/** Public method for setting the game result from an integer ref (0,1,2)
+	 * 
+	 * @param result -  integer corresponding to result
+	 */
+	public void setGameResultfromInt(int result) {
+		
+    	if(result == 0) {
+    		setResult(GameResult.GAME_RESULT_NO_RESULT);    		
+    	} else if (result == 1) {    		
+    		setResult(GameResult.GAME_RESULT_TEAM_1_WON);
+    	} else if (result == 2) {
+    		setResult(GameResult.GAME_RESULT_TEAM_2_WON);
+    	} else {
+    		//TODO: something went really wrong if you get here
+    	}
 	}
 
 	public enum GameResult {

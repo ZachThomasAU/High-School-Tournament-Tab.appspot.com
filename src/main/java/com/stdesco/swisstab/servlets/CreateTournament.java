@@ -79,7 +79,7 @@ public class CreateTournament extends HttpServlet {
 		  return;
 	  } 
 	  
-	  System.out.print("CreateTournament:54: Tournament Name:"
+	  System.out.print("CreateTournament:82: Tournament Name:"
 			  	+ tname + "Number of Rounds: " + trounds + "\n");
 		
       //---- Check if that tournament already exists ----//
@@ -229,6 +229,8 @@ public class CreateTournament extends HttpServlet {
 		tour.setProperty("allPairings", null); // List<Pairing>
 		tour.setProperty("allGames", null); // List<Game>
 		tour.setProperty("tournamentName", tname); // List<Game>
+		tour.setProperty("currentByeTeamId", 0); // to be populated
+		tour.setProperty("currentByeTeam", "Null" ); //  to be populated
 		datastore.put(tour);
 		return;	
 	}

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.stdesco.swisstab.utils.DatastoreUtils;
 import com.stdesco.swisstab.utils.ServletUtils;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -61,7 +62,12 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  System.out.print("CreateTeam:51: Tournamentname :" 
 			  								+ tournamentName + "\n");
 	  
-	  providerID = DatastoreUtils.getProviderID();
+	  try {
+			providerID = DatastoreUtils.getProviderID();
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
       //---- Attempt to convert the tournament name to tournament code ----//  
       try {    	  
@@ -89,7 +95,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  }  
 	  
 	  //---- Initialise a basic team structure and add it to the ds ----//
-	  initTeam(teamName, tournament);
+	  initTeam(teamName, tournament, tournamentName);
 	  
 	  //---- Append the new team to the teamlist in tournament ----//
 	  tournamentEntity = DatastoreUtils.getEntityFromKey(tournament);
@@ -122,15 +128,20 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
   	 * @param tournament - Key for current Tournament
   	 * @return
   	 */
-  	private Entity initTeam(String teamName, Key tournament){
+  	private Entity initTeam(String teamName, Key tournament, 
+  												String tournamentName){ 
+  		
 	  	Entity team = new Entity("Team", teamName, tournament);
+	  	team.setProperty("teamName", teamName);
 	  	team.setProperty("tournamentTeamID", null);
 	  	team.setProperty("tournamentScore", 0);
 	  	team.setProperty("tournamentByeRound", 0);
+	  	team.setProperty("tournamentName", tournamentName);
 	    team.setProperty("coach", null);
-	    team.setProperty("players", null);    
+	    team.setProperty("players", null);
 	  	datastore.put(team);  
-  		return team;
+  		return team; 	
+  		
   	}
 }	
 

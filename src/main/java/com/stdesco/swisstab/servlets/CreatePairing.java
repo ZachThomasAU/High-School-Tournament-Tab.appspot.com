@@ -27,6 +27,7 @@ import com.stdesco.swisstab.appcode.Tournament;
 import com.stdesco.swisstab.appcode.Tournament.FirstRoundPairingRule;
 import com.stdesco.swisstab.utils.DatastoreUtils;
 import com.stdesco.swisstab.utils.Globals;
+import com.stdesco.swisstab.utils.ServletUtils;
 import com.stdesco.swisstab.appcode.Pairing;
 
 /**
@@ -179,16 +180,37 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	    	  System.out.println("CreatePairing:171: " + tournament.getByeTeam());
 	      } catch (IllegalStateException e) {
 	    	  System.out.println("CreatePairing:172: no bye team set");
-	      }
+	      }	      
 	      
 	      currentround++;
 	      
+	      
   	  } else {
   		  
-  		  System.out.println("CreatePairing:184: not round 0\n");
-  		  //Check whether or not all the games in the current 
-  		  //round have a result
+  		  System.out.println("CreatePairing:188: Proceed with next round\n");
   		  
+  		  //Check whether or not all the games in the current  
+  		  if(DatastoreUtils.checkResultsofRound(currentround, tournamentName)){ 			  
+  			System.out.println("CreatePairing:192: Proceeding with nxtround\n");
+  			
+  			Tournament nextroundtournament = new Tournament(rounds,
+  					numberofteams, teamslist, tournamentID);
+  			nextroundtournament.setFirstRoundPairingRule(pairingrule);
+  			nextroundtournament.restoreStateFromDataStore(tournamentName);
+  			
+  			map.put("respcode", 400);       
+  			ServletUtils.writeback(resp, map);
+  			return;  			
+  		  } else {
+  			System.out.println("CreatePairing:194: Still waiting on results\n");
+  			
+  			//DatastoreUtils.getTournamentGameList(tournamentName);
+  			
+  			map.put("respcode", 300);       
+  			ServletUtils.writeback(resp, map);
+  			return; 
+  		  }
+  		  //round have a result 		  
   		  //Recreate tournament of round X from data-store
   	  }
       
@@ -196,7 +218,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
        * Run a query on the current Gamelist and get all the list of games
        * with round currentround
        * then assign the local variable teamslist.
-       */
+       
   	  
       Filter gameRoundFilter =
           new FilterPredicate("round", FilterOperator.EQUAL, 
@@ -208,17 +230,19 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
           PreparedQuery pgameRoundQuery = datastore.prepare(gameRoundQuery);
           List<Entity> roundResult = pgameRoundQuery.
         		  asList(FetchOptions.Builder.withDefaults());   		  
-          System.out.print("CreatePairing:82: query result" 
-          							+ roundResult.toString() + "\n");
+          //System.out.print("CreatePairing:82: query result" 
+          //							+ roundResult.toString() + "\n");
           returnstr = roundResult.toString();
       } catch (Exception e) {
     	  e.printStackTrace();
     	  //TODO Create handle for exception
       }
-
+      */
+	      
       //map.put("gameinfo", returnstr); 
 	  map.put("respcode", 4);       
-	  write(resp, map); 	  
+	  write(resp, map);
+	 	  
       //return success to user and information about current games
 	  
  }

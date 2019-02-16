@@ -36,8 +36,8 @@ public class Tournament {
 	private FirstRoundPairingRule firstRoundPairingRule;
 	private List<Game> allGames = new ArrayList<Game>();
 	private List<Pairing> allPairings = new ArrayList<Pairing>();
-	private int byeTeamid;
-	private Team byeTeam;
+	private int currentByeTeamId;
+	private Team currentByeTeam;
 	
 	/* Private variables relating to the datastore services - Jlwin
 	 * These list connect the dstore with the object created during this process
@@ -122,8 +122,8 @@ public class Tournament {
 	 */
 	public Team getByeTeam() {
 		try {
-			byeTeam.equals(null);
-			return byeTeam;
+			currentByeTeam.equals(null);
+			return currentByeTeam;
 		} catch (NullPointerException e) {
 			throw new IllegalStateException("No byeTeam has been set!");
 		}
@@ -238,13 +238,15 @@ public class Tournament {
 		int teamid = 0;
 		while (teamid < numberOfTeams - 1) {
 			Game game = new Game(currentRound, getTeam(teamid), 
-						   getTeam(teamid + 1), tournamentID, tournamentKey);
+						   getTeam(teamid + 1));
+			game.getGameCodewithAPI(tournamentID, tournamentKey);
+			
 			allGames.add(game);
 			pairing.addGame(game);
 			teamid += 2;
 		}
 		if ((numberOfTeams % 2) == 1) {
-			byeTeam = getTeam((numberOfTeams - 1));
+			currentByeTeam = getTeam((numberOfTeams - 1));
 		}
 		allPairings.add(pairing);
 		return pairing;
@@ -267,7 +269,8 @@ public class Tournament {
 			Team team2 = notPairedYet.get(team2id);
 			notPairedYet.remove(team2id);
 			Game game = new Game(currentRound, team1, 
-								 team2, tournamentID, tournamentKey);
+								 team2);
+			game.getGameCodewithAPI(tournamentID, tournamentKey);
 			
 			allGames.add(game);
 			pairing.addGame(game);
@@ -275,7 +278,7 @@ public class Tournament {
 		
 		//TODO: Implement Byeround for this type of pairing
 		if ((numberOfTeams % 2) == 1) {
-			byeTeam = notPairedYet.get(0);
+			currentByeTeam = notPairedYet.get(0);
 		}
 		
 		allPairings.add(pairing);
@@ -366,7 +369,7 @@ public class Tournament {
 		// sorts the teams by score
 		List<Team> sortedTeams = new ArrayList<Team>(teams);
 		Collections.sort(sortedTeams);
-		byeTeamid = -1;
+		currentByeTeamId = -1;
 		Pairing newPairing = new Pairing(currentRound, tournamentKey);
 		
 		if ((numberOfTeams % 2) == 1) {
@@ -378,8 +381,8 @@ public class Tournament {
 				Team team = sortedTeams.get(index); 
 				if (team.getByeRound() == 0) {
 					team.setByeRound(currentRound);
-					byeTeamid = index;
-					byeTeam = team;
+					currentByeTeamId = index;
+					currentByeTeam = team;
 					LOGGER.fine("team " + team + " bye round " + currentRound);
 					break;
 				}
@@ -395,8 +398,8 @@ public class Tournament {
 			bestScoreTeam = sortedTeams.get(i);
 			bestTeamId = bestScoreTeam.getTeamid();
 			
-			if (bestTeamId == byeTeamid) {
-				byeTeam = bestScoreTeam;
+			if (bestTeamId == currentByeTeamId) {
+				currentByeTeam = bestScoreTeam;
 				LOGGER.fine("team " + bestScoreTeam + " bye this round");
 				continue;
 			}
@@ -416,8 +419,8 @@ public class Tournament {
 				nextScoreTeam = teams.get(j);
 				nextTeamid = nextScoreTeam.getTeamid();
 			
-				if (nextTeamid == byeTeamid) {
-					byeTeam = nextScoreTeam;
+				if (nextTeamid == currentByeTeamId) {
+					currentByeTeam = nextScoreTeam;
 					LOGGER.fine(nextScoreTeam + "bye this round");
 					continue;
 				}
@@ -497,7 +500,7 @@ public class Tournament {
 					}
 				
 					if ((switchTeam.equals(bestScoreTeam)) || 
-							(switchTeam.getTeamid() == byeTeamid) || 
+							(switchTeam.getTeamid() == currentByeTeamId) || 
 							(switchTeam.equals(team1)) || 
 							(switchTeam.equals(team2))) {
 						LOGGER.fine("round " + currentRound + " switch team "
@@ -564,8 +567,19 @@ public class Tournament {
 		
 		Pairing tempPairing;
 		tempPairing = allPairings.get(currentRound - 1);
+		boolean byeTeam = true;
 		
 		LOGGER.finer("Tournament:553: begin saving state\n");
+		
+		try {
+			currentByeTeam.getName();
+		} catch (NullPointerException e){
+			//e.printStackTrace();
+			LOGGER.fine("No byeTeam is set this round so create a fake one"
+					+ "to avoid nullpointers\n");
+			currentByeTeam = new Team("Null", 99);
+			byeTeam = false;
+		}		
 		
 		try {
 			tournament = datastore.get(tournamentKey);
@@ -576,14 +590,32 @@ public class Tournament {
 			tournament.setProperty("allGames", allGamesDatastore);
 			tournament.setProperty("allPairings", allPairingsDatastore);
 			tournament.setProperty("currentRound", currentRound);
+			tournament.setProperty("currentByeTeam", currentByeTeam.getName());
+			tournament.setProperty("currentByeTeamId", currentByeTeamId);
 			
 			//Put back into the datastore very important
 			datastore.put(tournament);
 			
-			LOGGER.fine("Tournament:566: updated allGames: " 
-						+ allGamesDatastore.toString() + 
-						" updated allPairings :" 
-						+ allPairingsDatastore.toString() + "\n");
+			//Update tournamentteamID parameter in the datastore version o team 
+			for (Team iterator: teams) {
+				Entity team = DatastoreUtils.getEntityFromKey(DatastoreUtils.
+						getTeamKey(iterator.getName(), tournamentID));
+				team.setProperty("tournamentTeamID", iterator.getTeamid());
+				datastore.put(team);
+		    }
+			
+			//Update tournament byeRound for the team that currently has the Bye
+			if(byeTeam) {
+				Entity byeTeamE = DatastoreUtils.getEntityFromKey(DatastoreUtils.
+						getTeamKey(currentByeTeam.getName(), tournamentID));
+				byeTeamE.setProperty("tournamentByeRound", currentRound);
+				datastore.put(byeTeamE);
+				
+				System.out.println("Tournament:566: updated allGames: " 
+							+ allGamesDatastore.toString() + 
+							" updated allPairings :" 
+							+ allPairingsDatastore.toString() + "\n");
+			}
 			
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
@@ -604,14 +636,41 @@ public class Tournament {
 		FIRST_ROUND_GAME_RANDOM,
 	}
 	
-	public void restoreStateFromDataStore(){
+	public void restoreStateFromDataStore(String tournamentName){
+		
+		Entity tournament = DatastoreUtils.getEntityFromKey(DatastoreUtils
+				.getTournamentKey(DatastoreUtils
+				.getTournamentID(tournamentName)));
+		
+		System.out.println("Tournament:612: tournament info" + 
+											tournament.toString() + "\n");
+		currentRound = Math.toIntExact((long) 
+									tournament.getProperty("currentRound"));
+		
+		teams = DatastoreUtils.getTeamList(tournamentName);			
+		allGames = DatastoreUtils.getTournamentGameList(tournamentName, teams);		
+		
+		//allPairings = new ArrayList<Pairing>();
+		
+		currentByeTeamId = Math.toIntExact((long) 
+				tournament.getProperty("currentByeTeamId"));		
+		String currentByeTeamName = (String) 
+					tournament.getProperty("currentByeTeam");
+		currentByeTeam = new Team(currentByeTeamName, currentByeTeamId);
+		
+		
+		// Look up all the games in this tournamentName -> create a util later
+		
+		
+		
+		
 		
 		/*
 		private List<Team> teams = new ArrayList<Team>(); -
 		//Input on class creation
-		private int tournamentID;
+		private int tournamentID +;
 		//Input on class creation
-		private int rounds = 0;
+		private int rounds = 0 +;
 		//Input on class creation
 		private int numberOfTeams;
 		//Input on class creation

@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -15,6 +16,8 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.stdesco.swisstab.appcode.Game;
+import com.stdesco.swisstab.appcode.Team;
 
 /**
  * Copyright (C) Zachary Thomas - All Rights Reserved
@@ -47,8 +50,13 @@ public class DatastoreUtils {
 	
 	public static Key getProviderKey() {
 		Key key;
-		int providerID = globals.getGlobalProviderID();
-		
+		int providerID = 0;
+		try {
+			providerID = getProviderID();
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 		key = KeyFactory.createKey("Provider", providerID);
 		return key;
 	}
@@ -56,10 +64,16 @@ public class DatastoreUtils {
 	/** Public static method for getting provider ID from globals
 	 * 
 	 * @return int - provider ID
+	 * @throws EntityNotFoundException 
 	 */
-	public static int getProviderID() {
-		int providerID = globals.getGlobalProviderID();
+	public static int getProviderID() throws EntityNotFoundException {
+		
+		Key globalsKey = KeyFactory.createKey("Globals", "highschool");
+		Entity globals = datastore.get(globalsKey);
+		int providerID = Math.toIntExact((long) 
+				globals.getProperty("providerID"));
 		return providerID;
+		
 	}
 	
 	/** Public Method with the Datastore Utils to return the key to a 
@@ -69,7 +83,15 @@ public class DatastoreUtils {
 	 * @return Key for an entity of Kind "Tournament" with a given tournamentID
 	 */
 	public static Key getTournamentKey(int tournamentID) {
-		int providerID = globals.getGlobalProviderID();
+		
+		int providerID = 0;
+		
+		try {
+			providerID = getProviderID();
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		Key key;
 		
@@ -101,6 +123,7 @@ public class DatastoreUtils {
 	    Filter propertyFilter =
 	        new FilterPredicate("tournamentName", 
 	        		  				FilterOperator.EQUAL, tournamentName);
+	    
 	    Query q = new Query("Tournament")
 	    		.setFilter(propertyFilter); 
         PreparedQuery pq = datastore.prepare(q);
@@ -200,7 +223,14 @@ public class DatastoreUtils {
 	 */
 	public static Key getGameKey(String gameID, int round, int tournamentID) {
 		
-		int providerID = globals.getGlobalProviderID();
+		int providerID = 0;
+		
+		try {
+			providerID = getProviderID();
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		Key gameKey = new KeyFactory.Builder("Provider", providerID)
 				.addChild("Tournament", tournamentID)
@@ -328,11 +358,11 @@ public class DatastoreUtils {
     } 
 		
 	/** Public static method for creating a list of parameter values in a
-	 *  coloumn 
+	 *  column 
 	 * 
-	 * @param  entitylist - List of Entitys retrieved from query
+	 * @param  entitylist - List of entities retrieved from query
 	 * @param  propertyname - String corresponding to target propertyname
-	 * @return A list of <String> preopertylist
+	 * @return A list of <String> propertylist
 	 */
     public static List<String> getPropertyListofEntityColumn(
   		  List<Entity> entitylist, String propertyname ) {
@@ -347,5 +377,158 @@ public class DatastoreUtils {
 			propertyList.add(property);
 		}		
   	  return propertyList;
-    }	
+    }
+    
+    /** public static boolean method for checking whether or not all of the 
+     *  games in the current round have been resolved 
+     * 
+     * @param currentround - Integer of the current round of the tournament
+     * @param tournamentname - String of the torunament name
+     */
+    public static boolean checkResultsofRound
+    						(int currentround, String tournamentname) {  
+    	
+	    System.out.println("DatastoreUtils:379: Checking for game results"
+	    + ": round:" + currentround +": tournamentname:" +tournamentname +"\n");
+	    
+	    //Create filters for retrieving from the datastore
+	    Filter tournamentFilter = new FilterPredicate("tournamentName", 
+		        		  		  FilterOperator.EQUAL, tournamentname);	    
+	    Filter roundFilter = new FilterPredicate("round", 
+		  		  FilterOperator.EQUAL, currentround);
+	    
+	    //Prepare and run query with filters
+		Query q = new Query("Game")
+					.setFilter(tournamentFilter)
+					.setFilter(roundFilter);	
+	    PreparedQuery pgamesRoundQuery = datastore.prepare(q); 	    
+	    List<Entity> roundResult = pgamesRoundQuery.
+      		  asList(FetchOptions.Builder.withDefaults());
+	    
+	    //Iterate over the round to check for results
+	    int check = roundResult.size();	    
+	    for (Entity iterator: roundResult) {	    	
+	        LOGGER.finer("DatastoreUtils:399:" + iterator.toString());
+	        int checkresult = Math.toIntExact((long) 
+	        							iterator.getProperty("gameResult"));
+	        if(checkresult != 0) {
+	        	check--;
+	        }
+	    }
+	    
+	    //Return the status of the round
+	    if(check == 0) {
+	    	LOGGER.finer("True all of the games in: round:" + currentround
+	    			+ " tournamentname:" + tournamentname + "have a result\n");
+		    System.out.println("DatastoreUtils: 415: checkResultsofRound: "
+		    		+ "return true\n"); 
+	    	return true;
+	    } else {
+	    	LOGGER.finer("False at least 1 game in: round:" + currentround
+	    	+ " tournamentname:" + tournamentname + "doesnt have a result\n");
+		    System.out.println("DatastoreUtils: 415: checkResultsofRound: "
+		    		+ "return false\n"); 
+	    	return false;
+	    }	    
+    }
+    
+    //public static int getGameResult(Key tournamentKey, )
+    
+    /** Public method for reconstructing allGames from the datastore list
+     * 
+     * @param tournamentName - String reference to the tournamentName
+     * @return - List<Game> allGames containing objects for all the games 
+     * within a tournament. 
+     */
+    
+    public static List<Game> getTournamentGameList
+    			(String tournamentName, List<Team> allTeams){
+    	
+    	List<Game> allGames = new ArrayList<Game>();
+    	Team team1 = null, team2=null;
+    	
+    	
+    	int tournamentID = 	getTournamentID(tournamentName);
+    	Key tournamentKey = getTournamentKey(tournamentID);
+    	
+	    Filter tournamentFilter = new FilterPredicate("tournamentName", 
+				  		  FilterOperator.EQUAL, tournamentName);	    
+		
+		//Prepare and run query with filters
+		Query q = new Query("Game")
+			.setFilter(tournamentFilter);
+		
+		PreparedQuery pgamesRoundQuery = datastore.prepare(q); 	    
+		List<Entity> roundResult = pgamesRoundQuery.
+		asList(FetchOptions.Builder.withDefaults());
+		
+	    for (Entity iterator: roundResult) {
+	    	int gameRound = Math.toIntExact((long) iterator.getProperty("round"));
+	    	String team1str = (String) iterator.getProperty("teamA");
+	    	String team2str = (String) iterator.getProperty("teamB");
+	    	
+	    	for (Team teamIter: allTeams) {
+	    		if(team1str.equals(teamIter.getName())){
+	    			team1 = teamIter;
+	    		}
+	    	}
+	    	
+	    	for (Team teamIter2: allTeams) {
+	    		if(team2str.equals(teamIter2.getName())){
+	    			team2 = teamIter2;
+	    		}
+	    	}
+	    	
+	    	Game game = new Game(gameRound, team1, team2);
+	        	
+	    	//set the game result from integer and gameresult enumerator 
+	    	game.setGameResultfromInt(Math.toIntExact((long) 
+	    			iterator.getProperty("gameResult")));
+	    
+			System.out.println("DatastoreUtils: 474: game added: "
+					+ game.toString() +"\n");
+			
+	    	allGames.add(game);
+	    }
+	    
+    	return allGames; 
+    }
+    
+    /** Public static method for reconstructing the team list from the datastore
+     *  Uses a query on tournamentName for get the list of teams 
+     * @param tournamentName - String reference to the tournament name
+     * @return allTeams - List<Team> allTeams 
+     */
+    
+    public static List<Team> getTeamList(String tournamentName){
+    	List<Team> allTeams = new ArrayList<Team>();
+    	
+	    Filter tournamentFilter = new FilterPredicate("tournamentName", 
+				  		  FilterOperator.EQUAL, tournamentName);	    
+		
+		//Prepare and run query with filters (tournamentName=to input)
+		Query q = new Query("Team")
+			.setFilter(tournamentFilter);
+		
+		PreparedQuery tournamentTeamsQuery = datastore.prepare(q); 	    
+		List<Entity> teamslist = tournamentTeamsQuery.
+		asList(FetchOptions.Builder.withDefaults());
+		
+		//Iterate over the list of teams from ds and reconstruct the teamslist
+		for (Entity iterator: teamslist) {
+			Team tempteam = new Team((String) iterator
+					.getProperty("teamName"), Math.toIntExact((long) iterator
+							.getProperty("tournamentTeamID")));
+			
+			tempteam.reconstruct(Math.toIntExact((long) iterator
+					.getProperty("tournamentScore")), Math
+					.toIntExact((long) iterator
+							.getProperty("tournamentByeRound")));
+			System.out.println("DatastoreUtils: 492: team added: "
+					+ tempteam.toString() +"\n");
+			allTeams.add(tempteam);
+		}  	
+    	
+    	return allTeams;
+    }
 }
