@@ -29,7 +29,7 @@ public class Login extends HttpServlet {
 		
 		if (Validate.checkUser(username, password)) {
 			RequestDispatcher requestDispatcher = 
-										request.getRequestDispatcher("Welcome");
+										request.getRequestDispatcher("index.html");
 			requestDispatcher.forward(request, response);
 		} else {
 			LOGGER.log(Level.INFO, "ln 33: Username or Password incorrect");
