@@ -84,11 +84,18 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  		+ tournamentID + "ProviderID:" + providerID + "\n");
 	  
 	  
+	  
       /* Step 1: Check that the tournament has been initialized properly
        * Run a query on the Tournament Code and get the list of teams 
        * check that that list is of okay format for creating a pairing
        * then assign the local variable teamslist.
-       */	  
+       * 
+       * This is a pre-appcode check because it is more efficent to do it here
+       * before creating the tournament object and communcating back and forth.
+       */
+	  
+	  
+	  
       Filter propertyFilter =
           new FilterPredicate("tournamentID", FilterOperator.EQUAL, 
         		  											tournamentID); 
@@ -138,11 +145,17 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
         return; //Abort Process
       }
       
+      
+      
+      
       /* Step 2: Begin the tournament pairing process
        * Begin tournament pairing process. Convert the datastore state 
        * into a useable object -> run the pairing process which will save 
        * the state and update the datastore as it goes along. 
        */
+      
+      
+      
 	  
 	  tournamentEntity = DatastoreUtils
 			  .getEntityFromKey(DatastoreUtils.getTournamentKey(tournamentID));
@@ -162,7 +175,9 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  System.out.println("CreatePairing:161: CurrentRound:" + 
 			  										currentround + "\n");
   	  
+	  //This will only run for the very first round
   	  if(currentround == 0) { 	
+  		  
 		  //----Create the first round pairing---//
 	      Tournament tournament = new Tournament(rounds, numberofteams, 
 	    		  teamslist, tournamentID);     
@@ -182,43 +197,56 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	    	  System.out.println("CreatePairing:172: no bye team set");
 	      }	      
 	      
-	      currentround++;
-	      
+	      currentround++;	      
 	      
   	  } else {
-  		  
+  		  //For every subsequent round fo the tournament this will run
   		  System.out.println("CreatePairing:188: Proceed with next round\n");
   		  
-  		  //Check whether or not all the games in the current  
+  		  //This is a preliminary check whether or not all results in the 
+  		  //current round have been updated in the datastore.
   		  if(DatastoreUtils.checkResultsofRound(currentround, tournamentName)){ 			  
   			System.out.println("CreatePairing:192: Proceeding with nxtround\n");
   			
+  			//Create a new empty object of tournament
   			Tournament nextroundtournament = new Tournament(rounds,
   					numberofteams, teamslist, tournamentID);
   			nextroundtournament.setFirstRoundPairingRule(pairingrule);
-  			nextroundtournament.restoreStateFromDataStore(tournamentName);
-  			Pairing nextround = nextroundtournament.pairNextRound();
-  			nextround.saveState(DatastoreUtils.getTournamentKey(tournamentID));
   			
+  		    //Restore the state of the Tournament to what it was at the end 
+  			//of the first round. 
+  			
+  			nextroundtournament.restoreStateFromDataStore(tournamentName);
+  			@SuppressWarnings("unused")
+			Pairing nextround = nextroundtournament.pairNextRound();
+  			//nextround.saveState(DatastoreUtils.getTournamentKey(tournamentID));
+  			
+  		    //TODO: Update javascript in appcode to display this back to user
   			map.put("respcode", 400);       
   			ServletUtils.writeback(resp, map);
-  			return;  			
-  		  } else {
-  			System.out.println("CreatePairing:194: Still waiting on results\n");
+  			return;
   			
+  		  } else {
+  			  
+  			//TODO: Update javascript in appcode to display this back to user
+  			System.out.println("CreatePairing:194: Still waiting on results\n");		
   			map.put("respcode", 300);       
   			ServletUtils.writeback(resp, map);
   			return; 
+  			
   		  }
   		  //round have a result 		  
   		  //Recreate tournament of round X from data-store
   	  }
       
+  	  
+  	  
       /* Step 3: Prepare the game information for return back to the user
        * Run a query on the current Gamelist and get all the list of games
        * with round currentround
-       * then assign the local variable teamslist.
-       
+       * then assign the local variable teamslist.      
+  	  
+  	  	  
   	  
       Filter gameRoundFilter =
           new FilterPredicate("round", FilterOperator.EQUAL, 
@@ -238,13 +266,11 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
     	  //TODO Create handle for exception
       }
       */
-	      
-      //map.put("gameinfo", returnstr); 
-	  map.put("respcode", 4);       
-	  write(resp, map);
-	 	  
-      //return success to user and information about current games
-	  
+  	  
+  	  //should never get here for now
+	  map.put("respcode", 600);       
+	  write(resp, map);	 	  
+      //return success to user and information about current games	  
  }
 	
 	/**

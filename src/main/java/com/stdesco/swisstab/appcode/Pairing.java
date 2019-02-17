@@ -225,8 +225,7 @@ public class Pairing {
 		this.tournamentkey = tournamentKey;	
 		
 		//Create an entity to save the Pairing State to datastore
-		AppCodeUtils.createEntityPairingFromTkey
-				(this.round, tournamentkey); 
+		AppCodeUtils.createEntityPairingFromTkey(this.round, tournamentkey); 
 	    AppCodeUtils.saveStateToDataStorePairing(round, tournamentkey, gameids);
 	} 
 }

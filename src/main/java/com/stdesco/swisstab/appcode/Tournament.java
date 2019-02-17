@@ -649,40 +649,18 @@ public class Tournament {
 		currentRound = Math.toIntExact((long) 
 									tournament.getProperty("currentRound"));
 		
+		//Here we recreate all of the object lists from datastore using utils
 		teams = DatastoreUtils.getTeamList(tournamentName);			
 		allGames = DatastoreUtils.getTournamentGameList(tournamentName, teams);				
 		allPairings = DatastoreUtils.getAllPairingsList(tournamentName, 
 														  currentRound, teams);
 		
+		//Here we are recreating the current byeteam from previous state
 		currentByeTeamId = Math.toIntExact((long) 
 				tournament.getProperty("currentByeTeamId"));		
 		String currentByeTeamName = (String) 
 					tournament.getProperty("currentByeTeam");
 		currentByeTeam = new Team(currentByeTeamName, currentByeTeamId);
-		
-		
-		// Look up all the games in this tournamentName -> create a util later
-		
-		
-		
-		
-		
-		/*
-		private List<Team> teams = new ArrayList<Team>(); -
-		//Input on class creation
-		private int tournamentID +;
-		//Input on class creation
-		private int rounds = 0 +;
-		//Input on class creation
-		private int numberOfTeams;
-		//Input on class creation
-		private int currentRound = 0;
-		//Pulled from the datastore
-		private FirstRoundPairingRule firstRoundPairingRule;
-		private List<Game> allGames = new ArrayList<Game>();
-		private List<Pairing> allPairings = new ArrayList<Pairing>();
-		private int byeTeamid;
-		private Team byeTeam;
-		*/				
+				
 	}
 }

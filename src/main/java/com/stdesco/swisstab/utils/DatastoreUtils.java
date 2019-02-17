@@ -434,9 +434,21 @@ public class DatastoreUtils {
 	    }	    
     }
     
+    /** public static method for recreating all Pairings list from the datastore
+     *  information. 
+     * 
+     * @param tournamentName - String corresponding to tournamentName
+     * @param currentRound - Integer corresponding to the current round
+     * @param allTeams - Datastore reconstructed list of all teams 
+     * @return - Reconstructed list of allPairings from the datastore 
+     * information. May have some irregularities with elements that are 
+     * redundancies in the next round pairing process. Still needs a bit more 
+     * robust testing.  
+     */
     public static List<Pairing> getAllPairingsList
     	(String tournamentName, int currentRound, List<Team> allTeams){
     	
+    	//Initialise the required lists for the method as well as empty teams. 
     	List<Pairing> allPairings = new ArrayList<Pairing>();
     	List<Game> allGames = new ArrayList<Game>();
     	Team team1 = null, team2=null;
@@ -444,15 +456,20 @@ public class DatastoreUtils {
 	    System.out.println("DatastoreUtils:379: Reconstructing AllPairings"
 	    + ": round:" + currentRound +": tournamentname:" + tournamentName +"\n");
 	    
-	    for(int searchround=1; searchround < currentRound+1; searchround++) {
+	    //Use the current round to iterate over all the pairings in the data
+	    //store searchround starts at the first round. Searches are filtered
+	    //by the searchround to create a new pairing for all of the previous 
+	    //rounds that have been paired in the tournament so far. 
+	    for(int searchRound = 1; searchRound < currentRound+1; searchRound++) {
 	    	
 		    //Create filters for retrieving from the datastore
 		    Filter tournamentFilter = new FilterPredicate("tournamentName", 
 			        		  		  FilterOperator.EQUAL, tournamentName);	    
 		    Filter roundFilter = new FilterPredicate("round", 
-			  		  FilterOperator.EQUAL, currentRound);
+			  		  FilterOperator.EQUAL, searchRound);
 		    
-		    //Prepare and run query with filters
+		    //Prepare and run query with filters - gamelist with a round filter 
+		    //it is simpler than using pairing 
 			Query q = new Query("Game")
 						.setFilter(tournamentFilter)
 						.setFilter(roundFilter);
@@ -461,36 +478,43 @@ public class DatastoreUtils {
 		    List<Entity> roundResult = currentPairingQ.
 	      		  asList(FetchOptions.Builder.withDefaults());
 	    	
+		    //round results is a list of query results for games
 		    for (Entity iterator: roundResult) {
 		    	int gameRound = Math.toIntExact((long) iterator.getProperty("round"));
 		    	String team1str = (String) iterator.getProperty("teamA");
 		    	String team2str = (String) iterator.getProperty("teamB");
 		    	
+		    	//iterate over allteams and assign the object team from teamlist
 		    	for (Team teamIter: allTeams) {
 		    		if(team1str.equals(teamIter.getName())){
 		    			team1 = teamIter;
 		    		}
 		    	}
 		    	
+		    	//repeat the process for team 2. Using team list is better than 
+		    	//reconstructing the team from scratch which takes longer
 		    	for (Team teamIter2: allTeams) {
 		    		if(team2str.equals(teamIter2.getName())){
 		    			team2 = teamIter2;
 		    		}
 		    	}
 		    	
+		    	//Recreate a game with both of the teams
 		    	Game game = new Game(gameRound, team1, team2);
 	        	
 		    	//set the game result from integer and gameresult enumerator 
 		    	game.setGameResultfromInt(Math.toIntExact((long) 
 		    			iterator.getProperty("gameResult")));
-		    
-				System.out.println("DatastoreUtils: 486: game added: "
+		    	
+				LOGGER.finer("DatastoreUtils: 486: game added: "
 						+ game.toString() +"\n");
 				
+				//Appends the game to the allGames for the given pairing.
 		    	allGames.add(game);
 		    }
-		    
-		   Pairing tempPairing = new Pairing(searchround);
+		   
+		   //Create a new pairing and assign the list of allgames from that pair
+		   Pairing tempPairing = new Pairing(searchRound);
 		   tempPairing.setGames(allGames);
 		   allPairings.add(tempPairing);
 		   
@@ -500,6 +524,8 @@ public class DatastoreUtils {
     }
     
     /** Public method for reconstructing allGames from the datastore list
+     *  this list will have all of the games that have been played in the
+     *  entire tournament so far. This process could get pretty long
      * 
      * @param tournamentName - String reference to the tournamentName
      * @return - List<Game> allGames containing objects for all the games 
@@ -514,7 +540,8 @@ public class DatastoreUtils {
     	
     	
     	int tournamentID = 	getTournamentID(tournamentName);
-    	Key tournamentKey = getTournamentKey(tournamentID);
+    	@SuppressWarnings("unused")
+		Key tournamentKey = getTournamentKey(tournamentID);
     	
 	    Filter tournamentFilter = new FilterPredicate("tournamentName", 
 				  		  FilterOperator.EQUAL, tournamentName);	    
@@ -527,6 +554,8 @@ public class DatastoreUtils {
 		List<Entity> roundResult = pgamesRoundQuery.
 		asList(FetchOptions.Builder.withDefaults());
 		
+		//Iteratate over all games and reconstruct them assigning teams
+		//teams are pulled out of the list of teams using their name reference
 	    for (Entity iterator: roundResult) {
 	    	int gameRound = Math.toIntExact((long) iterator.getProperty("round"));
 	    	String team1str = (String) iterator.getProperty("teamA");
@@ -568,6 +597,7 @@ public class DatastoreUtils {
     public static List<Team> getTeamList(String tournamentName){
     	List<Team> allTeams = new ArrayList<Team>();
     	
+    	//Create a filter for all of the teams with tournament - tournamentName
 	    Filter tournamentFilter = new FilterPredicate("tournamentName", 
 				  		  FilterOperator.EQUAL, tournamentName);	    
 		
@@ -585,6 +615,7 @@ public class DatastoreUtils {
 					.getProperty("teamName"), Math.toIntExact((long) iterator
 							.getProperty("tournamentTeamID")));
 			
+			//Assign the datastore score and byeround to the tempteam
 			tempteam.reconstruct(Math.toIntExact((long) iterator
 					.getProperty("tournamentScore")), Math
 					.toIntExact((long) iterator
