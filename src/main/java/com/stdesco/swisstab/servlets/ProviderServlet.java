@@ -40,8 +40,6 @@ public class ProviderServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		LOGGER.info("providerServlet:44: Running");
-
 		/*
 		 * Create a Hash-map to hand the data that will be passed back in the
 		 * HttpServletResponse response to the Web-app. any sort of object can

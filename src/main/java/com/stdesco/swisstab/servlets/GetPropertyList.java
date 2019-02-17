@@ -37,8 +37,6 @@ public class GetPropertyList extends HttpServlet {
 public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		  throws ServletException, IOException {  
 	  
-	  LOGGER.info("GetPropertyList:41: Running");
-	  
 	  //---- initialize the hash-map for response back to web-app ----//
 	  Map<String, Object> map = new HashMap<String, Object>();
 	  
