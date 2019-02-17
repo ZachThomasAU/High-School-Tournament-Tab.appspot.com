@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -15,8 +16,8 @@ public class Globals {
 				Logger.getLogger(Globals.class.getName());
 	
 	private Entity globals;
-	private String apikey;
-	private String httpreturn;
+	private String apiKey;
+	private String appUrl;
 	private String region;
 	private int providerID;
 	
@@ -24,31 +25,18 @@ public class Globals {
 	 *  which stores inportant information reuqired for the API to
 	 *  work.
 	 *  
-	 *  @args none
-	 *  
 	 */
 	public Globals() {
+		getGlobalsEntity();
 		
-		/* Attempt grab globals and set them to variables within this class
-		 */
-		try {
-			
-			Key key = KeyFactory.createKey("Globals", "highschool");
-			globals = datastore.get(key);	
-			apikey = (String) globals.getProperty("apiKey");
-			httpreturn = (String) globals.getProperty("appUrl");
-			region = (String) globals.getProperty("region");
-			providerID = Math.toIntExact((long) 
-								globals.getProperty("providerID"));
-			
-			LOGGER.finer("GlobalsUtility:42: retrieved global values : apiKey:"
-					+ apikey + " httpreturn :" + httpreturn + " region :" +
-					region + " providerID :" + providerID + "\n");
-			
-		} catch (Exception e) {
-			//TODO Handle this exception
-			e.printStackTrace();
-		}	
+		apiKey = (String) globals.getProperty("apiKey");
+		appUrl = (String) globals.getProperty("appUrl");
+		region = (String) globals.getProperty("region");
+		providerID = Math.toIntExact((long) globals.getProperty("providerID"));
+		
+		LOGGER.finer("GlobalsUtility:39: retrieved global values : apiKey:"
+				+ apiKey + " appUrl :" + appUrl + " region :" + region 
+				+ " providerID :" + providerID);
 	}
 	
 	/** Public method for getting the global value of provider ID from  
@@ -61,18 +49,31 @@ public class Globals {
 	 *  initialized across the riotAPI
 	 */
 	public int getGlobalProviderID() {
-	   System.out.print("Globals:64: ProviderID: "
-	    		  + providerID + "\n");
 		return providerID;
 	}
 	
-	/** Public method for accessing the httpreturn string value from the 
+	/**
+	 * Changes the Global ProviderID.
+	 * 
+	 * @param newProviderID the new ProviderID
+	 */
+	public void setGlobalProviderID(int newProviderID) {
+		globals.setProperty("providerID", newProviderID);
+		datastore.put(globals);
+	}
+	
+	/** Public method for accessing the appURL string value from the 
 	 *  data-store 
 	 * 
-	 * @return String value of the http return from data-store 
+	 * @return String value of the appURL from data-store 
 	 */
-	public String getGlobalHttpReturn() {	
-		return httpreturn;
+	public String getGlobalAppUrl() {	
+		return appUrl;
+	}
+	
+	public void setGlobalAppURL(String newAppUrl) {
+		globals.setProperty("appUrl", newAppUrl);
+		datastore.put(globals);
 	}
 	
 	/** Public method for accessing the api key string value from the 
@@ -81,7 +82,17 @@ public class Globals {
 	 * @return String value of the api key from data-store 
 	 */
 	public String getGlobalApiKey() {	
-		return apikey;
+		return apiKey;
+	}
+	
+	/**
+	 * Changes the Global API Key
+	 * 
+	 * @param xriottoken the new API Key.
+	 */
+	public void setGlobalApiKey(String xriottoken) {
+		globals.setProperty("apiKey", xriottoken);
+		datastore.put(globals);
 	}
 	
 	/** Public method for accessing the current region string value from the 
@@ -92,6 +103,16 @@ public class Globals {
 	 */
 	public String getGlobalRegion() {	
 		return region;
+	}
+	
+	private void getGlobalsEntity() {
+		Key key = KeyFactory.createKey("Globals", "highschool");
+		try {
+			globals = datastore.get(key);
+		} catch (EntityNotFoundException e) {
+			LOGGER.severe("Globals entity cannot be found in the datastore!");
+			e.printStackTrace();
+		}
 	}
 	
 }	
