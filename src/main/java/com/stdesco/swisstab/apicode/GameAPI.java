@@ -51,7 +51,7 @@ public class GameAPI {
 	 * @return			Returns gamecode if successful or 0 if unsuccessful
 	 */ 	
 	public String generate_GameCode(String apiKey, int tournamentID, 
-			int providerID) throws Exception {
+			long providerID) throws Exception {
 	    String meta;
 	       
         StringBuffer gcode;

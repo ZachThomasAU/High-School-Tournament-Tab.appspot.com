@@ -159,7 +159,7 @@ public class DatastoreUtils {
 	public static Key getPairingKey(int round, String tournamentName)
 			throws NullPointerException {
 			
-		int providerID = globals.getGlobalProviderID();
+		long providerID = globals.getGlobalProviderID();
 		int tournamentID = 0;
 		Key key;
 		
@@ -203,7 +203,7 @@ public class DatastoreUtils {
 	 */
 	
 	public static Key getPairingKey(int round, int tournamentID) {
-		int providerID = globals.getGlobalProviderID();
+		long providerID = globals.getGlobalProviderID();
 		
 		Key key;
 		
@@ -267,7 +267,7 @@ public class DatastoreUtils {
 	public static Key getTeamKey(String teamName, int TournamentID) {
 		
 		Globals globals = new Globals();
-		int providerID = globals.getGlobalProviderID();
+		long providerID = globals.getGlobalProviderID();
 		
 		Key teamKey = new KeyFactory.Builder("Provider", providerID)
 				.addChild("Tournament", TournamentID)

@@ -19,7 +19,7 @@ public class Globals {
 	private String apiKey;
 	private String appUrl;
 	private String region;
-	private int providerID;
+	private long providerID;
 	
 	/** Public class for accessing the values of the globals kind 
 	 *  which stores inportant information reuqired for the API to
@@ -48,7 +48,7 @@ public class Globals {
 	 *  If providerID == 0 then the global provider has not yet been 
 	 *  initialized across the riotAPI
 	 */
-	public int getGlobalProviderID() {
+	public long getGlobalProviderID() {
 		return providerID;
 	}
 	
@@ -110,9 +110,21 @@ public class Globals {
 		try {
 			globals = datastore.get(key);
 		} catch (EntityNotFoundException e) {
-			LOGGER.severe("Globals entity cannot be found in the datastore!");
-			e.printStackTrace();
+			LOGGER.warning("Globals entity cannot be found in the datastore!");
+			initGlobals();
 		}
+	}
+
+	private void initGlobals() {
+		LOGGER.info("Initialising Globals datastore");
+		
+		globals = new Entity("Globals", "highschool");
+		globals.setProperty("apiKey", 
+				"RGAPI-c6144f51-a167-40cd-a64b-0685dfe16b16");
+		globals.setProperty("appUrl", 
+				"http://high-school-tournament-tab.appspot.com/Hello");
+		globals.setProperty("providerID", 0);
+		globals.setProperty("region", "OCE");
 	}
 	
 }	

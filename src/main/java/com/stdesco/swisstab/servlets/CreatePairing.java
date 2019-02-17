@@ -64,7 +64,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  
 	  //initialize the hash-map for response back to web-app
 	  Map<String, Object> map = new HashMap<String, Object>();
-	  int providerID = new Globals().getGlobalProviderID();
+	  long providerID = new Globals().getGlobalProviderID();
 	  
 	  /* Tournament ID is passed into the HTTP request by referencing 
 	   * tournament name and then doing a query in the datastore to get the ID.

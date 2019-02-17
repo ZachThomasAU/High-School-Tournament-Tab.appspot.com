@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.stdesco.swisstab.apicode.TournamentAPI;
 import com.stdesco.swisstab.utils.DatastoreUtils;
+import com.stdesco.swisstab.utils.Globals;
 import com.stdesco.swisstab.utils.ServletUtils;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -36,12 +37,13 @@ public class AddTournament extends HttpServlet {
   					Logger.getLogger(AddTournament.class.getName());
   DatastoreService datastore = 
 		  			DatastoreServiceFactory.getDatastoreService();
+  Globals globals = new Globals();
   
   Entity entity;
   String region;
   Key key;
   String apiKey;
-  int providerID;
+  long providerID;
   int tournamentID;
   int trounds;
   Entity tour;
@@ -99,24 +101,8 @@ public class AddTournament extends HttpServlet {
 	  }
 	  
 	  // Generates the Provider Entity Key for parenting.
-	  int count = 0;
-	  while(true) {
-		try {
-			key = getProviderKey();
-			break;
-		} catch (EntityNotFoundException e) {
-			if (count == 1) {
-				LOGGER.severe("EntityNotFoundException despite Globals "
-						+ "set!");
-				e.printStackTrace();
-				break;
-			}
-			LOGGER.warning("Global entity not found. Need to init Globals "
-					+ "first ");
-			InitDatastore.createGlobals();
-			count++;
-		  }
-	 }
+	  key = getProviderKey();
+	 
 		
   	 //Generate Tournament tournamentID across API
     
@@ -146,49 +132,24 @@ public class AddTournament extends HttpServlet {
 	 * Globals Entity.
 	 * 
 	 * @return 							The Key to the Provider Entity
-	 * @throws EntityNotFoundException	When the Provider Entity cannot be found
-	 * 									using the providerID. Provider has 
-	 * 									probably not been constructed. 
 	 */
-	private Key getProviderKey() throws EntityNotFoundException {
-		Key globalsKey = KeyFactory.createKey("Globals", "highschool");
-		Entity globals = datastore.get(globalsKey);
-		
+	private Key getProviderKey() {
 		//Grab the global variables
-		providerID = Math.toIntExact((long) 
-							globals.getProperty("providerID"));
+		providerID = globals.getGlobalProviderID();
+		apiKey = globals.getGlobalApiKey();
 		
-		apiKey = (String) globals.getProperty("apiKey");
-		
-		System.out.print("CreateTournament:140: Provider ID " + 
-				providerID + " :API KEY: " + apiKey + " \n");
+		LOGGER.info("ln 141: Provider ID " + providerID + " :API KEY: " 
+					+ apiKey);
 				
 		if (providerID == 0) {
 			// ProviderID has not been initialised.
-			int count = 0;
-			while (true) {
-				try {
+			try {
 					ProviderServlet.createProvider();
-					globals = datastore.get(globalsKey);
-					providerID = (int) globals.getProperty("providerID");
-					break;
-				} catch (EntityNotFoundException e) {
-					if (count == 1) {
-						LOGGER.severe("Globals Entity was not found after "
-								+ "initialising! Unresolvable Exception.");
-						e.printStackTrace();
-						break;
-					}
-					LOGGER.warning("Globals Entity was not found at InitDummy "
-							+ "ln:74. Reinitialising the Globals Entity");
-					InitDatastore.createGlobals();
-					count++;
-				} catch (Exception e) {
+					providerID = globals.getGlobalProviderID();
+			} catch (Exception e) {
 					// TODO Handle this. Probably with alert to contact admin.
 					LOGGER.severe("Invalid Return Post URL, API Key or Region");
 					e.printStackTrace();
-					break;
-				}
 			}
 		}
 		

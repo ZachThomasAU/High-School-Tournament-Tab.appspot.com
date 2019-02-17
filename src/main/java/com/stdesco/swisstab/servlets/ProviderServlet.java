@@ -72,7 +72,7 @@ public class ProviderServlet extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 			// TODO When does this Exception throw?
-			LOGGER.warning("ln 76: Haha this will never happen XD");
+			LOGGER.warning("ln 75: Haha this will never happen XD");
 		}
 		
 		/*
@@ -137,7 +137,7 @@ public class ProviderServlet extends HttpServlet {
 		provider.setProperty("url", httpreturn);
 		datastore.put(provider);
 		
-		LOGGER.info("ln 166: New Entity Provider in the Datastore");
+		LOGGER.info("ln 140: New Entity Provider in the Datastore");
 		
 		return;
 	}

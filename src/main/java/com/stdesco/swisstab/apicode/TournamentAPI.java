@@ -32,7 +32,7 @@ public class TournamentAPI {
 	 * @return
 	 * @throws Exception
 	 */
-	public TournamentAPI(String xToken, String tournamentName, int providerID) 
+	public TournamentAPI(String xToken, String tournamentName, long providerID) 
 			throws Exception {
 		StringBuffer tcode;
 		SendPostAPI http = new SendPostAPI();
