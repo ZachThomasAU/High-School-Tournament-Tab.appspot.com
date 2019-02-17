@@ -36,7 +36,7 @@
 				dataType: 'json',
 				data: 'kind=Tournament&propertyname=tournamentName',
 				success: function(data) {
-					$('#output_box').html('returned' + data.propertylist[0]);
+					//$('#output_box').html('returned' + data.propertylist[0]);
 					data.propertylist.forEach(function (value) {
 						html_code += '<option>'+ value +'</option>';
 						//alert('returned data :' + value)
@@ -67,7 +67,10 @@
             		function(){});
             $('#addResults').load('/resources/addResults.html', 
             		function(){});
-            
+            $('#pairingTable').load('/resources/table2.html', 
+            		function(){});
+            $('#teamTable').load('/resources/table.html', 
+            		function(){});
             set_current_tournament('<h1>UQ MINI</h1>'); 
             
             initApp();
@@ -175,8 +178,15 @@
           	</div>
           	
           	<div class="row">
-                <div class="col-lg-9" id="tournamentName">
+                <div class="col-lg-6" id="tournamentName">
                     <h1></h1>
+                </div>
+                <div class="col-lg-3" id="divtournamentSelect">
+                    <label for="currentTournamentSelect">Current Pairing</label>
+				    <select class="form-control" id="tournamentSelect">
+				      <option value="99">No Pairing Yet</option>
+				      <option >No Pairing Yet</option>
+				    </select>
                 </div>
                 <div class="col-lg-3" id="divtournamentSelect">
                     <label for="currentTournamentSelect">Current Tournament</label>
@@ -218,7 +228,12 @@
 			<div class="row">
 			  <div class="col-12">
 					<div id="output_box" class="output-box">
-						<span style="padding-left: 10px;">OUTPUT'S GO HERE. . .</span>
+						<div class="col-6 col-lg-6">
+							<div id="pairingTable">Table Here</div>
+						</div>
+						<div class="col-6 col-lg-6">
+							<div id="teamTable">Table Here</div>
+						</div>
 					</div>
 				</div>
 			</div>

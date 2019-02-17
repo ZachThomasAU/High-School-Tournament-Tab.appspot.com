@@ -1454,6 +1454,7 @@ th {
 .table-bordered > tbody > tr > td,
 .table-bordered > tfoot > tr > td {
   border: 1px solid #282828;
+  background-color: #f0f0f7;
 }
 .table-bordered > thead > tr > th,
 .table-bordered > thead > tr > td {
@@ -1461,11 +1462,10 @@ th {
 }
 .table-striped > tbody > tr:nth-child(odd) > td,
 .table-striped > tbody > tr:nth-child(odd) > th {
-  background-color: #43425D;
 }
 .table-hover > tbody > tr:hover > td,
 .table-hover > tbody > tr:hover > th {
-  background-color: #43425D;
+  background-color: #f0f0f7;
 }
 table col[class*="col-"] {
   position: static;
