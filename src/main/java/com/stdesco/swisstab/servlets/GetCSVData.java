@@ -128,7 +128,6 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  }
 	  
 	  //---- initialize the hash-map for response back to web-app ----//
-	  @SuppressWarnings("unused")
 	  Map<String, Object> map = new HashMap<String, Object>();	  
 	  
 	  @SuppressWarnings("unused")
