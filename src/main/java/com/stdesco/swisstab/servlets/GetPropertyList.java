@@ -28,7 +28,8 @@ import com.stdesco.swisstab.utils.*;
 @WebServlet("/getPropertyList")
 public class GetPropertyList extends HttpServlet {
   private static final long serialVersionUID = 1l;
-  private static Logger LOGGER = 
+  @SuppressWarnings("unused")
+private static Logger LOGGER = 
   					Logger.getLogger(GetPropertyList.class.getName());
   DatastoreService datastore = 
 		  			DatastoreServiceFactory.getDatastoreService();
