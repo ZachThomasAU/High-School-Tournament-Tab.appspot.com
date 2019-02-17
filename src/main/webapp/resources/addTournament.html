@@ -23,13 +23,13 @@
 
 			<div id="tname">
 			    <input type="text" class="form-control"
-			    			 value="new tournament" name="tname"> 
+			    			 placeholder="new tournament" name="tname"> 
 			<br>    			 	     
 			<input type="text" class="form-control" 
-								value="number of rounds" name="trounds">
+								placeholder="number of rounds" name="trounds">
 											
 			<br>			
-				<label for="pairingtype">First Round Pairingtype?</label> 		
+				<label for="pairingtype">First Round Pairing Type?</label> 		
 				<select name="pairingtype" class="form-control">
 				     <option>Ordered</option>
 				     <option>Random</option>
@@ -91,7 +91,7 @@
 		//$("#hold").html($("#tname").find("select,textarea, input").serialize());
 		
 		$.ajax({
-		url: 'CreateTournament',	
+		url: 'AddTournament',	
 			type: 'POST',
 			dataType: 'json',
 			data: $("#tname").find("select,textarea, input").serialize(),

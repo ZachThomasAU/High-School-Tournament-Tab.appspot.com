@@ -27,11 +27,11 @@ import com.google.appengine.api.datastore.KeyFactory;
  * 
  */
 
-@WebServlet("/CreateTournament")
-public class CreateTournament extends HttpServlet {
+@WebServlet("/AddTournament")
+public class AddTournament extends HttpServlet {
   private static final long serialVersionUID = 1l;
   private static Logger LOGGER = 
-  					Logger.getLogger(CreateTournament.class.getName());
+  					Logger.getLogger(AddTournament.class.getName());
   DatastoreService datastore = 
 		  			DatastoreServiceFactory.getDatastoreService();
   
