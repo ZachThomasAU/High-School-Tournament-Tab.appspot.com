@@ -84,27 +84,6 @@
 	return false;
 	} );	
 	
-	
-	$('#initDatastore').click(function() {				
-		$.ajax( {
-			url: 'initDatastore',	
-			type: 'POST',
-			dataType: 'json',
-			data: 'FirstName=Mickey&LastName=Mouse',
-			success: function(data) {				
-				if (data.isValid) {				
-					alert('Init Datastore:' + data.response);
-					//$('#displayInit').html(data.response);
-					//$('#displayInit').slideDown(500);				
-				} else {				
-					alert('Please enter a valid username!!');	
-				}
-			}	
-		} );		
-		
-	return false;
-	});
-	
 	$('#initDummyData').click(function() {				
 		$.ajax( {
 			url: 'initDummyData',	
