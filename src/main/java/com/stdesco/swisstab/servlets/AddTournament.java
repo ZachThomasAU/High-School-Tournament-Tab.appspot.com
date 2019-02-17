@@ -25,6 +25,8 @@ import com.google.appengine.api.datastore.KeyFactory;
 /**
  * Servlet implementation class UpdateUsername
  * 
+ * [WTF does this mean?] @ZThomas
+ * 
  */
 
 @WebServlet("/AddTournament")
@@ -50,7 +52,7 @@ public class AddTournament extends HttpServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		  throws ServletException, IOException {
 	  
-	  System.out.print("CreateTournament:50: Running \n");
+	  LOGGER.info("CreateTournament:55: Running");
 	  
 	  Map<String, Object> map = new HashMap<String, Object>();
 	  String tname = req.getParameter("tname");

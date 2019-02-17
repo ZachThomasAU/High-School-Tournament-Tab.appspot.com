@@ -367,7 +367,7 @@ public class DatastoreUtils {
 	 * @return A list of <String> propertylist
 	 */
     public static List<String> getPropertyListofEntityColumn(
-  		  List<Entity> entitylist, String propertyname ) {
+    		List<Entity> entitylist, String propertyname ) {
     	
   	  List<String> propertyList = new ArrayList<String>();
   	  
