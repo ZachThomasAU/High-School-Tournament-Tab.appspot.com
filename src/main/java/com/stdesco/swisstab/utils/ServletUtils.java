@@ -22,10 +22,6 @@ public class ServletUtils {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 		
-		System.out.print("ServletUtils:18: Sending JSON Response \n");
-		
-		System.out.print(new Gson().toJson(map).toString() + "\n");
-		
 		resp.getWriter().write(new Gson().toJson(map));
 	}
 }

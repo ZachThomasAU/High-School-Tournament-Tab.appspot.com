@@ -12,10 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.gson.Gson;
-//import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.stdesco.swisstab.apicode.ProviderAPI;
 import com.stdesco.swisstab.utils.Globals;
+import com.stdesco.swisstab.utils.ServletUtils;
 
 /**
  * Servlet implementation class UpdateUsername
@@ -86,16 +85,7 @@ public class ProviderServlet extends HttpServlet {
 		map.put("provider", Integer.toString(prov.getProviderID()));
 		map.put("isValid", isValid);
 
-		write(resp, map);
-	}
-
-	private void write(HttpServletResponse resp, Map<String, Object> map)
-			throws IOException {
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-		System.out.print("providerServlet:108: Responding to web-app using "
-																+ "JSON \n");
-		resp.getWriter().write(new Gson().toJson(map));
+		ServletUtils.writeback(resp, map);
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)

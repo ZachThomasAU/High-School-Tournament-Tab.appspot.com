@@ -51,11 +51,7 @@ public class ProviderAPI {
 		pcode = 
 		   http.sendPostApi(xToken, InitialisationPostBody, providerRequestUrl);
 		
-		// System.out.println(pcode.toString());	
 		PROVIDER_ID = Integer.parseInt(pcode.toString());
-		
-		// TODO Store in datastore
-		System.out.println("Updating Provider data in the datastore");
 	} 
 	
 	/*

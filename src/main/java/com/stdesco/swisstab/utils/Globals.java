@@ -34,7 +34,7 @@ public class Globals {
 		region = (String) globals.getProperty("region");
 		providerID = Math.toIntExact((long) globals.getProperty("providerID"));
 		
-		LOGGER.finer("GlobalsUtility:39: retrieved global values : apiKey:"
+		LOGGER.finer("ln 37: retrieved global values : apiKey:"
 				+ apiKey + " appUrl :" + appUrl + " region :" + region 
 				+ " providerID :" + providerID);
 	}
