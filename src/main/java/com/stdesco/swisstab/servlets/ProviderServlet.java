@@ -12,12 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 //import com.stdesco.swisstab.apicode.InitialisationPost;
 import com.stdesco.swisstab.apicode.ProviderAPI;
+import com.stdesco.swisstab.utils.Globals;
 
 /**
  * Servlet implementation class UpdateUsername
@@ -28,12 +26,12 @@ import com.stdesco.swisstab.apicode.ProviderAPI;
 public class ProviderServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1l;
-	private static Logger LOGGER = Logger
-			.getLogger(ProviderServlet.class.getName());
+	private static Logger LOGGER = 
+			Logger.getLogger(ProviderServlet.class.getName());
 	static DatastoreService datastore = 
 								DatastoreServiceFactory.getDatastoreService();
+	static Globals globals = new Globals();
 
-	static Entity entity;
 	static String xriottoken;
 	static String httpreturn;
 	static String region;
@@ -42,7 +40,7 @@ public class ProviderServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		System.out.print("providerServlet:45: Running \n");
+		LOGGER.info("providerServlet:44: Running");
 
 		/*
 		 * Create a Hash-map to hand the data that will be passed back in the
@@ -58,17 +56,9 @@ public class ProviderServlet extends HttpServlet {
 		// not currently used here because this function doesn't need an input
 		// String username = req.getParameter("username");
 		isValid = true;
-
-		// Pull the global entity from Google Cloud data-store
-		try {
-			entity = getGlobalsEntity();
-		} catch (EntityNotFoundException e) {
-			// TODO Handle this
-			e.printStackTrace();
-		}
-
+		
 		// Pull the global variables from the data-store and set them here.
-		setVars(entity);
+		setVars();
 
 		// Create an object of class provider
 		// Set the new providerID into the Globals entity.
@@ -82,7 +72,7 @@ public class ProviderServlet extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 			// TODO When does this Exception throw?
-			LOGGER.warning("Haha this will never happen XD");
+			LOGGER.warning("ln 76: Haha this will never happen XD");
 		}
 		
 		/*
@@ -115,29 +105,16 @@ public class ProviderServlet extends HttpServlet {
 	}
 
 	/**
-	 * Generates the Globals Entity
-	 * 
-	 * @return the Globals Entity
-	 * @throws EntityNotFoundException when Globals has not been initialized.
+	 * Pull the properties from the Global datastore entity
 	 */
-	private static Entity getGlobalsEntity() throws EntityNotFoundException {
-		// Generate the data-store, key and entity
-		Key key = KeyFactory.createKey("Globals", "highschool");
-		entity = datastore.get(key);
-		return entity;
-	}
+	private static void setVars() {
 
-	/**
-	 * Pull the properties from the new entity
-	 */
-	private static void setVars(Entity entity) {
-
-		xriottoken = (String) entity.getProperty("apiKey");
-		System.out.println("API Key:" + xriottoken);
-		httpreturn = (String) entity.getProperty("appUrl");
-		System.out.println("appUrl:" + httpreturn);
-		region = (String) entity.getProperty("region");
-		System.out.println("region:" + region);
+		xriottoken = globals.getGlobalApiKey();
+		LOGGER.info("API Key:" + xriottoken);
+		httpreturn = globals.getGlobalAppUrl();
+		LOGGER.info("appUrl:" + httpreturn);
+		region = globals.getGlobalRegion();
+		LOGGER.info("region:" + region);
 	}
 	
 	/**
@@ -148,14 +125,10 @@ public class ProviderServlet extends HttpServlet {
 	 * 						bad.
 	 */
 	public static void createProvider() throws Exception {
-		
-		//setVars(getGlobalsEntity()); depreciated I think
-		
 		prov = new ProviderAPI(httpreturn, xriottoken, region);
 		
 		// Set the provider code in the entity (Kind=Globals,keyName=key)
-		entity.setProperty("providerID", prov.getProviderID());
-		datastore.put(entity);
+		globals.setGlobalProviderID(prov.getProviderID());
 		
 		// Create the new provider Entity
 		Entity provider = new Entity("Provider", prov.getProviderID());
@@ -164,8 +137,7 @@ public class ProviderServlet extends HttpServlet {
 		provider.setProperty("url", httpreturn);
 		datastore.put(provider);
 		
-		System.out.print("providerServlet:166: New Entity Provider in the "
-				+ "												Datastore \n");
+		LOGGER.info("ln 166: New Entity Provider in the Datastore");
 		
 		return;
 	}
