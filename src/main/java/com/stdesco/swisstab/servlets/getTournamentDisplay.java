@@ -69,7 +69,6 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		  		FilterOperator.EQUAL, tournamentName);	    
 	  Query teamsQuery = new Query("Team").setFilter(teamsFilter);		
 	  PreparedQuery pteamsQuery = datastore.prepare(teamsQuery); 	    
-	  @SuppressWarnings("unused")
 	  List<Entity> pteamsQueryResult = pteamsQuery.
 			  	asList(FetchOptions.Builder.withDefaults());
 	  
@@ -84,7 +83,6 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 					.setFilter(tournamentFilter)
 					.setFilter(roundFilter);	
 	  PreparedQuery pgameQuery = datastore.prepare(gameQuery); 	    
-	  @SuppressWarnings("unused")
 	  List<Entity> pgameQueryResult = pgameQuery.
 			  asList(FetchOptions.Builder.withDefaults());
 	  
