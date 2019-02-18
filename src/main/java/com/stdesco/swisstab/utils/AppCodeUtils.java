@@ -90,6 +90,8 @@ public class AppCodeUtils {
 		Entity pairing = getEntityPairingFromTkey(round,
 				tournamentkey);
 		pairing.setProperty("gameNames", gameids);
+		//TODO:Fix this for multiple tournaments
+		pairing.setProperty("info", "round - " + round);
 		datastore.put(pairing);
 		
 		System.out.println("AppCodeUtils:86: gameids :" 

@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.stdesco.swisstab.servlets.ProviderServlet;
 
 public class Globals {
 	static DatastoreService datastore = 
@@ -19,7 +20,6 @@ public class Globals {
 	private String apiKey;
 	private String appUrl;
 	private String region;
-	private long providerID;
 	
 	/** Public class for accessing the values of the globals kind 
 	 *  which stores inportant information reuqired for the API to
@@ -32,11 +32,9 @@ public class Globals {
 		apiKey = (String) globals.getProperty("apiKey");
 		appUrl = (String) globals.getProperty("appUrl");
 		region = (String) globals.getProperty("region");
-		providerID = Math.toIntExact((long) globals.getProperty("providerID"));
 		
 		LOGGER.finer("ln 37: retrieved global values : apiKey:"
-				+ apiKey + " appUrl :" + appUrl + " region :" + region 
-				+ " providerID :" + providerID);
+				+ apiKey + " appUrl :" + appUrl + " region :" + region);
 	}
 	
 	/** Public method for getting the global value of provider ID from  
@@ -49,6 +47,26 @@ public class Globals {
 	 *  initialized across the riotAPI
 	 */
 	public long getGlobalProviderID() {
+		long providerID = 0;
+		try {
+			providerID = DatastoreUtils.getProviderID();
+		} catch (EntityNotFoundException e) {
+			LOGGER.warning("Provider ID not initialised. Initialising "
+					+ "ProviderID");
+			try {
+				ProviderServlet.createProvider();
+			} catch (Exception e1) {
+				LOGGER.severe("returnURL, API Key or Region are invalid!");
+				e1.printStackTrace();
+			}
+			try {
+				providerID = DatastoreUtils.getProviderID();
+			} catch (EntityNotFoundException e1) {
+				LOGGER.severe("ProviderID still not initialised after "
+						+ "initialising. Unresolvable Exception!");
+				e1.printStackTrace();
+			}
+		}
 		return providerID;
 	}
 	
@@ -120,7 +138,7 @@ public class Globals {
 		
 		globals = new Entity("Globals", "highschool");
 		globals.setProperty("apiKey", 
-				"RGAPI-c6144f51-a167-40cd-a64b-0685dfe16b16");
+				"RGAPI-dc0cc1e1-d706-47cb-88b5-8e79f087b429");
 		globals.setProperty("appUrl", 
 				"http://high-school-tournament-tab.appspot.com/Hello");
 		globals.setProperty("providerID", 0);

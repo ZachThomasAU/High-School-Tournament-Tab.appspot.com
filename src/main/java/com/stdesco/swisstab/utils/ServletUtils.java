@@ -20,8 +20,7 @@ public class ServletUtils {
 			Map<String, Object> map) throws IOException {
 		
 		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-		
+		resp.setCharacterEncoding("UTF-8");		
 		resp.getWriter().write(new Gson().toJson(map));
 	}
 }

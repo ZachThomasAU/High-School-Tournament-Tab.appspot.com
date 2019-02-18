@@ -53,7 +53,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	
 	  List<String> propertyList = new ArrayList<String>();
 	  propertyList = DatastoreUtils.
-						 getPropertyListofEntityColumn(qResult, property);   
+			  getPropertyListofEntityColumn(qResult, property);   
 	  
 	  map.put("propertylist", propertyList);
 	  ServletUtils.writeback(resp, map); 

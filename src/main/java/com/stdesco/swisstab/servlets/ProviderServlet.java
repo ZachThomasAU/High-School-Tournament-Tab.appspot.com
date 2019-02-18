@@ -36,6 +36,9 @@ public class ProviderServlet extends HttpServlet {
 	static String region;
 	static ProviderAPI prov;
 
+	public ProviderServlet() {	
+	}
+	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 

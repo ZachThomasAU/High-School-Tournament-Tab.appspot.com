@@ -73,8 +73,7 @@ public class DatastoreUtils {
 		Entity globals = datastore.get(globalsKey);
 		int providerID = Math.toIntExact((long) 
 				globals.getProperty("providerID"));
-		return providerID;
-		
+		return providerID;				
 	}
 	
 	/** Public Method with the Datastore Utils to return the key to a 
@@ -349,13 +348,14 @@ public class DatastoreUtils {
         Entity result = pq.asSingleEntity();
         LOGGER.finer("Cannot override tournament" + result.toString()+"\n");
         return true;
-      } catch (Exception e) {        
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+      } catch (NullPointerException e) {        
         LOGGER.fine("CreateTournament:54: No record in column "
         		+ "propertyName: " + propertyName + "With value: "
         		+ propertyValue + "\n");
         return false;
+      } catch (Exception e) {
+    	e.printStackTrace();
+    	return false;
       }
     } 
 		
@@ -368,14 +368,22 @@ public class DatastoreUtils {
 	 */
     public static List<String> getPropertyListofEntityColumn(
     		List<Entity> entitylist, String propertyname ) {
-    	
+    		
   	  List<String> propertyList = new ArrayList<String>();
+  	  String property = null;
   	  
 		int size = entitylist.size();
 		for (int i = 0; i < size; i++) {
 			Entity entity = entitylist.get(i);
-			System.out.print("DatastoreUtils:345:" + entity.toString() + "\n");			
-			String property = (String) entity.getProperty(propertyname);		
+			//System.out.print("DatastoreUtils:345:" + entity.toString() + "\n");
+			try {
+				property = (String) entity.getProperty(propertyname);
+			}catch(ClassCastException notstring) {
+				LOGGER.fine("Datastore value is not string: converting"
+						+ "type long to string for display\n");
+				property = Long
+						.toString(((long) entity.getProperty(propertyname)));
+			}
 			propertyList.add(property);
 		}		
   	  return propertyList;

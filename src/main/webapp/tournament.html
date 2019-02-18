@@ -22,27 +22,30 @@
     
     <script>
     
-		function fill_tdropdown(){
+		function fill_dropdown(id, kind, propertyname){
 			
 			// Function for filling tournament dropdown from list of tournaments
 			//alert('load tournamentname')
 			
 			var html_code = '';
+			var data = 'kind=' + kind + '&propertyname='+ propertyname;
 			
 			//AJAX Serlvet Request to Get JSON Data	
 			$.ajax( {
 				url: 'getPropertyList',	
 				type: 'POST',
 				dataType: 'json',
-				data: 'kind=Tournament&propertyname=tournamentName',
+				data: data,
 				success: function(data) {
 					//$('#output_box').html('returned' + data.propertylist[0]);
 					data.propertylist.forEach(function (value) {
 						html_code += '<option>'+ value +'</option>';
 						//alert('returned data :' + value)
 						//$('#output_box').html(html_code);
-						$('#tournamentSelect').html(html_code);
-						set_current_tournament('<h1>'+data.propertylist[0]+'</h1>');
+						$(id).html(html_code);
+						if(kind == "Tournament"){
+							set_current_tournament('<h1>'+data.propertylist[0]+'</h1>');
+						}
 					});
 				}
 			});		
@@ -51,6 +54,45 @@
 		function set_current_tournament(tour){
 			$('#tournamentName').html(tour);
 			//alert('setting tournament')
+		}
+		
+		function populate_Window(){
+			//AJAX Serlvet Request to Get JSON Data
+			
+			var data = "round=round - 1&tournamentName=UQ NEW";
+			var teamshtml = '<thead><tr><th>Teamname</th><th>'
+			 + 'Score</th></tr></thead><tbody><tr>';
+			var roundhtml = '<thead><tr><th>Gamecode</th><th>Team 1</th>'
+				+ '<th>Team 2</th><th>Result</th></tr></thead><tbody><tr>';
+			
+			$.ajax( {
+				url: 'getTournamentDisplay',	
+				type: 'POST',
+				dataType: 'json',
+				data: data,
+				success: function(data) {
+					var i = 0;
+					
+					data.teams.forEach(function (value) {
+						teamshtml += '<td>'+ data.teams[i] + '</td>';
+						teamshtml += '<td>'+ data.scores[i] + '</td>';
+						teamshtml += '</tr>';
+						i++;
+					});
+					$('#teamTable').html(teamshtml);
+					
+					var i = 0;
+					data.gamecodes.forEach(function (value) {
+						roundhtml += '<td>'+ data.gamecodes[i] + '</td>';
+						roundhtml += '<td>'+ data.team1[i] + '</td>';
+						roundhtml += '<td>'+ data.team2[i] + '</td>';
+						roundhtml += '<td>'+ data.result[i] + '</td>';
+						roundhtml += '</tr>';
+						i++;
+					});
+					$('#pairingTable').html(roundhtml);
+				}
+			});		
 		}
 		
 		function initApp() {
@@ -74,8 +116,9 @@
             set_current_tournament('<h1>UQ MINI</h1>'); 
             
             initApp();
-            fill_tdropdown();
-            
+            fill_dropdown("#tournamentSelect", "Tournament", "tournamentName");
+            fill_dropdown("#pairingSelect", "Pairing", "info");
+            populate_Window();
         });
         
     </script>
@@ -183,7 +226,7 @@
                 </div>
                 <div class="col-lg-3" id="divtournamentSelect">
                     <label for="currentTournamentSelect">Current Pairing</label>
-				    <select class="form-control" id="tournamentSelect">
+				    <select class="form-control" id="pairingSelect">
 				      <option value="99">No Pairing Yet</option>
 				      <option >No Pairing Yet</option>
 				    </select>
@@ -229,10 +272,20 @@
 			  <div class="col-12">
 					<div id="output_box" class="output-box">
 						<div class="col-6 col-lg-6">
-							<div id="pairingTable">Table Here</div>
+							<table id="pairingTable" class="table table-bordered" style="width:100%">
+							       <thead><tr><th>Teamname</th><th>Score</th></tr></thead><tbody><tr>
+							               <td>Tiger Nixon</td>
+							               <td>System Architect</td>
+							       </tr>
+							</table>
 						</div>
 						<div class="col-6 col-lg-6">
-							<div id="teamTable">Table Here</div>
+							<table id="teamTable" class="table table-bordered" style="width:100%">
+							       <thead><tr><th>Teamname</th><th>Score</th></tr></thead><tbody><tr>
+							               <td>Tiger Nixon</td>
+							               <td>System Architect</td>
+							       </tr>
+							</table>
 						</div>
 					</div>
 				</div>

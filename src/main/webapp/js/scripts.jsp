@@ -1,7 +1,10 @@
 <script>
 
 // AJAX Pass POST and return from servlet
-
+	
+	
+	
+	
 	$('#createPairing').click(function() {
 		
 		

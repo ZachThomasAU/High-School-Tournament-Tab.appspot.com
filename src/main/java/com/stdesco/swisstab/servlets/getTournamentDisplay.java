@@ -21,6 +21,8 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.stdesco.swisstab.utils.DatastoreUtils;
+import com.stdesco.swisstab.utils.ServletUtils;
 
 /**
  * Servlet for running the process to create a new team 
@@ -42,26 +44,22 @@ private static Logger LOGGER =
 
  
 public void doPost(HttpServletRequest req, HttpServletResponse resp)
-		  throws ServletException, IOException {  
+		  throws ServletException, IOException {
+	
+	  System.out.println("Running\n");
+	
+	  List<String> Teams = new ArrayList<String>();
+	  List<String> Scores = new ArrayList<String>();
+	  List<String> Gamecodes = new ArrayList<String>();
+	  List<String> Team1 = new ArrayList<String>();
+	  List<String> Team2 = new ArrayList<String>();
+	  List<String> Result = new ArrayList<String>();
 	  
-	  //lists of all the columns to display in tournament window.
-	  System.out.print("CreatePairing:44: Running \n");
-	  @SuppressWarnings("unused")
-	List<String> Teams = new ArrayList<String>();
-	  @SuppressWarnings("unused")
-	List<String> Scores = new ArrayList<String>();
-	  @SuppressWarnings("unused")
-	List<String> Gamecodes = new ArrayList<String>();
-	  @SuppressWarnings("unused")
-	List<String> Team1 = new ArrayList<String>();
-	  @SuppressWarnings("unused")
-	List<String> Team2 = new ArrayList<String>();
-	  @SuppressWarnings("unused")
-	List<String> Result = new ArrayList<String>();
-	  
-	  //pairing = round
-	  int pairing = Integer.parseInt(req.getParameter("pairing"));
+	  int round = Integer.parseInt(req.getParameter("round").substring(8));
 	  String tournamentName = req.getParameter("tournamentName");
+	  
+	  System.out.println("Starting round:" + round + 
+			  "TName:" + tournamentName + "\n");
 	  
 	  //initialize the hash-map for response back to web-app
 	  Map<String, Object> map = new HashMap<String, Object>();
@@ -72,14 +70,14 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  Query teamsQuery = new Query("Team").setFilter(teamsFilter);		
 	  PreparedQuery pteamsQuery = datastore.prepare(teamsQuery); 	    
 	  @SuppressWarnings("unused")
-	List<Entity> pteamsQueryResult = pteamsQuery.
+	  List<Entity> pteamsQueryResult = pteamsQuery.
 			  	asList(FetchOptions.Builder.withDefaults());
 	  
 	  //Prepare and run query: Kind=Game Filters> (=tournamentName,=round)
 	  Filter tournamentFilter = new FilterPredicate("tournamentName", 
 		        		  		  FilterOperator.EQUAL, tournamentName);	    
 	  Filter roundFilter = new FilterPredicate("round", 
-		  		  FilterOperator.EQUAL, pairing);
+		  		  FilterOperator.EQUAL, round);
 		
 	  //Prepare and run query with filters
 	  Query gameQuery = new Query("Game")
@@ -87,11 +85,36 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 					.setFilter(roundFilter);	
 	  PreparedQuery pgameQuery = datastore.prepare(gameQuery); 	    
 	  @SuppressWarnings("unused")
-	List<Entity> pgameQueryResult = pgameQuery.
+	  List<Entity> pgameQueryResult = pgameQuery.
 			  asList(FetchOptions.Builder.withDefaults());
 	  
+	  //System.out.println("pteamsQueryResult:" 
+		//	  						+ pteamsQueryResult.toString() + "\n");
+	  //System.out.println("pgameQueryResult:" 
+		//		+ pgameQueryResult.toString() + "\n");
 	  
-	  map.put("respcode", 600);         
+	  Teams = DatastoreUtils
+			  .getPropertyListofEntityColumn(pteamsQueryResult, "teamName");
+	  Scores = DatastoreUtils
+	    .getPropertyListofEntityColumn(pteamsQueryResult, "tournamentScore");
+	  Gamecodes = DatastoreUtils
+			  .getPropertyListofEntityColumn(pgameQueryResult, "gameID");
+	  Team1 = DatastoreUtils
+			  .getPropertyListofEntityColumn(pgameQueryResult, "teamA");
+	  Team2 = DatastoreUtils
+			  .getPropertyListofEntityColumn(pgameQueryResult, "teamB");
+	  Result = DatastoreUtils
+			  .getPropertyListofEntityColumn(pgameQueryResult, "gameResult");
+	  
+	  map.put("teams", Teams);
+	  map.put("scores", Scores);
+	  map.put("gamecodes", Gamecodes);
+	  map.put("team1", Team1);
+	  map.put("team2", Team2);
+	  map.put("result", Result);
+	  map.put("respcode", 100);
+	  
+	  ServletUtils.writeback(resp, map);	  
  	}
 
 }	
