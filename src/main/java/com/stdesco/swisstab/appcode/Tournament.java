@@ -78,7 +78,6 @@ public class Tournament {
 	 * 									if number of teams is not identical to 
 	 * 									the number of team names.
 	 */
-	
 	public Tournament(int rounds, int numberOfTeams, 
 			List<String> names, int tournamentID) {
 		

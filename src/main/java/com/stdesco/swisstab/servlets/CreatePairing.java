@@ -60,8 +60,6 @@ public class CreatePairing extends HttpServlet {
 public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		  throws ServletException, IOException {  
 	  
-	  System.out.print("CreatePairing:44: Running \n");
-	  
 	  //initialize the hash-map for response back to web-app
 	  Map<String, Object> map = new HashMap<String, Object>();
 	  long providerID = new Globals().getGlobalProviderID();
@@ -78,10 +76,8 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  
 	  int tournamentID = DatastoreUtils.getTournamentID(tournamentName); 
 	  
-	  System.out.print("CreatePairing:55: TournamentID:"
-	  		+ tournamentID + "ProviderID:" + providerID + "\n");
-	  
-	  
+	  LOGGER.info("ln 79: TournamentID:" + tournamentID + "ProviderID:" 
+			  	  + providerID);
 	  
       /* Step 1: Check that the tournament has been initialized properly
        * Run a query on the Tournament Code and get the list of teams 
@@ -91,9 +87,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
        * This is a pre-appcode check because it is more efficent to do it here
        * before creating the tournament object and communcating back and forth.
        */
-	  
-	  
-	  
+
       Filter propertyFilter =
           new FilterPredicate("tournamentID", FilterOperator.EQUAL, 
         		  											tournamentID); 
@@ -104,13 +98,12 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
     	//Run the query  
         PreparedQuery pq = datastore.prepare(q);
         Entity qresult = pq.asSingleEntity();
-        System.out.print("CreatePairing:82: query result" 
-        							+ qresult.toString() + "\n");
+        LOGGER.info("ln 101: query result " + qresult.toString());
         
         //Check if the list of teams that is retrieved is null
         if((List<String>) qresult.getProperty("teams") == null) {
         	//Set response code == 2 - List of teams returned null
-        	System.out.print("CreatePairing:105: teamlist is null\n");
+        	LOGGER.severe("ln 106: teamlist is null");
       	  	map.put("respcode", 2);       
       	  	write(resp, map); 
       	  	return; //Abort Process
@@ -118,8 +111,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
       	//Check if at list 2 teams exist in the tournament  	
         }else if(((List<String>) qresult.getProperty("teams")).size() < 2){
         	//Set response code == 1 - List of teams is less than 2
-        	System.out.print("CreatePairing:113: teamslist has less than 2 "
-        			+ "entries \n");
+        	LOGGER.severe("ln 114: teamslist has less than 2 entries");
       	  	map.put("respcode", 1);       
       	  	write(resp, map); 
       	  	return; //Abort Process
@@ -127,7 +119,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
       	//Set local teamslist to variable teamlist
         }else{
         	//The team list is all good
-        	System.out.print("CreatePairing:122: teamslist is all good\n");
+        	LOGGER.fine("ln 129: teamslist is all good");
         	teamslist = (List<String>) qresult.getProperty("teams");
         }
         
@@ -136,25 +128,19 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
       } catch (Exception e) {        
         // TODO Complete the exception handle
         e.printStackTrace();
-        System.out.print("Query result :" + "NULL" + ": \n"); 
+        LOGGER.severe("ln 131: Query result : " + "NULL"); 
         //Set response code == 3 - No tournament was found 
         map.put("respcode", 3);       
         write(resp, map);
         return; //Abort Process
       }
-      
-      
-      
-      
+
       /* Step 2: Begin the tournament pairing process
        * Begin tournament pairing process. Convert the datastore state 
        * into a useable object -> run the pairing process which will save 
        * the state and update the datastore as it goes along. 
        */
-      
-      
-      
-	  
+
 	  tournamentEntity = DatastoreUtils
 			  .getEntityFromKey(DatastoreUtils.getTournamentKey(tournamentID));
 	  
@@ -170,8 +156,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
   	  currentround = Math.toIntExact((long) 
   			tournamentEntity.getProperty("currentRound")); 	 
   	  
-	  System.out.println("CreatePairing:161: CurrentRound:" + 
-			  										currentround + "\n");
+	  LOGGER.info("ln 159: CurrentRound: " + currentround);
   	  
 	  //This will only run for the very first round
   	  if(currentround == 0) { 	
@@ -185,26 +170,25 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	      tournament.saveUpdatedDatastoreState();     
   	  
 	      //Notify the user of pairing status
-	      System.out.println("CreatePairing:169: Success:" 
-	    		  								+ pairing.getGames() + "\n");
+	      LOGGER.fine("ln 173: Success: " + pairing.getGames());
 	      
-	      //Check wether or not the Bye Team is set to null
+	      //Check whether or not the Bye Team is set to null
 	      try {
 	    	  System.out.println("CreatePairing:171: " + tournament.getByeTeam());
 	      } catch (IllegalStateException e) {
 	    	  System.out.println("CreatePairing:172: no bye team set");
-	      }	      
+	      } // FIXME - Is this working???? - ZT	      
 	      
 	      currentround++;	      
 	      
   	  } else {
   		  //For every subsequent round fo the tournament this will run
-  		  System.out.println("CreatePairing:188: Proceed with next round\n");
+  		  LOGGER.fine("ln 186: Proceed with next round");
   		  
   		  //This is a preliminary check whether or not all results in the 
   		  //current round have been updated in the datastore.
   		  if(DatastoreUtils.checkResultsofRound(currentround, tournamentName)){ 			  
-  			System.out.println("CreatePairing:192: Proceeding with nxtround\n");
+  			LOGGER.fine("ln 191: Proceeding with next round");
   			
   			//Create a new empty object of tournament
   			Tournament nextroundtournament = new Tournament(rounds,
@@ -227,7 +211,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
   		  } else {
   			  
   			//TODO: Update javascript in appcode to display this back to user
-  			System.out.println("CreatePairing:194: Still waiting on results\n");		
+  			LOGGER.info("ln 214: Still waiting on results");		
   			map.put("respcode", 300);       
   			ServletUtils.writeback(resp, map);
   			return; 
@@ -283,8 +267,6 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
-		System.out.print("CreateTeam:154: Sending JSON Response \n");
-		System.out.print(new Gson().toJson(map).toString() + "\n");
 		resp.getWriter().write(new Gson().toJson(map));
 	}
 	
@@ -301,14 +283,14 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		
 		if (pairingindicator == 1) {
 	    	  pairingrule = FirstRoundPairingRule.FIRST_ROUND_GAME_ORDERED;
-	    	  LOGGER.finer("Pairingrule set to: FIRST_ROUND_GAME_ORDERED\n");
+	    	  LOGGER.finer("Pairingrule set to: FIRST_ROUND_GAME_ORDERED");
 	    } else if (pairingindicator == 2) {
-	    	  LOGGER.finer("Pairingrule set to: FIRST_ROUND_GAME_RANDOM\n");
+	    	  LOGGER.finer("Pairingrule set to: FIRST_ROUND_GAME_RANDOM");
 	    	  pairingrule = FirstRoundPairingRule.FIRST_ROUND_GAME_RANDOM;
 	    } else {
-	    	  LOGGER.severe("Invalid PairingRule Indicator\n");
+	    	  LOGGER.severe("Invalid PairingRule Indicator");
 	    	  throw new IllegalStateException("Someone has entered an invalid" 
-	    			  + "pairing rule indicator into the datastore! \n");
+	    			  + "pairing rule indicator into the datastore!");
 	    }	
 	}
 
