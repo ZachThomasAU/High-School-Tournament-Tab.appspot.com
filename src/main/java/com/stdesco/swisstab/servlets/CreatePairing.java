@@ -76,7 +76,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  
 	  int tournamentID = DatastoreUtils.getTournamentID(tournamentName); 
 	  
-	  LOGGER.info("ln 79: TournamentID:" + tournamentID + "ProviderID:" 
+	  LOGGER.info("ln 79: TournamentID: " + tournamentID + ", ProviderID: " 
 			  	  + providerID);
 	  
       /* Step 1: Check that the tournament has been initialized properly
@@ -119,7 +119,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
       	//Set local teamslist to variable teamlist
         }else{
         	//The team list is all good
-        	LOGGER.fine("ln 129: teamslist is all good");
+        	LOGGER.fine("ln 122: teamslist is all good");
         	teamslist = (List<String>) qresult.getProperty("teams");
         }
         
