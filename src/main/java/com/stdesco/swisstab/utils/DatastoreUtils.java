@@ -398,8 +398,8 @@ public class DatastoreUtils {
     public static boolean checkResultsofRound
     						(int currentround, String tournamentname) {  
     	
-	    System.out.println("DatastoreUtils:379: Checking for game results"
-	    + ": round:" + currentround +": tournamentname:" +tournamentname +"\n");
+	    LOGGER.info("ln 401: Checking for game results - round: " + currentround
+	    			+ ", tournamentname: " + tournamentname);
 	    
 	    //Create filters for retrieving from the datastore
 	    Filter tournamentFilter = new FilterPredicate("tournamentName", 
@@ -418,7 +418,7 @@ public class DatastoreUtils {
 	    //Iterate over the round to check for results
 	    int check = roundResult.size();	    
 	    for (Entity iterator: roundResult) {	    	
-	        LOGGER.finer("DatastoreUtils:399:" + iterator.toString());
+	        LOGGER.finer("ln 421: " + iterator.toString());
 	        int checkresult = Math.toIntExact((long) 
 	        							iterator.getProperty("gameResult"));
 	        if(checkresult != 0) {
@@ -429,15 +429,13 @@ public class DatastoreUtils {
 	    //Return the status of the round
 	    if(check == 0) {
 	    	LOGGER.finer("True all of the games in: round:" + currentround
-	    			+ " tournamentname:" + tournamentname + "have a result\n");
-		    System.out.println("DatastoreUtils: 415: checkResultsofRound: "
-		    		+ "return true\n"); 
+	    			+ " tournamentname:" + tournamentname + "have a result");
+		    LOGGER.info("ln 433: checkResultsofRound = return true"); 
 	    	return true;
 	    } else {
 	    	LOGGER.finer("False at least 1 game in: round:" + currentround
-	    	+ " tournamentname:" + tournamentname + "doesnt have a result\n");
-		    System.out.println("DatastoreUtils: 415: checkResultsofRound: "
-		    		+ "return false\n"); 
+	    	+ " tournamentname:" + tournamentname + "doesnt have a result");
+		    LOGGER.info("ln 438: checkResultsofRound = return false"); 
 	    	return false;
 	    }	    
     }
@@ -461,8 +459,8 @@ public class DatastoreUtils {
     	List<Game> allGames = new ArrayList<Game>();
     	Team team1 = null, team2=null;
     	
-	    System.out.println("DatastoreUtils:379: Reconstructing AllPairings"
-	    + ": round:" + currentRound +": tournamentname:" + tournamentName +"\n");
+	    LOGGER.info("ln 462: Reconstructing AllPairings - round: " 
+	    			+ currentRound +", tournamentname: " + tournamentName);
 	    
 	    //Use the current round to iterate over all the pairings in the data
 	    //store searchround starts at the first round. Searches are filtered
@@ -587,9 +585,7 @@ public class DatastoreUtils {
 	    	game.setGameResultfromInt(Math.toIntExact((long) 
 	    			iterator.getProperty("gameResult")));
 	    
-			System.out.println("DatastoreUtils: 474: game added: "
-					+ game.toString() +"\n");
-			
+			LOGGER.info("ln 474: game added: " + game.toString());		
 	    	allGames.add(game);
 	    }
 	    
@@ -628,8 +624,7 @@ public class DatastoreUtils {
 					.getProperty("tournamentScore")), Math
 					.toIntExact((long) iterator
 							.getProperty("tournamentByeRound")));
-			System.out.println("DatastoreUtils: 492: team added: "
-					+ tempteam.toString() +"\n");
+			LOGGER.info("ln 629: team added: " + tempteam.toString());
 			allTeams.add(tempteam);
 		}  	
     	
