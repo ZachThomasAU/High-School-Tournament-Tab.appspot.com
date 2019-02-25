@@ -138,7 +138,7 @@ public class Globals {
 		
 		globals = new Entity("Globals", "highschool");
 		globals.setProperty("apiKey", 
-				"RGAPI-248ef3ed-2b6c-4b22-af0a-ec0a83dbb2f9");
+				"RGAPI-006cbb97-5347-4886-87ce-b61d91e6cd04");
 		globals.setProperty("appUrl", 
 				"http://high-school-tournament-tab.appspot.com/Hello");
 		globals.setProperty("providerID", 0);
