@@ -308,8 +308,6 @@ public class Tournament {
 					"The Tournament ended after round " + rounds + ".");
 		}
 		
-
-		
 		if (currentRound == 1) {
 			// this executes the first round pairing rule, or throws if rule 
 			// not implemented yet.
@@ -365,9 +363,13 @@ public class Tournament {
 	 * @return	the Pairing for the next round.
 	 */
 	private Pairing getNextRoundPairing() {
+		System.out.println("Tournament ln 366: In getNextRoundPairing");
 		// sorts the teams by score
 		List<Team> sortedTeams = new ArrayList<Team>(teams);
 		Collections.sort(sortedTeams);
+		Collections.reverse(sortedTeams);
+		System.out.println("Tournament ln 370: sortedTeams - " + sortedTeams);
+		
 		currentByeTeamId = -1;
 		Pairing newPairing = new Pairing(currentRound);
 		
@@ -391,21 +393,23 @@ public class Tournament {
 		
 		// match the top team first
 		for (int i = 0; i < numberOfTeams; i++) {
+			System.out.println("Tournament ln 396: Iteration: " + i);
 			int bestTeamId;
 			Team bestScoreTeam;
-			
 			bestScoreTeam = sortedTeams.get(i);
 			bestTeamId = bestScoreTeam.getTeamid();
+			System.out.println("Tournament ln 401: bestScoreTeam: " + bestScoreTeam.getName());
 			
 			if (bestTeamId == currentByeTeamId) {
+				System.out.println("Tournament ln 404: Caught byeTeam if-statement");
 				currentByeTeam = bestScoreTeam;
 				LOGGER.fine("team " + bestScoreTeam + " bye this round");
 				continue;
 			}
 		
-		
 			//Test if team already scheduled for this round
 			if (newPairing.hasGameForTeam(bestScoreTeam)) {
+				System.out.println("Tournament ln 412: Caught already scheduled if-statement");
 				LOGGER.fine("round " + currentRound + " team " + bestScoreTeam + 
 						    " already paired");
 				continue;
@@ -413,12 +417,15 @@ public class Tournament {
 		
 			boolean gameForBestTeamFound = false;
 			for (int j = i + 1; j < numberOfTeams; j++) {
+				System.out.println("Tournament ln 420: past checks, searching for pairing");
 				int nextTeamid;
 				Team nextScoreTeam;
-				nextScoreTeam = teams.get(j);
+				nextScoreTeam = sortedTeams.get(j);
+				System.out.println("Tournament ln 424: j is: " + j + ", nextScoreTeam is " + nextScoreTeam.getName());
 				nextTeamid = nextScoreTeam.getTeamid();
 			
 				if (nextTeamid == currentByeTeamId) {
+					System.out.println("Tournament ln 427: Best match is the bye team " + nextScoreTeam.getName());
 					currentByeTeam = nextScoreTeam;
 					LOGGER.fine(nextScoreTeam + "bye this round");
 					continue;
@@ -426,6 +433,7 @@ public class Tournament {
 			
 				// test if next team already scheduled
 				if (newPairing.hasGameForTeam(nextScoreTeam)) {
+					System.out.println("Tournament ln 435: Best match, " + nextScoreTeam.getName() + ", is already scheduled!");
 					LOGGER.fine("round " + currentRound + " team " + 
 				                nextScoreTeam + "already paired");
 					continue;
@@ -434,7 +442,8 @@ public class Tournament {
 				// test if the game is a rematch
 				if (listContainsGameBetweenTeams(allGames, bestScoreTeam, 
 						                         nextScoreTeam)) {
-					//already played, pull up
+					System.out.println("Tournament ln 444: Best match, " + nextScoreTeam.getName() + ", is a rematch");
+					// TODO already played, pull up
 					LOGGER.fine("round " + currentRound + " game " + 
 					            bestScoreTeam + " - " + nextScoreTeam + 
 					            "has already happened");
@@ -443,13 +452,16 @@ public class Tournament {
 				
 				// TODO: test if Red Side/Blue Side
 				
-				/* TODO: fix this. We changed addGame to only take param Game, 
+				/* FIXME We changed addGame to only take param Game, 
 				 * but now this code won't work with the new method.  
-				 * 
-				Game game = newPairing.addGame(bestScoreTeam, nextScoreTeam);
+				 */
+				System.out.println("Found match for " + bestScoreTeam.getName() + " with " + nextScoreTeam.getName());
+				Game game = new Game(currentRound, bestScoreTeam, nextScoreTeam);
+				game.getGameCodewithAPI(tournamentID, tournamentKey);
+				newPairing.addGame(game);
 				allGames.add(game);
 				gameForBestTeamFound = true;
-				break; */
+				break;
 			}
 			
 			if (gameForBestTeamFound) {
@@ -459,6 +471,7 @@ public class Tournament {
 			
 			if (newPairing.getGames().size() == (numberOfTeams / 2)) {
 				// https://www.youtube.com/watch?v=5r06heQ5HsI
+				System.out.println("Completed pairing task");
 				continue;
 			}
 			

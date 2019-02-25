@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
@@ -23,6 +24,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.stdesco.swisstab.appcode.Tournament;
 import com.stdesco.swisstab.appcode.Tournament.FirstRoundPairingRule;
+import com.stdesco.swisstab.utils.AppCodeUtils;
 import com.stdesco.swisstab.utils.DatastoreUtils;
 import com.stdesco.swisstab.utils.Globals;
 import com.stdesco.swisstab.utils.ServletUtils;
@@ -55,6 +57,7 @@ public class CreatePairing extends HttpServlet {
   private int pairingruleint;
   private int numberofteams;
   private Entity tournamentEntity;
+  Pairing nextRound;
  
 @SuppressWarnings("unchecked")
 public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -76,8 +79,8 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  
 	  int tournamentID = DatastoreUtils.getTournamentID(tournamentName); 
 	  
-	  LOGGER.info("ln 79: TournamentID: " + tournamentID + ", ProviderID: " 
-			  	  + providerID);
+	  LOGGER.info("ln 79: Current Tournament: " + tournamentName 
+			  	  + ", ProviderID: " + providerID);
 	  
       /* Step 1: Check that the tournament has been initialized properly
        * Run a query on the Tournament Code and get the list of teams 
@@ -87,7 +90,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
        * This is a pre-appcode check because it is more efficent to do it here
        * before creating the tournament object and communcating back and forth.
        */
-
+	  LOGGER.info("ln 90: Check the tournament has been initialised correctly");
       Filter propertyFilter =
           new FilterPredicate("tournamentID", FilterOperator.EQUAL, 
         		  											tournamentID); 
@@ -98,7 +101,6 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
     	//Run the query  
         PreparedQuery pq = datastore.prepare(q);
         Entity qresult = pq.asSingleEntity();
-        LOGGER.info("ln 101: query result " + qresult.toString());
         
         //Check if the list of teams that is retrieved is null
         if((List<String>) qresult.getProperty("teams") == null) {
@@ -140,6 +142,8 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
        * into a useable object -> run the pairing process which will save 
        * the state and update the datastore as it goes along. 
        */
+      LOGGER.info("ln 143: Tournament initialised correctly, begin the pairing "
+      			  + "process");
 
 	  tournamentEntity = DatastoreUtils
 			  .getEntityFromKey(DatastoreUtils.getTournamentKey(tournamentID));
@@ -155,12 +159,11 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
   	  //----Get the Current Round from Datastore----//
   	  currentround = Math.toIntExact((long) 
   			tournamentEntity.getProperty("currentRound")); 	 
-  	  
 	  LOGGER.info("ln 159: CurrentRound: " + currentround);
   	  
 	  //This will only run for the very first round
   	  if(currentround == 0) { 	
-  		  
+  		  LOGGER.finer("Pairing the very first round");
 		  //----Create the first round pairing---//
 	      Tournament tournament = new Tournament(rounds, numberofteams, 
 	    		  teamslist, tournamentID);     
@@ -174,34 +177,35 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	      
 	      //Check whether or not the Bye Team is set to null
 	      try {
-	    	  System.out.println("CreatePairing:171: " + tournament.getByeTeam());
+	    	  LOGGER.info("CreatePairing:177: " + tournament.getByeTeam());
 	      } catch (IllegalStateException e) {
-	    	  System.out.println("CreatePairing:172: no bye team set");
+	    	  LOGGER.info("CreatePairing:179: no bye team set");
 	      } // FIXME - Is this working???? - ZT	      
 	      
 	      currentround++;	      
 	      
   	  } else {
-  		  //For every subsequent round fo the tournament this will run
-  		  LOGGER.fine("ln 186: Proceed with next round");
+  		  //For every subsequent round of the tournament this will run
+  		  LOGGER.info("ln 186: Proceed with next round");
   		  
   		  //This is a preliminary check whether or not all results in the 
   		  //current round have been updated in the datastore.
   		  if(DatastoreUtils.checkResultsofRound(currentround, tournamentName)){ 			  
-  			LOGGER.fine("ln 191: Proceeding with next round");
+  			LOGGER.info("ln 191: Proceeding with next round");
   			
   			//Create a new empty object of tournament
   			Tournament nextroundtournament = new Tournament(rounds,
   					numberofteams, teamslist, tournamentID);
   			nextroundtournament.setFirstRoundPairingRule(pairingrule);
   			
-  		    //Restore the state of the Tournament to what it was at the end 
-  			//of the first round. 
+  		    // Restore the state of the Tournament to what it was at the end 
+  			// of the first round. 
   			
   			nextroundtournament.restoreStateFromDataStore(tournamentName);
-  			@SuppressWarnings("unused")
-			Pairing nextround = nextroundtournament.pairNextRound();
-  			//nextround.saveState(DatastoreUtils.getTournamentKey(tournamentID));
+			System.out.println("We got to nextround!");
+  			nextRound = nextroundtournament.pairNextRound();
+  			System.out.println("WE COMPLETED NEXT ROUND!");
+  			saveState(DatastoreUtils.getTournamentKey(tournamentID));
   			
   		    //TODO: Update javascript in appcode to display this back to user
   			map.put("respcode", 400);       
@@ -292,6 +296,19 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	    	  throw new IllegalStateException("Someone has entered an invalid" 
 	    			  + "pairing rule indicator into the datastore!");
 	    }	
+	}
+	
+	/**
+	 * 
+	 */
+	private void saveState(Key key) {
+		int round = nextRound.getRound();
+		System.out.println("CreatePairing ln 306: round is " + round);
+		List<String> gameids = nextRound.getGameIds();
+		System.out.println("CreatePairing ln 308: round is " + gameids);
+		
+		AppCodeUtils.createEntityPairingFromTkey(round, key); 
+	    AppCodeUtils.saveStateToDataStorePairing(round, key, gameids);
 	}
 
 }	

@@ -108,7 +108,7 @@ public class Pairing {
 		//return game;
 	} */
 	
-	Game addGame(Game newGame) {
+	public void addGame(Game newGame) {
 		Team team1 = newGame.getTeam1();
 		Team team2 = newGame.getTeam2();
 		for (Game game : games) {
@@ -135,9 +135,9 @@ public class Pairing {
 		}
 		
 		games.add(newGame);
+		System.out.println("Pairing 138: added " + newGame + ", now games is " + games);
 		gameids.add(newGame.getGameID());
-		
-		return newGame;
+		System.out.println("Pairing 140: added " + newGame + ", now gameids is " + gameids);
 	}
 	
 	/**

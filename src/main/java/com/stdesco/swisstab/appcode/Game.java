@@ -43,7 +43,6 @@ public class Game {
 		this.round = round;
 		this.team1 = team1;
 		this.team2 = team2;	
-		
 	}
 	
 	/** public method for getting the gamecode across the API 
