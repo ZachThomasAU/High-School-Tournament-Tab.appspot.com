@@ -577,28 +577,49 @@ public class Tournament {
 	 *  allGames -> List of <String> references to games that were created
 	 *  @args none
 	 */
+	@SuppressWarnings("unchecked")
 	public void saveUpdatedDatastoreState(){
 		
 		Pairing tempPairing;
 		tempPairing = allPairings.get(currentRound - 1);
 		boolean byeTeam = true;
 		
-		LOGGER.finer("Tournament:553: begin saving state\n");
+		LOGGER.finer("Tournament:553: begin saving state");
 		
 		try {
 			currentByeTeam.getName();
+			if (currentByeTeam.getName().equals("Null") 
+					&& currentByeTeam.getTeamid() == 99) {
+				throw new NullPointerException();
+			}
 		} catch (NullPointerException e){
 			//e.printStackTrace();
 			LOGGER.fine("No byeTeam is set this round so create a fake one"
-					+ "to avoid nullpointers\n");
+					+ "to avoid nullpointers");
 			currentByeTeam = new Team("Null", 99);
 			byeTeam = false;
 		}		
 		
 		try {
 			tournament = datastore.get(tournamentKey);
-			allGamesDatastore = tempPairing.getGameIds();
-			allPairingsDatastore.add(tempPairing.getRound());	
+			allGamesDatastore = 
+					(List<String>) tournament.getProperty("allGames");
+			List<String> newGamesDatastore = tempPairing.getGameIds();
+			if (allGamesDatastore != (null)) {
+				for (int i=0; i < newGamesDatastore.size(); i++) {
+				allGamesDatastore.add(newGamesDatastore.get(i));
+				}
+			} else {
+				allGamesDatastore = newGamesDatastore;
+			}
+			allPairingsDatastore = 
+					(List<Integer>) tournament.getProperty("allPairings");
+			if (allPairingsDatastore != null) {
+				allPairingsDatastore.add(tempPairing.getRound());	
+			} else {
+				allPairingsDatastore = new ArrayList<Integer>();
+				allPairingsDatastore.add(tempPairing.getRound());
+			}
 			
 			//Set properties to their local values obtained from pairing
 			tournament.setProperty("allGames", allGamesDatastore);
@@ -620,10 +641,10 @@ public class Tournament {
 			
 			//Update tournament byeRound for the team that currently has the Bye
 			if(byeTeam) {
-				Entity byeTeamE = DatastoreUtils.getEntityFromKey(DatastoreUtils.
+				Entity byeTeamEntity = DatastoreUtils.getEntityFromKey(DatastoreUtils.
 						getTeamKey(currentByeTeam.getName(), tournamentID));
-				byeTeamE.setProperty("tournamentByeRound", currentRound);
-				datastore.put(byeTeamE);
+				byeTeamEntity.setProperty("tournamentByeRound", currentRound);
+				datastore.put(byeTeamEntity);
 				
 				LOGGER.info("ln 615: updated allGames: " 
 							+ allGamesDatastore.toString() + 

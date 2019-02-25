@@ -177,7 +177,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	      
 	      //Check whether or not the Bye Team is set to null
 	      try {
-	    	  LOGGER.info("CreatePairing:177: " + tournament.getByeTeam());
+	    	  LOGGER.info("CreatePairing:177: byeTeam" + tournament.getByeTeam());
 	      } catch (IllegalStateException e) {
 	    	  LOGGER.info("CreatePairing:179: no bye team set");
 	      } // FIXME - Is this working???? - ZT	      
@@ -202,10 +202,11 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
   			// of the first round. 
   			
   			nextroundtournament.restoreStateFromDataStore(tournamentName);
-			System.out.println("We got to nextround!");
+			System.out.println("CreatePairing 205: We got to nextround!");
   			nextRound = nextroundtournament.pairNextRound();
-  			System.out.println("WE COMPLETED NEXT ROUND!");
+  			System.out.println("CreatePairing 207: WE COMPLETED NEXT ROUND!");
   			saveState(DatastoreUtils.getTournamentKey(tournamentID));
+  			nextroundtournament.saveUpdatedDatastoreState();
   			
   		    //TODO: Update javascript in appcode to display this back to user
   			map.put("respcode", 400);       
