@@ -646,7 +646,7 @@ public class Tournament {
 				byeTeamEntity.setProperty("tournamentByeRound", currentRound);
 				datastore.put(byeTeamEntity);
 				
-				LOGGER.info("ln 615: updated allGames: " 
+				LOGGER.info("ln 649: updated allGames: " 
 							+ allGamesDatastore.toString() + 
 							", updated allPairings :" 
 							+ allPairingsDatastore.toString());
@@ -654,7 +654,7 @@ public class Tournament {
 			
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
-			LOGGER.warning("ln 623: Unable to save tournament State");
+			LOGGER.warning("ln 657: Unable to save tournament State");
 			// TODO Note - the above logging is not handling this exception.
 		}
 		
@@ -677,7 +677,7 @@ public class Tournament {
 				.getTournamentKey(DatastoreUtils
 				.getTournamentID(tournamentName)));
 		
-		LOGGER.info("ln 646: tournament info" + tournament.toString());
+		LOGGER.info("ln 680: tournament info" + tournament.toString());
 		currentRound = Math.toIntExact((long) 
 									tournament.getProperty("currentRound"));
 		
