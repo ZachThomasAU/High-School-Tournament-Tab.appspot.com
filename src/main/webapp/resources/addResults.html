@@ -1,5 +1,36 @@
 <div>
-	
+	<script>
+		function fill_dropdown(id, kind, propertyname){
+			
+			// Function for filling gamecode dropdown from list of games
+			//alert('load gamecodes')
+			
+			var html_code = '';
+			var data = 'kind=' + kind + '&propertyname='+ propertyname;
+			
+			//AJAX Serlvet Request to Get JSON Data	
+			$.ajax( {
+				url: 'getPropertyList',	
+				type: 'POST',
+				dataType: 'json',
+				data: data,
+				success: function(data) {
+					//$('#output_box').html('returned' + data.propertylist[0]);
+					data.propertylist.forEach(function (value) {
+						html_code += '<option>'+ value +'</option>';
+						//alert('returned data :' + value)
+						//$('#output_box').html(html_code);
+						$(id).html(html_code);
+					});
+				}
+			});	
+		}
+		
+		$(document).ready(function() {
+			fill_dropdown("#gamecode", "Game", "gameID");
+		});
+		
+	</script>
 	<!-- Add Team Button Trigger Modal -->
 	<button type="button" class="btn btn-primary btn-block" data-toggle="modal" 
 			data-target="#addResultsModalLong">
@@ -25,8 +56,9 @@
 			<div id="addresults">
 				
 				<label for="gamecode">Game Code</label> 
-				<input type="text" class="form-control" 
-								placeholder="Game Code" name="gamecode">
+				<select class="form-control" id="gamecode" name="gamecode">
+					<option>No Games to Choose from</option>
+				</select>
 				<br>			
 				<label for="resultcode">Winner</label> 		
 				<select name="resultcode" class="form-control">

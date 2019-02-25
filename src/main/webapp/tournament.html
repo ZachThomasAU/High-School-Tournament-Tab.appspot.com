@@ -113,7 +113,6 @@
             		function(){});
             $('#teamTable').load('/resources/table.html', 
             		function(){});
-            set_current_tournament('<h1>UQ MINI</h1>'); 
             
             initApp();
             fill_dropdown("#tournamentSelect", "Tournament", "tournamentName");
@@ -228,14 +227,12 @@
                     <label for="currentTournamentSelect">Current Pairing</label>
 				    <select class="form-control" id="pairingSelect">
 				      <option value="99">No Pairing Yet</option>
-				      <option >No Pairing Yet</option>
 				    </select>
                 </div>
                 <div class="col-lg-3" id="divtournamentSelect">
                     <label for="currentTournamentSelect">Current Tournament</label>
 				    <select class="form-control" id="tournamentSelect">
-				      <option value="UQ MINI">UQ MINI</option>
-				      <option value="QLD HIGHSCHOOL">QLD HIGHSCHOOL</option>
+				      <option value="null">Add a Tournament First</option>
 				    </select>
                 </div>
           	</div>  	
@@ -274,16 +271,16 @@
 						<div class="col-6 col-lg-6">
 							<table id="pairingTable" class="table table-bordered" style="width:100%">
 							       <thead><tr><th>Teamname</th><th>Score</th></tr></thead><tbody><tr>
-							               <td>Tiger Nixon</td>
-							               <td>System Architect</td>
+							               <td> </td>
+							               <td> </td>
 							       </tr>
 							</table>
 						</div>
 						<div class="col-6 col-lg-6">
 							<table id="teamTable" class="table table-bordered" style="width:100%">
 							       <thead><tr><th>Teamname</th><th>Score</th></tr></thead><tbody><tr>
-							               <td>Tiger Nixon</td>
-							               <td>System Architect</td>
+							               <td> </td>
+							               <td> </td>
 							       </tr>
 							</table>
 						</div>

@@ -30,6 +30,8 @@ import com.stdesco.swisstab.utils.ServletUtils;
  * The team is added to the data-store with its variables
  * initialized and then added to the list of team names 
  * in the tournament with tournament name 
+ * 
+ * TODO Is this true? Also is this English? -ZT
  */
 
 @WebServlet("/getTournamentDisplay")
@@ -37,16 +39,15 @@ import com.stdesco.swisstab.utils.ServletUtils;
 public class getTournamentDisplay extends HttpServlet {
   private static final long serialVersionUID = 1l;
   @SuppressWarnings("unused")
-private static Logger LOGGER = 
+  private static Logger LOGGER = 
   					Logger.getLogger(getTournamentDisplay.class.getName());
   DatastoreService datastore = 
 		  			DatastoreServiceFactory.getDatastoreService();
 
- 
-public void doPost(HttpServletRequest req, HttpServletResponse resp)
+  public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		  throws ServletException, IOException {
 	
-	  System.out.println("Running\n");
+	  System.out.println("getTournamentDisplay 50: Running\n");
 	
 	  List<String> Teams = new ArrayList<String>();
 	  List<String> Scores = new ArrayList<String>();
@@ -58,7 +59,7 @@ public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	  int round = Integer.parseInt(req.getParameter("round").substring(8));
 	  String tournamentName = req.getParameter("tournamentName");
 	  
-	  System.out.println("Starting round:" + round + 
+	  System.out.println("getTournamentDisplay 62: Starting round:" + round + 
 			  "TName:" + tournamentName + "\n");
 	  
 	  //initialize the hash-map for response back to web-app
