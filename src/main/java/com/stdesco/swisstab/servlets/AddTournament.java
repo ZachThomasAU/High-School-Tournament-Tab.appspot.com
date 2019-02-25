@@ -83,21 +83,21 @@ public class AddTournament extends HttpServlet {
 		  return;
 	  } 
 	  
-	  System.out.print("CreateTournament:82: Tournament Name:"
-			  	+ tname + "Number of Rounds: " + trounds + "\n");
+	  LOGGER.info("ln 86: Tournament Name:" + tname + "Number of Rounds: " 
+			  	   + trounds);
 		
       //---- Check if that tournament already exists ----//
 	  
 	  if(DatastoreUtils.checkIfPropertyExists("Tournament"
 			  									,"tournamentName", tname)) {
-		  LOGGER.finer("CreateTournament:88: Property check found "
-			  	+ "Tournament with name:" + tname + "\n");
+		  LOGGER.finer("CreateTournament:93: Property check found "
+			  	+ "Tournament with name:" + tname);
 		  map.put("respcode", 400);	
 		  ServletUtils.writeback(resp, map);
 		  return;
 	  } else {
-		  LOGGER.finer("CreateTournament:91:That "
-		  				+ "tournament does not exist continue creation \n");
+		  LOGGER.finer("CreateTournament:99: That tournament does not exist "
+		  		+ "continue creation");
 	  }
 	  
 	  // Generates the Provider Entity Key for parenting.
@@ -152,7 +152,6 @@ public class AddTournament extends HttpServlet {
 					e.printStackTrace();
 			}
 		}
-		System.out.println("Provider ID:" + providerID + "\n");
 		Key providerKey = KeyFactory.createKey("Provider", providerID);
 		return providerKey;
 	}
