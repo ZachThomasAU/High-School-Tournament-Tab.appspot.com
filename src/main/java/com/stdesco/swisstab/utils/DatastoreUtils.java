@@ -301,14 +301,14 @@ public class DatastoreUtils {
 		 Entity entity;	
 		 
 		 try {
-			   entity = datastore.get(key);
-			   return entity;
+			   	entity = datastore.get(key);
+			   	return entity;
 			} catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-		       return null;	
+				LOGGER.info("ln 307: No Entity exists with key: " + key);
+				return null;	
 		  }	
 	}
+	
 	/** Public static method to check if an entity already exists with name
 	 * @param kind - String reference to the kind 
 	 * @param EntityName - String Reference to the entity name

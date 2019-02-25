@@ -61,7 +61,7 @@
 		alert(datastring);
 		
 		$.ajax({
-		url: 'addResults',	
+			url: 'addResults',	
 			type: 'POST',
 			dataType: 'json',
 			data: datastring,
@@ -69,12 +69,12 @@
 				if(data.respcode == 100){												
 					alert("Success: Added Result to the datastore")	
 				} else if(data.respcode == 400){													
-					alert("That Tournament as not found")					    
+					alert("That Tournament was not found")					    
 				} else if(data.respcode == 300){													
 					alert("That Gamecode was not found")					    
 				} else if(data.respcode == 200){													
 					alert("That Game already has a result")					    
-				}else {
+				} else {
 					alert("Returned unknown code!")	
 				}
 			}	
