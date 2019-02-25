@@ -22,7 +22,7 @@
     
     <script>
     
-		function fill_dropdown(id, kind, propertyname){
+		function fill_dropdown(id, kind, propertyname) {
 			
 			// Function for filling tournament dropdown from list of tournaments
 			//alert('load tournamentname')
@@ -113,7 +113,7 @@
             		function(){});
             $('#teamTable').load('/resources/table.html', 
             		function(){});
-            set_current_tournament('<h1>UQ MINI</h1>'); 
+            set_current_tournament('<h1>Current Tournament</h1>'); 
             
             initApp();
             fill_dropdown("#tournamentSelect", "Tournament", "tournamentName");
