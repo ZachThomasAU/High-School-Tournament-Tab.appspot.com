@@ -56,10 +56,16 @@ public class getTournamentDisplay extends HttpServlet {
 	  List<String> Team2 = new ArrayList<String>();
 	  List<String> Result = new ArrayList<String>();
 	  
-	  int round = Integer.parseInt(req.getParameter("round").substring(8));
+	  int round;
+	  try {
+		  round = Integer.parseInt(req.getParameter("round").substring(8));  
+	  } catch (NumberFormatException e) {
+		  round = 99;
+	  }
+	  System.out.println("getTournamentDisplay 60: Round = " + round);
 	  String tournamentName = req.getParameter("tournamentName");
-	  
-	  System.out.println("getTournamentDisplay 62: Starting round:" + round + 
+	  System.out.println("getTournamentDisplay 62: TName = " + tournamentName);	  
+	  System.out.println("getTournamentDisplay 63: Starting round:" + round + 
 			  "TName:" + tournamentName + "\n");
 	  
 	  //initialize the hash-map for response back to web-app
